@@ -23,10 +23,7 @@ struct MacMonitorApp: App {
         MenuBarExtra {
             PopoverView(
                 model: delegate.model,
-                onOpenSettings: {
-                    openWindow(id: "settings")
-                    NSApp.activate(ignoringOtherApps: true)
-                },
+                onOpenSettings: { delegate.model.showWindow("settings") },
                 onQuit: { NSApp.terminate(nil) })
             .onAppear { delegate.model.isPopoverOpen = true }
             .onDisappear { delegate.model.isPopoverOpen = false }
@@ -34,6 +31,12 @@ struct MacMonitorApp: App {
             MenuBarLabel(model: delegate.model)
         }
         .menuBarExtraStyle(.window)
+
+        Window("MacMonitor – Übersicht", id: "overview") {
+            OverviewView(model: delegate.model)
+        }
+        .defaultSize(width: 760, height: 820)
+        .defaultLaunchBehavior(.suppressed)
 
         Window("MacMonitor – Einstellungen", id: "settings") {
             SettingsView(model: delegate.model)
@@ -58,11 +61,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model.start()
     }
 
-    /// `open macmonitor://test` sends a test notification, handy from scripts and the terminal.
+    /// `open macmonitor://test|overview|cleanup` — test notification or overview, from scripts and the terminal.
     func application(_ application: NSApplication, open urls: [URL]) {
         for url in urls where url.scheme == "macmonitor" {
             switch url.host {
             case "test": model.sendTest()
+            case "overview": model.openOverview()
+            case "cleanup": model.openOverview(section: .cleanup)
             default: break
             }
         }
@@ -71,6 +76,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 struct MenuBarLabel: View {
     let model: AppModel
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         HStack(spacing: 4) {
@@ -79,5 +85,8 @@ struct MenuBarLabel: View {
                 Text(model.menuBarText).monospacedDigit()
             }
         }
+        // The label exists for the app's whole lifetime, so it is the place to hand the
+        // window opener to code outside SwiftUI (notifications, alert panel).
+        .onAppear { model.openWindowAction = { openWindow(id: $0) } }
     }
 }

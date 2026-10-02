@@ -16,6 +16,8 @@ final class AppModel {
     private(set) var memoryHistory = RingBuffer<Double>(capacity: 90)
     private(set) var events: [AlertEvent] = []
     private(set) var reported: [Condition] = []
+    /// Section the overview window should scroll to when it opens.
+    var overviewFocus: OverviewSection?
     /// Menu bar text, only changed when the shown value moves noticeably (see `updateMenuBarText`).
     private(set) var menuBarText = ""
 
@@ -36,7 +38,19 @@ final class AppModel {
         }
     }
 
+    var isOverviewOpen = false {
+        didSet {
+            guard isOverviewOpen != oldValue else { return }
+            reschedule()
+            if isOverviewOpen { requestSample() }
+        }
+    }
+
     @ObservationIgnored let notifier = Notifier()
+    @ObservationIgnored let cleanup = CleanupModel()
+    /// Set by the SwiftUI scene so non-view code can open windows.
+    @ObservationIgnored var openWindowAction: ((String) -> Void)?
+    @ObservationIgnored private var swapHistory: [(date: Date, bytes: UInt64)] = []
     @ObservationIgnored private let overlay = AlertOverlay()
     @ObservationIgnored private var engine: AlertEngine
     @ObservationIgnored private var muted: [String: Date] = [:]
@@ -65,6 +79,8 @@ final class AppModel {
         notifier.onMute = { [weak self] name in self?.mute(name) }
         overlay.onKill = { [weak self] ref in self?.confirmKill(ref) }
         overlay.onMute = { [weak self] name in self?.mute(name) }
+        overlay.onOpen = { [weak self] in self?.openOverview() }
+        notifier.onOpen = { [weak self] in self?.openOverview() }
         notifier.requestAuthorization()
 
         pathMonitor.pathUpdateHandler = { [weak self] path in
@@ -116,7 +132,7 @@ final class AppModel {
     }
 
     private func reschedule() {
-        let interval = SamplingPolicy.interval(popoverOpen: isPopoverOpen, power: snapshot?.power ?? .unknown)
+        let interval = SamplingPolicy.interval(popoverOpen: isPopoverOpen || isOverviewOpen, power: snapshot?.power ?? .unknown)
         guard interval != currentInterval else { return }
         currentInterval = interval
         log.notice("Messintervall \(interval, format: .fixed(precision: 0)) s")
@@ -141,10 +157,14 @@ final class AppModel {
 
         let now = snapshot.date
         muted = muted.filter { $0.value > now }
+        swapHistory.append((now, snapshot.swapUsedBytes))
+        swapHistory.removeAll { now.timeIntervalSince($0.date) > 600 }
+        let swapLow = swapHistory.map(\.bytes).min() ?? snapshot.swapUsedBytes
         let context = Rules.Context(
             settings: settings,
             isActive: { [engine] in engine.isActive($0) },
-            mutedProcesses: Set(muted.keys))
+            mutedProcesses: Set(muted.keys),
+            swapGrowthBytes: snapshot.swapUsedBytes > swapLow ? snapshot.swapUsedBytes - swapLow : 0)
         let conditions = Rules.evaluate(snapshot, context)
         let newEvents = engine.process(conditions, now: now)
         let nowReported = engine.reported
@@ -183,6 +203,27 @@ final class AppModel {
 
     // MARK: - Actions
 
+    func openOverview(section: OverviewSection = .issues) {
+        overviewFocus = section
+        showWindow("overview")
+    }
+
+    /// Opens a SwiftUI window and brings it to the front. A menu bar app is not allowed to
+    /// activate itself from the background on recent macOS, so the window is ordered front explicitly.
+    func showWindow(_ id: String) {
+        openWindowAction?(id)
+        NSApp.activate()
+        DispatchQueue.main.async {
+            guard let window = NSApp.windows.first(where: { $0.identifier?.rawValue.hasPrefix(id) == true }) else { return }
+            window.makeKeyAndOrderFront(nil)
+            window.orderFrontRegardless()
+        }
+    }
+
+    func remedy(for condition: Condition) -> Remedy? {
+        snapshot.map { Remedies.remedy(for: condition, in: $0) }
+    }
+
     func sendTest() {
         let event = Notifier.testEvent()
         notifier.deliver(event)
@@ -216,6 +257,10 @@ final class AppModel {
             at: URL(fileURLWithPath: "/System/Applications/Utilities/Activity Monitor.app"),
             configuration: NSWorkspace.OpenConfiguration())
     }
+}
+
+enum OverviewSection: Hashable {
+    case issues, cleanup
 }
 
 // MARK: - Previews and rendered docs

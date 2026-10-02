@@ -8,6 +8,8 @@ import UserNotifications
 final class Notifier: NSObject, UNUserNotificationCenterDelegate {
     var onKill: ((ProcessRef) -> Void)?
     var onMute: ((String) -> Void)?
+    /// Tapping the notification itself opens the overview.
+    var onOpen: (() -> Void)?
     private(set) var isAuthorized = false
     /// Last delivered request per condition key, so a follow-up can replace it in the list.
     private var deliveredIDs: [String: String] = [:]
@@ -107,6 +109,8 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
                 NSWorkspace.shared.openApplication(
                     at: URL(fileURLWithPath: "/System/Applications/Utilities/Activity Monitor.app"),
                     configuration: NSWorkspace.OpenConfiguration())
+            case UNNotificationDefaultActionIdentifier:
+                onOpen?()
             default:
                 break
             }

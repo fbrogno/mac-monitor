@@ -22,6 +22,10 @@ enum DocRenderer {
         write(Framed(scheme: .dark) { PopoverView(model: .demo(alerts: false)) }, scale: 2,
               to: url.appendingPathComponent("popover-calm.png"))
         write(OverlayPreview(), scale: 2, to: url.appendingPathComponent("overlay.png"))
+        let overview = AppModel.demo()
+        overview.cleanup.useDemoSizes()
+        write(Framed(scheme: .dark) { OverviewContent(model: overview).frame(width: 760) }, scale: 2,
+              to: url.appendingPathComponent("overview.png"))
         print("Bilder geschrieben nach \(url.path)")
     }
 

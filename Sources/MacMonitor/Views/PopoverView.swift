@@ -68,12 +68,10 @@ struct PopoverView: View {
                         Text(c.body).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(2)
                     }
                     Spacer(minLength: 0)
-                    if let p = c.process {
-                        Button("Beenden") { model.confirmKill(p) }
-                            .buttonStyle(.plain)
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Palette.severity(c.severity))
-                    }
+                    Button("Lösen") { model.openOverview() }
+                        .buttonStyle(.plain)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(Palette.severity(c.severity))
                 }
                 .padding(10)
                 .background(Palette.severity(c.severity).opacity(0.1), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -207,8 +205,8 @@ struct PopoverView: View {
 
     private var footer: some View {
         HStack(spacing: 2) {
+            FooterButton(title: "Übersicht", symbol: "square.grid.2x2", action: { model.openOverview() })
             FooterButton(title: "Einstellungen", symbol: "gearshape", action: onOpenSettings)
-            FooterButton(title: "Aktivität", symbol: "chart.bar.xaxis", action: model.openActivityMonitor)
             Spacer()
             FooterButton(title: "Beenden", symbol: "power", action: onQuit)
         }

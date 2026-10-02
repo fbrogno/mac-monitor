@@ -8,6 +8,7 @@ import SwiftUI
 final class AlertOverlay {
     var onKill: ((ProcessRef) -> Void)?
     var onMute: ((String) -> Void)?
+    var onOpen: (() -> Void)?
 
     private var panel: NSPanel?
     private var hideTask: Task<Void, Never>?
@@ -25,7 +26,8 @@ final class AlertOverlay {
             event: event,
             onKill: { [weak self] ref in self?.hide(animated: true); self?.onKill?(ref) },
             onMute: { [weak self] name in self?.hide(animated: true); self?.onMute?(name) },
-            onClose: { [weak self] in self?.hide(animated: true) })
+            onClose: { [weak self] in self?.hide(animated: true) },
+            onOpen: { [weak self] in self?.hide(animated: true); self?.onOpen?() })
         let hosting = NSHostingView(rootView: view)
         let size = hosting.fittingSize
 

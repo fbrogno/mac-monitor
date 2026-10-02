@@ -7,6 +7,7 @@ struct AlertHUDView: View {
     var onKill: (ProcessRef) -> Void = { _ in }
     var onMute: (String) -> Void = { _ in }
     var onClose: () -> Void = {}
+    var onOpen: () -> Void = {}
 
     @State private var hoveringClose = false
 
@@ -35,13 +36,14 @@ struct AlertHUDView: View {
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
-                if let process = condition.process {
-                    HStack(spacing: 8) {
+                HStack(spacing: 8) {
+                    action("Lösen …", tint: Palette.accent, onOpen)
+                    if let process = condition.process {
                         action("Beenden …", tint: Palette.critical) { onKill(process) }
                         action("1 h stumm") { onMute(process.name) }
                     }
-                    .padding(.top, 6)
                 }
+                .padding(.top, 6)
             }
         }
         .padding(14)
