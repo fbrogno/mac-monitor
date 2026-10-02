@@ -20,6 +20,7 @@ struct OverviewView: View {
         }
         .frame(minWidth: 640, minHeight: 560)
         .environment(\.locale, Locale(identifier: "de_DE"))
+        .confirmationAlert(model: model, host: .overview)
     }
 
     private func scroll(_ proxy: ScrollViewProxy, to section: OverviewSection?) {
@@ -387,7 +388,7 @@ private struct CleanupSection: View {
                         } else {
                             ActionButton(title: target.isRevealOnly ? "Öffnen" : "Aufräumen",
                                          tint: target.isRevealOnly ? .primary : Palette.accent) {
-                                cleanup.clean(target) { model.confirm($0, $1, ok: $2) }
+                                cleanup.clean(target, ask: model.ask)
                             }
                             .frame(width: 84, alignment: .trailing)
                             .disabled(cleanup.busyTarget != nil)

@@ -35,13 +35,17 @@ final class CleanupModel {
         }
     }
 
-    func clean(_ target: CleanupTarget, confirm: (String, String, String) -> Bool) {
+    func clean(_ target: CleanupTarget, ask: (Confirmation) -> Void) {
         if case .revealOnly(let path) = target.method {
             NSWorkspace.shared.open(URL(fileURLWithPath: path))
             return
         }
         let size = sizes[target.id].map { " (\(Format.bytes($0)))" } ?? ""
-        guard confirm("\(target.title) aufräumen\(size)?", target.consequence, "Aufräumen") else { return }
+        ask(Confirmation(title: "\(target.title) aufräumen\(size)?", message: target.consequence,
+                         confirmTitle: "Aufräumen", action: { [weak self] in self?.run(target) }))
+    }
+
+    private func run(_ target: CleanupTarget) {
         busyTarget = target.id
         Task.detached(priority: .utility) {
             let before = CleanupRunner.size(of: target)

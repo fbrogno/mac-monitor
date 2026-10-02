@@ -2,7 +2,8 @@ import AppKit
 import Darwin
 import MonitorCore
 
-/// Executes `RemedyAction`s. Everything that ends a process or touches the network asks first.
+/// Executes `RemedyAction`s. Everything that ends a process or touches the network asks first
+/// (see `ask(_:)`).
 @MainActor
 extension AppModel {
     func canPerform(_ action: RemedyAction) -> Bool {
@@ -32,11 +33,12 @@ extension AppModel {
         case .restartApp(let ref):
             restartApp(ref)
         case .quit(let ref):
-            guard confirm("„\(ref.name)“ beenden?", "Ungesicherte Daten in diesem Prozess können verloren gehen.", ok: "Beenden") else { return }
-            terminate(ref, force: false)
+            confirmKill(ref)
         case .forceQuit(let ref):
-            guard confirm("„\(ref.name)“ sofort beenden?", "Der Prozess bekommt keine Gelegenheit zu speichern.", ok: "Sofort beenden") else { return }
-            terminate(ref, force: true)
+            ask(Confirmation(title: "„\(ref.name)“ sofort beenden?",
+                             message: "Der Prozess bekommt keine Gelegenheit zu speichern.",
+                             confirmTitle: "Sofort beenden",
+                             action: { [weak self] in self?.signal(ref, SIGKILL) }))
         case .mute(let name):
             mute(name)
         case .ignoreForever(let name):
@@ -73,32 +75,36 @@ extension AppModel {
     private func restartApp(_ ref: ProcessRef) {
         guard let app = Self.owningApp(of: ref.pid), let url = app.bundleURL else { return }
         let name = app.localizedName ?? ref.name
-        guard confirm("\(name) neu starten?", "Die App wird beendet und sofort wieder geöffnet. Sie fragt selbst nach, falls etwas ungespeichert ist.", ok: "Neu starten") else { return }
-        app.terminate()
-        Task { @MainActor in
-            // Give the app up to 20 s to quit (it may show its own save dialog).
-            for _ in 0..<40 where !app.isTerminated {
-                try? await Task.sleep(nanoseconds: 500_000_000)
-            }
-            guard app.isTerminated else { return }
-            _ = try? await NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
-            self.requestSample()
-        }
-    }
-
-    private func terminate(_ ref: ProcessRef, force: Bool) {
-        kill(ref.pid, force ? SIGKILL : SIGTERM)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in self?.requestSample() }
+        ask(Confirmation(
+            title: "\(name) neu starten?",
+            message: "Die App wird beendet und sofort wieder geöffnet. Sie fragt selbst nach, falls etwas ungespeichert ist.",
+            confirmTitle: "Neu starten", isDestructive: false,
+            action: { [weak self] in
+                app.terminate()
+                Task { @MainActor in
+                    // Give the app up to 20 s to quit (it may show its own save dialog).
+                    for _ in 0..<40 where !app.isTerminated {
+                        try? await Task.sleep(nanoseconds: 500_000_000)
+                    }
+                    guard app.isTerminated else { return }
+                    _ = try? await NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
+                    self?.requestSample()
+                }
+            }))
     }
 
     private func restartWiFi() {
-        guard confirm("WLAN neu starten?", "Das WLAN wird für etwa 3 Sekunden ausgeschaltet.", ok: "Neu starten") else { return }
-        Task.detached {
-            let device = Self.wifiDevice() ?? "en0"
-            Self.networksetup(["-setairportpower", device, "off"])
-            try? await Task.sleep(nanoseconds: 3_000_000_000)
-            Self.networksetup(["-setairportpower", device, "on"])
-        }
+        ask(Confirmation(
+            title: "WLAN neu starten?", message: "Das WLAN wird für etwa 3 Sekunden ausgeschaltet.",
+            confirmTitle: "Neu starten", isDestructive: false,
+            action: {
+                Task.detached {
+                    let device = Self.wifiDevice() ?? "en0"
+                    Self.networksetup(["-setairportpower", device, "off"])
+                    try? await Task.sleep(nanoseconds: 3_000_000_000)
+                    Self.networksetup(["-setairportpower", device, "on"])
+                }
+            }))
     }
 
     nonisolated private static func wifiDevice() -> String? {
@@ -122,14 +128,4 @@ extension AppModel {
         return String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
     }
 
-    func confirm(_ title: String, _ text: String, ok: String) -> Bool {
-        NSApp.activate(ignoringOtherApps: true)
-        let alert = NSAlert()
-        alert.messageText = title
-        alert.informativeText = text
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: ok)
-        alert.addButton(withTitle: "Abbrechen")
-        return alert.runModal() == .alertFirstButtonReturn
-    }
 }

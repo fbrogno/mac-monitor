@@ -16,6 +16,8 @@ final class AppModel {
     private(set) var memoryHistory = RingBuffer<Double>(capacity: 90)
     private(set) var events: [AlertEvent] = []
     private(set) var reported: [Condition] = []
+    var pendingConfirmation: Confirmation?
+    var confirmationHost: ConfirmationHost = .overview
     /// Section the overview window should scroll to when it opens.
     var overviewFocus: OverviewSection?
     /// Menu bar text, only changed when the shown value moves noticeably (see `updateMenuBarText`).
@@ -35,6 +37,8 @@ final class AppModel {
             guard isPopoverOpen != oldValue else { return }
             reschedule()
             if isPopoverOpen { requestSample() }
+            // An unanswered question in the popover is dropped when it closes.
+            if !isPopoverOpen, confirmationHost == .popover { pendingConfirmation = nil }
         }
     }
 
@@ -236,19 +240,29 @@ final class AppModel {
     }
 
     func confirmKill(_ process: ProcessRef) {
-        NSApp.activate(ignoringOtherApps: true)
-        let alert = NSAlert()
-        alert.messageText = "„\(process.name)“ beenden?"
-        alert.informativeText = "PID \(process.pid). Ungesicherte Daten in diesem Prozess können verloren gehen."
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: "Beenden")
-        alert.addButton(withTitle: "Abbrechen")
-        alert.addButton(withTitle: "Sofort beenden")
-        switch alert.runModal() {
-        case .alertFirstButtonReturn: kill(process.pid, SIGTERM)
-        case .alertThirdButtonReturn: kill(process.pid, SIGKILL)
-        default: return
+        ask(Confirmation(
+            title: "„\(process.name)“ beenden?",
+            message: "PID \(process.pid). Ungesicherte Daten in diesem Prozess können verloren gehen.",
+            confirmTitle: "Beenden",
+            alternativeTitle: "Sofort beenden",
+            alternative: { [weak self] in self?.signal(process, SIGKILL) },
+            action: { [weak self] in self?.signal(process, SIGTERM) }))
+    }
+
+    /// Shows a confirmation where the user is looking: inline in the open popover, otherwise as
+    /// an alert in the overview window (opened if necessary).
+    func ask(_ confirmation: Confirmation) {
+        if isPopoverOpen && !isOverviewOpen {
+            confirmationHost = .popover
+        } else {
+            confirmationHost = .overview
+            if !isOverviewOpen { showWindow("overview") }
         }
+        pendingConfirmation = confirmation
+    }
+
+    func signal(_ process: ProcessRef, _ signal: Int32) {
+        kill(process.pid, signal)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in self?.requestSample() }
     }
 

@@ -12,6 +12,9 @@ struct PopoverView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
+            if let confirmation = model.pendingConfirmation, model.confirmationHost == .popover {
+                ConfirmationStrip(confirmation: confirmation) { model.pendingConfirmation = nil }
+            }
             if !model.reported.isEmpty { issues }
             if let s = model.snapshot {
                 metrics(s)
