@@ -61,14 +61,33 @@ public struct PowerState: Sendable, Equatable {
     public let onBattery: Bool
     public let batteryPercent: Int?
     public let lowPowerMode: Bool
+    public var isCharging: Bool = false
+    /// macOS estimate while on battery; nil while it is still calculating or on AC.
+    public var minutesRemaining: Int?
+    public var health: BatteryHealth?
 
-    public init(onBattery: Bool, batteryPercent: Int?, lowPowerMode: Bool) {
+    public init(onBattery: Bool, batteryPercent: Int?, lowPowerMode: Bool,
+                isCharging: Bool = false, minutesRemaining: Int? = nil, health: BatteryHealth? = nil) {
         self.onBattery = onBattery
         self.batteryPercent = batteryPercent
         self.lowPowerMode = lowPowerMode
+        self.isCharging = isCharging
+        self.minutesRemaining = minutesRemaining
+        self.health = health
     }
 
     public static let unknown = PowerState(onBattery: false, batteryPercent: nil, lowPowerMode: false)
+}
+
+public struct BatteryHealth: Sendable, Equatable {
+    public let cycleCount: Int
+    /// Current full-charge capacity relative to design capacity, 0…100.
+    public let capacityPercent: Int
+
+    public init(cycleCount: Int, capacityPercent: Int) {
+        self.cycleCount = cycleCount
+        self.capacityPercent = capacityPercent
+    }
 }
 
 public struct SystemSnapshot: Sendable {
@@ -82,7 +101,9 @@ public struct SystemSnapshot: Sendable {
     public let thermal: ThermalLevel
     public let disk: DiskStat?
     public let isOnline: Bool
+    public let network: NetworkRate?
     public let power: PowerState
+    public let sleepBlockers: [SleepBlocker]
     /// Sorted by CPU, highest first.
     public let processes: [ProcessStat]
 
@@ -96,7 +117,9 @@ public struct SystemSnapshot: Sendable {
         thermal: ThermalLevel,
         disk: DiskStat?,
         isOnline: Bool,
+        network: NetworkRate? = nil,
         power: PowerState,
+        sleepBlockers: [SleepBlocker] = [],
         processes: [ProcessStat]
     ) {
         self.date = date
@@ -108,7 +131,9 @@ public struct SystemSnapshot: Sendable {
         self.thermal = thermal
         self.disk = disk
         self.isOnline = isOnline
+        self.network = network
         self.power = power
+        self.sleepBlockers = sleepBlockers
         self.processes = processes
     }
 

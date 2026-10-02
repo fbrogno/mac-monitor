@@ -8,6 +8,18 @@ public enum Format {
         return decimal(Double(value) / 1_048_576, digits: 0) + " MB"
     }
 
+    /// Throughput, e.g. "1,2 MB/s" or "84 KB/s".
+    public static func rate(_ bytesPerSecond: Double) -> String {
+        let mb = bytesPerSecond / 1_048_576
+        if mb >= 1 { return decimal(mb, digits: mb >= 100 ? 0 : 1) + " MB/s" }
+        return decimal(bytesPerSecond / 1024, digits: 0) + " KB/s"
+    }
+
+    /// "3:05 h" for 185 minutes.
+    public static func hoursMinutes(_ minutes: Int) -> String {
+        "\(minutes / 60):" + String(format: "%02d", minutes % 60) + " h"
+    }
+
     public static func percent(_ value: Double) -> String {
         "\(Int(value.rounded())) %"
     }

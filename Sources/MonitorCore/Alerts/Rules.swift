@@ -130,6 +130,18 @@ public enum Rules {
                 sustain: set.networkOfflineSustain))
         }
 
+        if set.isEnabled(.sleepBlocker), s.power.onBattery {
+            for blocker in s.sleepBlockers
+            where !ignored.contains(blocker.name.lowercased()) && !ctx.mutedProcesses.contains(blocker.name) {
+                out.append(Condition(
+                    key: "sleep.\(blocker.pid)", rule: .sleepBlocker, severity: .warning,
+                    title: "\(blocker.name) verhindert den Ruhezustand",
+                    body: "Seit über \(Format.duration(set.sleepBlockerSustain)) im Akkubetrieb: „\(blocker.reason)“.",
+                    sustain: set.sleepBlockerSustain,
+                    process: ProcessRef(pid: blocker.pid, name: blocker.name)))
+            }
+        }
+
         return out
     }
 }

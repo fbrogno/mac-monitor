@@ -209,3 +209,63 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
         #expect(SamplingPolicy.interval(popoverOpen: false, power: saver) == 30)
     }
 }
+
+@Suite struct ImprovementTests {
+    private func battery(_ onBattery: Bool) -> PowerState {
+        PowerState(onBattery: onBattery, batteryPercent: 60, lowPowerMode: false)
+    }
+
+    private func snapshot(onBattery: Bool, blockers: [SleepBlocker]) -> SystemSnapshot {
+        SystemSnapshot(date: .now, cpuPercent: 5, memoryUsedBytes: gb, memoryTotalBytes: 24 * gb,
+                       memoryPressure: .normal, swapUsedBytes: 0, thermal: .nominal, disk: nil,
+                       isOnline: true, power: battery(onBattery), sleepBlockers: blockers, processes: [])
+    }
+
+    @Test func sleepBlockerOnlyOnBattery() {
+        let blocker = SleepBlocker(pid: 9, name: "caffeinate", reason: "caffeinate command-line tool")
+        let settings = MonitorSettings()
+        #expect(Rules.evaluate(snapshot(onBattery: false, blockers: [blocker]), .init(settings: settings)).isEmpty)
+        let conds = Rules.evaluate(snapshot(onBattery: true, blockers: [blocker]), .init(settings: settings))
+        #expect(conds.map(\.key) == ["sleep.9"])
+        #expect(conds.first?.sustain == 1800)
+    }
+
+    @Test func networkRateFromCounters() {
+        let a = NetworkCounters(received: 1_000, sent: 500, time: 10)
+        let b = NetworkCounters(received: 21_000, sent: 1_500, time: 20)
+        #expect(NetworkCounters.rate(from: a, to: b) == NetworkRate(downBytesPerSecond: 2_000, upBytesPerSecond: 100))
+        #expect(NetworkCounters.rate(from: b, to: a) == nil)
+    }
+
+    @Test func overlayModeDecision() {
+        #expect(!OverlayMode.off.shouldShow(pointerOnMainScreen: false))
+        #expect(OverlayMode.otherScreens.shouldShow(pointerOnMainScreen: false))
+        #expect(!OverlayMode.otherScreens.shouldShow(pointerOnMainScreen: true))
+        #expect(OverlayMode.always.shouldShow(pointerOnMainScreen: true))
+    }
+
+    @Test func newRulesAreEnabledForOldSettings() throws {
+        // Saved by 1.0: no knownRules, network deliberately disabled.
+        let old = Data(#"{"enabledRules": ["runawayProcess", "memoryHog"]}"#.utf8)
+        let decoded = try JSONDecoder().decode(MonitorSettings.self, from: old)
+        #expect(decoded.isEnabled(.sleepBlocker))
+        #expect(!decoded.isEnabled(.network))
+        // Round trip keeps a deliberately disabled new rule disabled.
+        var settings = MonitorSettings()
+        settings.enabledRules.remove(.sleepBlocker)
+        let again = try JSONDecoder().decode(MonitorSettings.self, from: JSONEncoder().encode(settings))
+        #expect(!again.isEnabled(.sleepBlocker))
+    }
+
+    @Test func liveNetworkAndPowerSamplers() {
+        #expect(NetworkSampler.readCounters() != nil)
+        _ = SleepAssertionSampler.sample()
+        _ = PowerSampler.sample(health: PowerSampler.batteryHealth())
+    }
+
+    @Test func rateAndRuntimeFormatting() {
+        #expect(Format.rate(1_887_437) == "1,8 MB/s")
+        #expect(Format.rate(96_000) == "94 KB/s")
+        #expect(Format.hoursMinutes(185) == "3:05 h")
+    }
+}
