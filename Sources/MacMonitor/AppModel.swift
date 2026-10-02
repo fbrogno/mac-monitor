@@ -2,6 +2,7 @@ import AppKit
 import MonitorCore
 import Network
 import Observation
+import OSLog
 
 /// Owns sampling, alert evaluation and the state the UI shows.
 ///
@@ -15,12 +16,15 @@ final class AppModel {
     private(set) var memoryHistory = RingBuffer<Double>(capacity: 90)
     private(set) var events: [AlertEvent] = []
     private(set) var reported: [Condition] = []
+    /// Menu bar text, only changed when the shown value moves noticeably (see `updateMenuBarText`).
+    private(set) var menuBarText = ""
 
     var settings: MonitorSettings {
         didSet {
             guard settings != oldValue else { return }
             engine.reminderInterval = settings.reminderInterval
             SettingsStore.save(settings)
+            if settings.menuBarStyle != oldValue.menuBarStyle { updateMenuBarText(force: true) }
         }
     }
 
@@ -44,6 +48,9 @@ final class AppModel {
     /// Written on `queue` by the path monitor, read on `queue` by the sampler.
     @ObservationIgnored nonisolated(unsafe) private var isOnline = true
     @ObservationIgnored private var observers: [NSObjectProtocol] = []
+    @ObservationIgnored private var shownCPU = -100.0
+    @ObservationIgnored private var shownMemory = -100.0
+    @ObservationIgnored private let log = Logger(subsystem: "com.fbrogno.macmonitor", category: "sampling")
 
     init(settings: MonitorSettings = SettingsStore.load()) {
         self.settings = settings
@@ -109,6 +116,7 @@ final class AppModel {
         let interval = SamplingPolicy.interval(popoverOpen: isPopoverOpen, power: snapshot?.power ?? .unknown)
         guard interval != currentInterval else { return }
         currentInterval = interval
+        log.info("Messintervall \(interval, format: .fixed(precision: 0)) s")
 
         timer?.cancel()
         let timer = DispatchSource.makeTimerSource(queue: queue)
@@ -136,7 +144,9 @@ final class AppModel {
             mutedProcesses: Set(muted.keys))
         let conditions = Rules.evaluate(snapshot, context)
         let newEvents = engine.process(conditions, now: now)
-        reported = engine.reported
+        let nowReported = engine.reported
+        if nowReported != reported { reported = nowReported }
+        updateMenuBarText(force: false)
 
         for event in newEvents {
             notifier.deliver(event)
@@ -145,6 +155,24 @@ final class AppModel {
             events = Array((newEvents.reversed() + events).prefix(30))
         }
         reschedule()
+    }
+
+    /// Redraws the menu bar only when CPU or RAM moved by at least 5 points.
+    private func updateMenuBarText(force: Bool) {
+        guard let s = snapshot else { return }
+        let style = settings.menuBarStyle
+        guard style != .icon else {
+            if !menuBarText.isEmpty { menuBarText = "" }
+            return
+        }
+        let cpu = s.cpuPercent
+        let memory = s.memoryFraction * 100
+        let moved = abs(cpu - shownCPU) >= 5 || (style == .iconCPUAndMemory && abs(memory - shownMemory) >= 5)
+        guard force || moved else { return }
+        shownCPU = cpu
+        shownMemory = memory
+        let cpuText = "\(Int(cpu.rounded()))%"
+        menuBarText = style == .iconCPUAndMemory ? "\(cpuText) · \(Int(memory.rounded()))%" : cpuText
     }
 
     // MARK: - Actions

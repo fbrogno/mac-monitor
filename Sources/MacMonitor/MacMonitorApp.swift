@@ -63,19 +63,11 @@ struct MenuBarLabel: View {
     let model: AppModel
 
     var body: some View {
-        let style = model.settings.menuBarStyle
-        let alerting = !model.reported.isEmpty
         HStack(spacing: 4) {
-            Image(systemName: alerting ? "exclamationmark.triangle.fill" : "waveform.path.ecg")
-            if let s = model.snapshot, style != .icon {
-                Text(label(for: s, style: style)).monospacedDigit()
+            Image(systemName: model.reported.isEmpty ? "waveform.path.ecg" : "exclamationmark.triangle.fill")
+            if !model.menuBarText.isEmpty {
+                Text(model.menuBarText).monospacedDigit()
             }
         }
-    }
-
-    private func label(for s: SystemSnapshot, style: MenuBarStyle) -> String {
-        let cpu = "\(Int(s.cpuPercent.rounded()))%"
-        guard style == .iconCPUAndMemory else { return cpu }
-        return "\(cpu) · \(Int((s.memoryFraction * 100).rounded()))%"
     }
 }

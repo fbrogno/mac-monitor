@@ -46,7 +46,9 @@ public struct MonitorSettings: Codable, Equatable, Sendable {
     public var networkOfflineSustain: TimeInterval = 30
     public var reminderInterval: TimeInterval = 1800
     public var ignoredProcesses: [String] = ["kernel_task", "mds_stores", "mdworker_shared", "photoanalysisd"]
-    public var menuBarStyle: MenuBarStyle = .iconAndCPU
+    /// Icon only by default: every text change makes macOS redraw the status item on each
+    /// display (~40 ms), which would dominate the app's energy use.
+    public var menuBarStyle: MenuBarStyle = .icon
 
     public init() {}
 
