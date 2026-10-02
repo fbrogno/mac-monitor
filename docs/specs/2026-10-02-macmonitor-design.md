@@ -45,6 +45,7 @@ Footprint je Prozess), `ProcessInfo.thermalState`, `NWPathMonitor`, IOKit Power 
 | Thermik | Zustand „ernst“ oder „kritisch“ |
 | Festplatte | < 10 % oder < 15 GB frei |
 | Netzwerk | offline ≥ 30 s (plus Meldung bei Wiederkehr) |
+| Ruhezustand blockiert | Prozess hält im Akkubetrieb > 30 min eine Schlaf-Assertion |
 
 Engine-Semantik: Eine Condition muss für ihre `sustain`-Dauer ununterbrochen aktiv sein, bevor sie
 meldet. Danach meldet sie erst wieder nach dem Abklingen oder als Erinnerung nach 30 min.

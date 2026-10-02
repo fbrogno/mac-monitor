@@ -10,7 +10,7 @@
 </p>
 
 **MacMonitor** ist eine native Menüleisten-App für macOS. Sie misst CPU, Speicher, Swap, Temperatur,
-SSD und Netz direkt über die Kernel-Schnittstellen und schickt eine **echte macOS-Mitteilung**, sobald
+SSD, Netzwerk-Durchsatz, Akku und Schlaf-Blockierer direkt über die Kernel-Schnittstellen und schickt eine **echte macOS-Mitteilung**, sobald
 etwas auffällt: ein Prozess, der seit Minuten hängt, ein Speicherfresser, Speicherdruck oder Überhitzung.
 Solange alles normal ist, bleibt sie still und braucht kaum Strom.
 
@@ -32,13 +32,23 @@ Solange alles normal ist, bleibt sie still und braucht kaum Strom.
 | Überhitzung | thermischer Zustand „ernst“ oder „kritisch“ | größter Verbraucher |
 | Festplatte voll | < 10 % oder < 15 GB frei | |
 | Internet weg | 30 s offline, Meldung auch bei Wiederkehr | |
+| Ruhezustand blockiert | ein Prozess verhindert im Akkubetrieb > 30 min den Schlaf | Beenden …, 1 h stumm |
 
 Alle Schwellen, Dauern und Regeln lassen sich in den Einstellungen ändern. Prozesse kannst du dauerhaft
 ignorieren oder direkt aus der Mitteilung für eine Stunde stummschalten.
 
+### Hinweis auf dem Bildschirm, an dem du arbeitest
+
+macOS zeigt Mitteilungs-Banner nur auf dem Hauptbildschirm. Wer an externen Monitoren arbeitet, sieht sie
+nicht. MacMonitor blendet deshalb zusätzlich ein eigenes Hinweisfenster oben rechts auf dem Bildschirm
+ein, auf dem gerade der Mauszeiger ist. Es nimmt keinen Fokus, verschwindet nach 12 s (kritisch 30 s)
+und bietet dieselben Aktionen. Einstellbar: aus, nur an anderen Bildschirmen (Standard), immer.
+
 <p align="center">
-  <img src="docs/images/notification.png" alt="Beispiel einer Mitteilung" width="440">
+  <img src="docs/images/overlay.png" alt="Hinweisfenster von MacMonitor" width="420">
 </p>
+
+Testen: `open macmonitor://test` oder „Testmitteilung senden“ in den Einstellungen.
 
 **Damit es nicht nervt:**
 
@@ -57,7 +67,8 @@ MacMonitor startet **keinen einzigen Hilfsprozess**. Gemessen auf einem MacBook 
 geschlossen: **0,12 s CPU-Zeit in 162 s (≈ 0,07 % CPU)** bei konstant ~79 MB Speicher.
 
 - **Direkte Systemaufrufe:** `host_statistics` (CPU), `host_statistics64` (VM), `sysctl`
-  (Swap, Speicherdruck), `proc_pid_rusage` (CPU-Zeit und Footprint je Prozess), IOKit (Akku).
+  (Swap, Speicherdruck, 64-Bit-Netzwerkzähler), `proc_pid_rusage` (CPU-Zeit und Footprint je Prozess),
+  IOKit (Akku, Ladezyklen, Power-Assertions).
 - **Adaptives Intervall:** 2 s bei offenem Popover, 10 s am Netzteil, 20 s im Akkubetrieb, 30 s im
   Stromsparmodus.
 - **Gebündelte Weckungen:** Ein `DispatchSourceTimer` mit 25 % Toleranz lässt macOS die Messungen mit
@@ -67,7 +78,8 @@ geschlossen: **0,12 s CPU-Zeit in 162 s (≈ 0,07 % CPU)** bei konstant ~79 MB S
 - **Ruhige Menüleiste:** Jede Textänderung in der Menüleiste lässt macOS das Symbol auf jedem Bildschirm
   neu rendern (~40 ms). Standard ist deshalb „Nur Symbol“, das nur bei Warnungen wechselt. Wer CPU/RAM
   als Zahl sehen will, bekommt sie gedrosselt: neu gezeichnet wird erst ab 5 Punkten Änderung.
-- **Caches:** Prozessnamen werden je PID nur einmal aufgelöst, der SSD-Platz nur alle 5 min gelesen.
+- **Caches:** Prozessnamen werden je PID nur einmal aufgelöst, SSD-Platz und Akkuzustand nur alle
+  5 min gelesen, Schlaf-Blockierer jede Minute.
 
 ## Installation
 
