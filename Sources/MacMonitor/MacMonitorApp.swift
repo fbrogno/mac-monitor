@@ -57,6 +57,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         LoginItem.enableOnFirstInstalledLaunch()
         model.start()
     }
+
+    /// `open macmonitor://test` sends a test notification, handy from scripts and the terminal.
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls where url.scheme == "macmonitor" {
+            switch url.host {
+            case "test": model.notifier.sendTest()
+            default: break
+            }
+        }
+    }
 }
 
 struct MenuBarLabel: View {
