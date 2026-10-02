@@ -12,6 +12,9 @@ struct PopoverView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
+            if let feedback = model.feedback {
+                FeedbackBanner(feedback: feedback) { model.feedback = nil }
+            }
             if let confirmation = model.pendingConfirmation, model.confirmationHost == .popover {
                 ConfirmationStrip(confirmation: confirmation) { model.pendingConfirmation = nil }
             }
@@ -108,8 +111,9 @@ struct PopoverView: View {
                          tint: (s.power.batteryPercent ?? 100) <= 15 && s.power.onBattery ? Palette.critical : .secondary)
                         .help(s.power.health.map { "Akkuzustand \($0.capacityPercent) % der ursprünglichen Kapazität, \($0.cycleCount) Ladezyklen" } ?? "")
                 }
-                stat("Ruhezustand", sleepValue(s), symbol: s.sleepBlockers.isEmpty ? "moon.zzz" : "cup.and.saucer",
-                     tint: s.sleepBlockers.isEmpty ? .secondary : Palette.warn)
+                let blockers = visibleBlockers(s)
+                stat("Ruhezustand", sleepValue(blockers), symbol: blockers.isEmpty ? "moon.zzz" : "cup.and.saucer",
+                     tint: blockers.isEmpty ? .secondary : Palette.warn)
             }
         }
     }
@@ -266,9 +270,14 @@ struct PopoverView: View {
         return percent > 60 ? "battery.75percent" : percent > 25 ? "battery.50percent" : "battery.25percent"
     }
 
-    private func sleepValue(_ s: SystemSnapshot) -> String {
-        guard let first = s.sleepBlockers.first else { return "möglich" }
-        let more = s.sleepBlockers.count > 1 ? " +\(s.sleepBlockers.count - 1)" : ""
+    private func visibleBlockers(_ s: SystemSnapshot) -> [SleepBlocker] {
+        let ignored = Set(model.settings.ignoredProcesses.map { $0.lowercased() })
+        return s.sleepBlockers.filter { !ignored.contains($0.name.lowercased()) }
+    }
+
+    private func sleepValue(_ blockers: [SleepBlocker]) -> String {
+        guard let first = blockers.first else { return "möglich" }
+        let more = blockers.count > 1 ? " +\(blockers.count - 1)" : ""
         return "blockiert: \(first.name)\(more)"
     }
 }

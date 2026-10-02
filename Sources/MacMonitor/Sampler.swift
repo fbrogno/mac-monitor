@@ -13,6 +13,9 @@ final class Sampler: @unchecked Sendable {
     private var battery = Cached<BatteryHealth?>(every: 300) { PowerSampler.batteryHealth() }
     private var blockers = Cached<[SleepBlocker]>(every: 60) { SleepAssertionSampler.sample() }
 
+    /// Forces a fresh read of sleep blockers on the next sample, e.g. right after ending one.
+    func invalidateSleepBlockers() { blockers.invalidate() }
+
     func reset() {
         system.reset()
         processes.reset()
@@ -49,6 +52,8 @@ private struct Cached<Value> {
         self.interval = interval
         self.load = load
     }
+
+    mutating func invalidate() { loadedAt = .distantPast }
 
     mutating func value(at now: Date) -> Value {
         if let stored, now.timeIntervalSince(loadedAt) < interval { return stored }

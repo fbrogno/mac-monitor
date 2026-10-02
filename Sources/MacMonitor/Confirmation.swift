@@ -68,3 +68,39 @@ extension View {
         }
     }
 }
+
+/// Short result message after an action, e.g. „caffeinate beendet.“
+struct Feedback: Identifiable {
+    let id = UUID()
+    let text: String
+    var isError = false
+    var actionTitle: String?
+    var action: (() -> Void)?
+}
+
+struct FeedbackBanner: View {
+    let feedback: Feedback
+    let onDismiss: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: feedback.isError ? "exclamationmark.circle.fill" : "checkmark.circle.fill")
+                .foregroundStyle(feedback.isError ? Palette.warn : Palette.ok)
+            Text(feedback.text).font(.system(size: 11)).fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 4)
+            if let title = feedback.actionTitle, let action = feedback.action {
+                ActionButton(title: title, tint: Palette.critical, compact: true) {
+                    action()
+                    onDismiss()
+                }
+            }
+            Button(action: onDismiss) {
+                Image(systemName: "xmark").font(.system(size: 9, weight: .bold))
+            }
+            .buttonStyle(.plain).foregroundStyle(.secondary)
+        }
+        .padding(10)
+        .background((feedback.isError ? Palette.warn : Palette.ok).opacity(0.12),
+                    in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+}

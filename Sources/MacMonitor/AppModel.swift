@@ -17,6 +17,16 @@ final class AppModel {
     private(set) var events: [AlertEvent] = []
     private(set) var reported: [Condition] = []
     var pendingConfirmation: Confirmation?
+    var feedback: Feedback? {
+        didSet {
+            guard let current = feedback else { return }
+            let seconds: UInt64 = current.action == nil ? 6 : 15
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(nanoseconds: seconds * 1_000_000_000)
+                if self?.feedback?.id == current.id { self?.feedback = nil }
+            }
+        }
+    }
     var confirmationHost: ConfirmationHost = .overview
     /// Section the overview window should scroll to when it opens.
     var overviewFocus: OverviewSection?
@@ -54,6 +64,8 @@ final class AppModel {
     @ObservationIgnored let cleanup = CleanupModel()
     /// Set by the SwiftUI scene so non-view code can open windows.
     @ObservationIgnored var openWindowAction: ((String) -> Void)?
+    /// Sleep blockers the user just ended, to notice when their launcher starts them again.
+    @ObservationIgnored private var endedBlockers: [String: (blocker: SleepBlocker, at: Date)] = [:]
     @ObservationIgnored private var swapHistory: [(date: Date, bytes: UInt64)] = []
     @ObservationIgnored private let overlay = AlertOverlay()
     @ObservationIgnored private var engine: AlertEngine
@@ -156,6 +168,7 @@ final class AppModel {
 
     private func ingest(_ snapshot: SystemSnapshot) {
         self.snapshot = snapshot
+        if !endedBlockers.isEmpty { checkRespawnedBlockers(in: snapshot) }
         cpuHistory.append(snapshot.cpuPercent)
         memoryHistory.append(snapshot.memoryFraction * 100)
 
@@ -261,9 +274,59 @@ final class AppModel {
         pendingConfirmation = confirmation
     }
 
+    /// Sends a signal, updates the UI at once and reports what happened.
     func signal(_ process: ProcessRef, _ signal: Int32) {
-        kill(process.pid, signal)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in self?.requestSample() }
+        let blocker = snapshot?.sleepBlockers.first { $0.pid == process.pid }
+        guard kill(process.pid, signal) == 0 else {
+            let error = errno
+            if error == ESRCH {
+                forget(process.pid)
+                feedback = Feedback(text: "„\(process.name)“ läuft schon nicht mehr.")
+            } else {
+                feedback = Feedback(
+                    text: error == EPERM
+                        ? "„\(process.name)“ gehört dem System oder einem anderen Benutzer und kann nicht beendet werden."
+                        : "„\(process.name)“ konnte nicht beendet werden (\(String(cString: strerror(error)))).",
+                    isError: true)
+            }
+            return
+        }
+        if let blocker { endedBlockers[blocker.identity] = (blocker, Date()) }
+        forget(process.pid)
+
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            guard let self else { return }
+            if signal == SIGTERM, kill(process.pid, 0) == 0 {
+                self.feedback = Feedback(
+                    text: "„\(process.name)“ reagiert nicht auf Beenden.", isError: true,
+                    actionTitle: "Sofort beenden", action: { [weak self] in self?.signal(process, SIGKILL) })
+            } else {
+                self.feedback = Feedback(text: "„\(process.name)“ beendet.")
+            }
+        }
+    }
+
+    /// Drops a process from the current snapshot and samples again right away.
+    private func forget(_ pid: Int32) {
+        snapshot = snapshot?.removing(pid: pid)
+        queue.async { [sampler] in sampler.invalidateSleepBlockers() }
+        requestSample()
+    }
+
+    /// Tells the user when a sleep blocker they ended was started again by its launcher.
+    private func checkRespawnedBlockers(in snapshot: SystemSnapshot) {
+        let now = snapshot.date
+        endedBlockers = endedBlockers.filter { now.timeIntervalSince($0.value.at) < 120 }
+        for blocker in snapshot.sleepBlockers {
+            guard let ended = endedBlockers[blocker.identity], ended.blocker.pid != blocker.pid else { continue }
+            endedBlockers[blocker.identity] = nil
+            let launcher = blocker.parentName ?? "einem anderen Programm"
+            feedback = Feedback(
+                text: "„\(blocker.name)“ wurde von \(launcher) sofort neu gestartet. Beenden hilft erst, wenn \(launcher) fertig ist. Du kannst „\(blocker.name)“ auch ignorieren.",
+                isError: true, actionTitle: "Ignorieren",
+                action: { [weak self] in self?.perform(.ignoreForever(blocker.name)) })
+        }
     }
 
     func openActivityMonitor() {

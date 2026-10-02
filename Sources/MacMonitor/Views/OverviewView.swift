@@ -37,6 +37,9 @@ struct OverviewContent: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
             header
+            if let feedback = model.feedback {
+                FeedbackBanner(feedback: feedback) { model.feedback = nil }
+            }
             if let s = model.snapshot {
                 quickStats(s)
                 issuesSection(s).id(OverviewSection.issues)
@@ -170,22 +173,26 @@ struct OverviewContent: View {
     // MARK: Sleep
 
     private func sleepSection(_ s: SystemSnapshot) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let ignored = Set(model.settings.ignoredProcesses.map { $0.lowercased() })
+        let blockers = s.sleepBlockers.filter { !ignored.contains($0.name.lowercased()) }
+        return VStack(alignment: .leading, spacing: 10) {
             sectionTitle("Ruhezustand", symbol: "moon.zzz")
-            if s.sleepBlockers.isEmpty {
+            if blockers.isEmpty {
                 Text("Nichts hält den Mac wach.").font(.system(size: 12)).foregroundStyle(.secondary)
             } else {
                 Text(s.power.onBattery
                      ? "Diese Prozesse halten den Mac wach und kosten Akku:"
                      : "Diese Prozesse halten den Mac wach (am Netzteil unkritisch):")
                     .font(.system(size: 12)).foregroundStyle(.secondary)
-                ForEach(s.sleepBlockers, id: \.self) { blocker in
+                ForEach(blockers, id: \.self) { blocker in
                     HStack {
                         VStack(alignment: .leading, spacing: 1) {
                             Text(blocker.name).font(.system(size: 12, weight: .medium))
-                            Text(blocker.reason).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
+                            Text(blocker.parentName.map { "gestartet von \($0) · \(blocker.reason)" } ?? blocker.reason)
+                                .font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
                         }
                         Spacer()
+                        ActionButton(title: "Ignorieren") { model.perform(.ignoreForever(blocker.name)) }
                         ActionButton(title: "Beenden", tint: Palette.critical) {
                             model.perform(.quit(ProcessRef(pid: blocker.pid, name: blocker.name)))
                         }
