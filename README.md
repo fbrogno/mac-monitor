@@ -20,6 +20,22 @@ Solange alles normal ist, bleibt sie still und braucht kaum Strom.
   <img src="docs/images/popover-light.png" alt="Popover mit Auffälligkeiten (hell)" width="380">
 </p>
 
+## Übersicht: verstehen und direkt lösen
+
+Ein Klick auf eine Mitteilung, auf „Lösen“ im Popover oder im Hinweisfenster öffnet die **Übersicht**.
+Jede Auffälligkeit steht dort mit Erklärung in Klartext, konkreten Schritten und Knöpfen, die sie
+beheben: App neu starten, beenden, stummschalten, dauerhaft ignorieren, WLAN neu starten. Bei
+Speicher- oder CPU-Problemen listet sie die wahrscheinlichen Verursacher gleich mit.
+
+**SSD aufräumen** misst auf Knopfdruck Caches, die sich von selbst neu aufbauen (App-Caches, Xcode
+DerivedData, npm, uv, Gradle, veraltete Simulatoren, ungenutzte Docker-Images), und leert sie nach
+Rückfrage. Downloads werden nur geöffnet, nie gelöscht. Bewusst ausgenommen sind Daten, die keine
+Wegwerf-Caches sind, etwa Playwright-Browser und Suchindizes in `~/.cache`.
+
+<p align="center">
+  <img src="docs/images/overview.png" alt="Übersicht mit Lösungen und SSD-Aufräumen" width="640">
+</p>
+
 ## Was die App meldet
 
 | Regel | Standard-Auslöser | In der Mitteilung |
@@ -28,7 +44,7 @@ Solange alles normal ist, bleibt sie still und braucht kaum Strom.
 | Speicherfresser | ein Prozess belegt ≥ 25 % des RAM über 1 min | Beenden …, 1 h stumm |
 | CPU dauerhaft hoch | Gesamt-CPU ≥ 90 % über 2 min | die größten Verbraucher |
 | Speicherdruck | Warnstufe über 1 min · kritisch sofort | belegter RAM und Swap |
-| Swap | ≥ 8 GB ausgelagert | |
+| Swap | ≥ 8 GB, solange er wächst (≥ 1 GB in 10 min) oder Speicher knapp ist | Apps mit viel Speicher |
 | Überhitzung | thermischer Zustand „ernst“ oder „kritisch“ | größter Verbraucher |
 | Festplatte voll | < 10 % oder < 15 GB frei | |
 | Internet weg | 30 s offline, Meldung auch bei Wiederkehr | |
@@ -48,7 +64,8 @@ und bietet dieselben Aktionen. Einstellbar: aus, nur an anderen Bildschirmen (St
   <img src="docs/images/overlay.png" alt="Hinweisfenster von MacMonitor" width="420">
 </p>
 
-Testen: `open macmonitor://test` oder „Testmitteilung senden“ in den Einstellungen.
+Testen: `open macmonitor://test` oder „Testmitteilung senden“ in den Einstellungen. Die Übersicht öffnet
+`open macmonitor://overview`, direkt beim Aufräumen `open macmonitor://cleanup`.
 
 **Damit es nicht nervt:**
 

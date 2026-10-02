@@ -41,7 +41,7 @@ Footprint je Prozess), `ProcessInfo.thermalState`, `NWPathMonitor`, IOKit Power 
 | Speicherfresser | Footprint ≥ 25 % des RAM über 1 min |
 | CPU dauerhaft hoch | gesamt ≥ 90 % über 2 min |
 | Speicherdruck | Warnstufe über 1 min, kritisch sofort |
-| Swap | ≥ 8 GB belegt |
+| Swap | ≥ 8 GB und wachsend (≥ 1 GB in 10 min) oder bei Speicherdruck |
 | Thermik | Zustand „ernst“ oder „kritisch“ |
 | Festplatte | < 10 % oder < 15 GB frei |
 | Netzwerk | offline ≥ 30 s (plus Meldung bei Wiederkehr) |
