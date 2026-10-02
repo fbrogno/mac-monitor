@@ -23,6 +23,9 @@ struct SettingsView: View {
                 Picker("Menüleiste", selection: $model.settings.menuBarStyle) {
                     ForEach(MenuBarStyle.allCases, id: \.self) { Text($0.title).tag($0) }
                 }
+                Picker("Zusätzlicher Hinweis am aktiven Bildschirm", selection: $model.settings.overlayMode) {
+                    ForEach(OverlayMode.allCases, id: \.self) { Text($0.title).tag($0) }
+                }
                 Picker("Erinnern, wenn es anhält", selection: $model.settings.reminderInterval) {
                     Text("alle 15 min").tag(TimeInterval(900))
                     Text("alle 30 min").tag(TimeInterval(1800))
@@ -30,7 +33,7 @@ struct SettingsView: View {
                     Text("nie").tag(TimeInterval(365 * 86400))
                 }
                 HStack {
-                    Button("Testmitteilung senden") { model.notifier.sendTest() }
+                    Button("Testmitteilung senden") { model.sendTest() }
                     Spacer()
                     Button("Mitteilungs-Einstellungen …") {
                         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension")!)
@@ -77,6 +80,12 @@ struct SettingsView: View {
                     }
                 }
                 ruleToggle(.network)
+                ruleToggle(.sleepBlocker)
+                if model.settings.isEnabled(.sleepBlocker) {
+                    Picker("Im Akkubetrieb länger als", selection: $model.settings.sleepBlockerSustain) {
+                        ForEach([TimeInterval(600), 1800, 3600], id: \.self) { Text(Format.duration($0)).tag($0) }
+                    }
+                }
             }
 
             Section {

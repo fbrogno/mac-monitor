@@ -6,21 +6,21 @@ import MonitorCore
 final class Sampler: @unchecked Sendable {
     private let system = SystemSampler()
     private let processes = ProcessSampler()
-    private var disk: DiskStat?
-    private var diskSampledAt: Date = .distantPast
-    private let diskInterval: TimeInterval = 300
+    private let network = NetworkSampler()
+
+    /// Slow-changing values are refreshed less often than the main tick.
+    private var disk = Cached<DiskStat?>(every: 300) { DiskSampler.sample() }
+    private var battery = Cached<BatteryHealth?>(every: 300) { PowerSampler.batteryHealth() }
+    private var blockers = Cached<[SleepBlocker]>(every: 60) { SleepAssertionSampler.sample() }
 
     func reset() {
         system.reset()
         processes.reset()
+        network.reset()
     }
 
     func collect(isOnline: Bool) -> SystemSnapshot {
         let now = Date()
-        if now.timeIntervalSince(diskSampledAt) >= diskInterval {
-            disk = DiskSampler.sample()
-            diskSampledAt = now
-        }
         return SystemSnapshot(
             date: now,
             cpuPercent: system.cpuPercent(),
@@ -29,10 +29,32 @@ final class Sampler: @unchecked Sendable {
             memoryPressure: system.memoryPressure(),
             swapUsedBytes: system.swapUsedBytes(),
             thermal: ThermalLevel(ProcessInfo.processInfo.thermalState),
-            disk: disk,
+            disk: disk.value(at: now),
             isOnline: isOnline,
-            power: PowerSampler.sample(),
+            network: network.sample(),
+            power: PowerSampler.sample(health: battery.value(at: now)),
+            sleepBlockers: blockers.value(at: now),
             processes: processes.sample()
         )
+    }
+}
+
+private struct Cached<Value> {
+    let interval: TimeInterval
+    let load: () -> Value
+    private var stored: Value?
+    private var loadedAt: Date = .distantPast
+
+    init(every interval: TimeInterval, load: @escaping () -> Value) {
+        self.interval = interval
+        self.load = load
+    }
+
+    mutating func value(at now: Date) -> Value {
+        if let stored, now.timeIntervalSince(loadedAt) < interval { return stored }
+        let fresh = load()
+        stored = fresh
+        loadedAt = now
+        return fresh
     }
 }

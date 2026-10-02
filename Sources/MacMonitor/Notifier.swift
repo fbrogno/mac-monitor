@@ -78,12 +78,14 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         center.add(UNNotificationRequest(identifier: id, content: content, trigger: nil))
     }
 
-    func sendTest() {
-        deliver(AlertEvent(date: Date(), kind: .fired, condition: Condition(
+    /// A harmless sample alert. The time in the body makes repeated tests distinguishable.
+    static func testEvent(now: Date = Date()) -> AlertEvent {
+        let time = now.formatted(date: .omitted, time: .standard)
+        return AlertEvent(date: now, kind: .fired, condition: Condition(
             key: "test", rule: .cpuHigh, severity: .info,
             title: "MacMonitor ist bereit",
-            body: "So sehen Warnungen aus. Du wirst nur gestört, wenn etwas wirklich auffällt.",
-            sustain: 0)))
+            body: "Testmitteilung von \(time). Du wirst nur gestört, wenn etwas wirklich auffällt.",
+            sustain: 0))
     }
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {

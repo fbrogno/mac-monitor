@@ -37,6 +37,7 @@ final class AppModel {
     }
 
     @ObservationIgnored let notifier = Notifier()
+    @ObservationIgnored private let overlay = AlertOverlay()
     @ObservationIgnored private var engine: AlertEngine
     @ObservationIgnored private var muted: [String: Date] = [:]
     @ObservationIgnored private let queue = DispatchQueue(label: "macmonitor.sampling", qos: .utility)
@@ -62,6 +63,8 @@ final class AppModel {
     func start() {
         notifier.onKill = { [weak self] ref in self?.confirmKill(ref) }
         notifier.onMute = { [weak self] name in self?.mute(name) }
+        overlay.onKill = { [weak self] ref in self?.confirmKill(ref) }
+        overlay.onMute = { [weak self] name in self?.mute(name) }
         notifier.requestAuthorization()
 
         pathMonitor.pathUpdateHandler = { [weak self] path in
@@ -116,7 +119,7 @@ final class AppModel {
         let interval = SamplingPolicy.interval(popoverOpen: isPopoverOpen, power: snapshot?.power ?? .unknown)
         guard interval != currentInterval else { return }
         currentInterval = interval
-        log.info("Messintervall \(interval, format: .fixed(precision: 0)) s")
+        log.notice("Messintervall \(interval, format: .fixed(precision: 0)) s")
 
         timer?.cancel()
         let timer = DispatchSource.makeTimerSource(queue: queue)
@@ -151,6 +154,9 @@ final class AppModel {
         for event in newEvents {
             notifier.deliver(event)
         }
+        if let shown = newEvents.last(where: { $0.kind != .resolved }) {
+            overlay.show(shown, mode: settings.overlayMode)
+        }
         if !newEvents.isEmpty {
             events = Array((newEvents.reversed() + events).prefix(30))
         }
@@ -176,6 +182,12 @@ final class AppModel {
     }
 
     // MARK: - Actions
+
+    func sendTest() {
+        let event = Notifier.testEvent()
+        notifier.deliver(event)
+        overlay.show(event, mode: settings.overlayMode)
+    }
 
     func mute(_ processName: String, for duration: TimeInterval = 3600) {
         muted[processName] = Date().addingTimeInterval(duration)
@@ -226,7 +238,10 @@ extension AppModel {
             memoryTotalBytes: 24 * gb, memoryPressure: alerts ? .warning : .normal,
             swapUsedBytes: alerts ? 2_600_000_000 : 300_000_000, thermal: .nominal,
             disk: DiskStat(availableBytes: 312 * gb, totalBytes: 994 * gb), isOnline: true,
-            power: PowerState(onBattery: true, batteryPercent: 82, lowPowerMode: false),
+            network: NetworkRate(downBytesPerSecond: 1_850_000, upBytesPerSecond: 96_000),
+            power: PowerState(onBattery: true, batteryPercent: 82, lowPowerMode: false, minutesRemaining: 312,
+                              health: BatteryHealth(cycleCount: 143, capacityPercent: 96)),
+            sleepBlockers: alerts ? [SleepBlocker(pid: 4182, name: "node", reason: "caffeinate command-line tool")] : [],
             processes: processes)
         model.snapshot = snapshot
         for i in 0..<90 {

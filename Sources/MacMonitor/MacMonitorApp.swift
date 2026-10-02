@@ -62,7 +62,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func application(_ application: NSApplication, open urls: [URL]) {
         for url in urls where url.scheme == "macmonitor" {
             switch url.host {
-            case "test": model.notifier.sendTest()
+            case "test": model.sendTest()
             default: break
             }
         }

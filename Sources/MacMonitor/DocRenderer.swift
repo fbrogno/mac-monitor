@@ -1,4 +1,5 @@
 import AppKit
+import MonitorCore
 import ImageIO
 import SwiftUI
 import UniformTypeIdentifiers
@@ -20,7 +21,7 @@ enum DocRenderer {
         }
         write(Framed(scheme: .dark) { PopoverView(model: .demo(alerts: false)) }, scale: 2,
               to: url.appendingPathComponent("popover-calm.png"))
-        write(NotificationPreview(), scale: 2, to: url.appendingPathComponent("notification.png"))
+        write(OverlayPreview(), scale: 2, to: url.appendingPathComponent("overlay.png"))
         print("Bilder geschrieben nach \(url.path)")
     }
 
@@ -97,38 +98,19 @@ private struct Banner: View {
     }
 }
 
-/// Illustration of a MacMonitor notification banner, for the README.
-private struct NotificationPreview: View {
+/// The real alert panel on a desktop-like backdrop.
+private struct OverlayPreview: View {
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            AppIconView(size: 40)
-            VStack(alignment: .leading, spacing: 3) {
-                HStack {
-                    Text("node hängt bei 100 % CPU").font(.system(size: 13, weight: .semibold))
-                    Spacer()
-                    Text("jetzt").font(.system(size: 11)).foregroundStyle(.secondary)
-                }
-                Text("Seit über 3 min ununterbrochen hohe Last (PID 4182).")
-                    .font(.system(size: 12)).foregroundStyle(.secondary)
-                HStack(spacing: 8) {
-                    ForEach(["Beenden …", "1 h stumm", "Aktivitätsanzeige"], id: \.self) { action in
-                        Text(action)
-                            .font(.system(size: 11, weight: .medium))
-                            .padding(.horizontal, 10).padding(.vertical, 4)
-                            .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
-                    }
-                }
-                .padding(.top, 6)
-            }
-        }
-        .padding(14)
-        .frame(width: 380)
-        .background(Color(red: 0.17, green: 0.17, blue: 0.19), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
-        .shadow(color: .black.opacity(0.45), radius: 20, y: 8)
-        .padding(30)
-        .background(LinearGradient(colors: [Color(red: 0.12, green: 0.2, blue: 0.3), Color(red: 0.05, green: 0.08, blue: 0.14)],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing))
-        .environment(\.colorScheme, .dark)
+        let event = AlertEvent(date: Date(), kind: .fired, condition: Condition(
+            key: "demo", rule: .runawayProcess, severity: .warning,
+            title: "node hängt bei 100 % CPU",
+            body: "Seit über 3 min ununterbrochen hohe Last (PID 4182).",
+            sustain: 0, process: ProcessRef(pid: 4182, name: "node")))
+        AlertHUDView(event: event)
+            .shadow(color: .black.opacity(0.4), radius: 18, y: 8)
+            .padding(30)
+            .background(LinearGradient(colors: [Color(red: 0.12, green: 0.2, blue: 0.3), Color(red: 0.05, green: 0.08, blue: 0.14)],
+                                       startPoint: .topLeading, endPoint: .bottomTrailing))
+            .environment(\.colorScheme, .dark)
     }
 }

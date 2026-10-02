@@ -100,8 +100,15 @@ struct PopoverView: View {
                      tint: s.thermal >= .serious ? Palette.critical : s.thermal == .fair ? Palette.warn : .secondary)
                 stat("SSD frei", s.disk.map { Format.bytes($0.availableBytes) } ?? "–", symbol: "internaldrive",
                      tint: (s.disk?.freeFraction ?? 1) < 0.1 ? Palette.warn : .secondary)
-                stat(powerTitle(s), powerValue(s), symbol: powerSymbol(s),
+                stat("Netzwerk", networkValue(s), symbol: s.isOnline ? "arrow.up.arrow.down" : "wifi.slash",
                      tint: s.isOnline ? .secondary : Palette.critical)
+                if s.power.batteryPercent != nil {
+                    stat(batteryTitle(s.power), batteryValue(s.power), symbol: batterySymbol(s.power),
+                         tint: (s.power.batteryPercent ?? 100) <= 15 && s.power.onBattery ? Palette.critical : .secondary)
+                        .help(s.power.health.map { "Akkuzustand \($0.capacityPercent) % der ursprünglichen Kapazität, \($0.cycleCount) Ladezyklen" } ?? "")
+                }
+                stat("Ruhezustand", sleepValue(s), symbol: s.sleepBlockers.isEmpty ? "moon.zzz" : "cup.and.saucer",
+                     tint: s.sleepBlockers.isEmpty ? .secondary : Palette.warn)
             }
         }
     }
@@ -122,8 +129,9 @@ struct PopoverView: View {
             HStack(spacing: 8) {
                 Image(systemName: symbol).font(.system(size: 13)).foregroundStyle(tint).frame(width: 18)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(title).font(.system(size: 10)).foregroundStyle(.secondary)
-                    Text(value).font(.system(size: 12, weight: .semibold)).monospacedDigit().lineLimit(1)
+                    Text(title).font(.system(size: 10)).foregroundStyle(.secondary).lineLimit(1)
+                    Text(value).font(.system(size: 12, weight: .semibold)).monospacedDigit()
+                        .lineLimit(1).minimumScaleFactor(0.75)
                 }
             }
         }
@@ -233,20 +241,33 @@ struct PopoverView: View {
         }
     }
 
-    private func powerTitle(_ s: SystemSnapshot) -> String {
-        s.isOnline ? (s.power.batteryPercent == nil ? "Netz" : "Strom") : "Netz"
-    }
-
-    private func powerValue(_ s: SystemSnapshot) -> String {
+    private func networkValue(_ s: SystemSnapshot) -> String {
         guard s.isOnline else { return "Offline" }
-        guard let percent = s.power.batteryPercent else { return "Online" }
-        return s.power.onBattery ? "Akku \(percent) %" : "Netzteil · \(percent) %"
+        guard let n = s.network else { return "Online" }
+        return "↓ \(Format.rate(n.downBytesPerSecond))  ↑ \(Format.rate(n.upBytesPerSecond))"
     }
 
-    private func powerSymbol(_ s: SystemSnapshot) -> String {
-        guard s.isOnline else { return "wifi.slash" }
-        guard let percent = s.power.batteryPercent else { return "wifi" }
-        if !s.power.onBattery { return "powerplug" }
+    private func batteryTitle(_ p: PowerState) -> String {
+        guard let health = p.health else { return "Akku" }
+        return "Akku · \(health.capacityPercent) %"
+    }
+
+    private func batteryValue(_ p: PowerState) -> String {
+        let percent = "\(p.batteryPercent ?? 0) %"
+        if p.onBattery, let minutes = p.minutesRemaining { return "\(percent) · \(Format.hoursMinutes(minutes))" }
+        if !p.onBattery { return p.isCharging ? "\(percent) · lädt" : "\(percent) · Netzteil" }
+        return percent
+    }
+
+    private func batterySymbol(_ p: PowerState) -> String {
+        if !p.onBattery { return p.isCharging ? "battery.100percent.bolt" : "powerplug" }
+        let percent = p.batteryPercent ?? 100
         return percent > 60 ? "battery.75percent" : percent > 25 ? "battery.50percent" : "battery.25percent"
+    }
+
+    private func sleepValue(_ s: SystemSnapshot) -> String {
+        guard let first = s.sleepBlockers.first else { return "möglich" }
+        let more = s.sleepBlockers.count > 1 ? " +\(s.sleepBlockers.count - 1)" : ""
+        return "blockiert: \(first.name)\(more)"
     }
 }
