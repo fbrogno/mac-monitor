@@ -226,7 +226,7 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
         let settings = MonitorSettings()
         #expect(Rules.evaluate(snapshot(onBattery: false, blockers: [blocker]), .init(settings: settings)).isEmpty)
         let conds = Rules.evaluate(snapshot(onBattery: true, blockers: [blocker]), .init(settings: settings))
-        #expect(conds.map(\.key) == ["sleep.9"])
+        #expect(conds.map(\.key) == ["sleep.caffeinate|"])
         #expect(conds.first?.sustain == 1800)
     }
 
@@ -307,5 +307,35 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
         #expect(actions.contains(.restartApp(ref)))
         #expect(actions.contains(.quit(ref)))
         #expect(actions.contains(.ignoreForever("node")))
+    }
+}
+
+@Suite struct SleepBlockerIdentityTests {
+    @Test func restartedToolKeepsItsKey() {
+        let first = SleepBlocker(pid: 100, name: "caffeinate", reason: "x", parentName: "claude")
+        let second = SleepBlocker(pid: 230, name: "caffeinate", reason: "x", parentName: "claude")
+        #expect(first.identity == second.identity)
+        let power = PowerState(onBattery: true, batteryPercent: 50, lowPowerMode: false)
+        func snap(_ b: SleepBlocker) -> SystemSnapshot {
+            SystemSnapshot(date: .now, cpuPercent: 1, memoryUsedBytes: 1, memoryTotalBytes: 2, memoryPressure: .normal,
+                           swapUsedBytes: 0, thermal: .nominal, disk: nil, isOnline: true, power: power,
+                           sleepBlockers: [b], processes: [])
+        }
+        var engine = AlertEngine()
+        let t0 = Date(timeIntervalSince1970: 0)
+        _ = engine.process(Rules.evaluate(snap(first), .init(settings: MonitorSettings())), now: t0)
+        let events = engine.process(Rules.evaluate(snap(second), .init(settings: MonitorSettings())), now: t0 + 1800)
+        #expect(events.map(\.kind) == [.fired])
+        #expect(events.first?.condition.process?.pid == 230)
+    }
+
+    @Test func removingPIDDropsProcessAndBlocker() {
+        let s = SystemSnapshot(date: .now, cpuPercent: 1, memoryUsedBytes: 1, memoryTotalBytes: 2, memoryPressure: .normal,
+                               swapUsedBytes: 0, thermal: .nominal, disk: nil, isOnline: true, power: .unknown,
+                               sleepBlockers: [SleepBlocker(pid: 5, name: "caffeinate", reason: "")],
+                               processes: [ProcessStat(pid: 5, name: "caffeinate", cpuPercent: 0, footprintBytes: 0)])
+        let after = s.removing(pid: 5)
+        #expect(after.sleepBlockers.isEmpty)
+        #expect(after.processes.isEmpty)
     }
 }

@@ -141,10 +141,13 @@ public enum Rules {
         if set.isEnabled(.sleepBlocker), s.power.onBattery {
             for blocker in s.sleepBlockers
             where !ignored.contains(blocker.name.lowercased()) && !ctx.mutedProcesses.contains(blocker.name) {
+                // Keyed by tool and launcher, not PID: `caffeinate -t 300` chains get a new PID every
+                // few minutes but keep the Mac awake all the same.
+                let launcher = blocker.parentName.map { ", gestartet von \($0)" } ?? ""
                 out.append(Condition(
-                    key: "sleep.\(blocker.pid)", rule: .sleepBlocker, severity: .warning,
+                    key: "sleep.\(blocker.identity)", rule: .sleepBlocker, severity: .warning,
                     title: "\(blocker.name) verhindert den Ruhezustand",
-                    body: "Seit über \(Format.duration(set.sleepBlockerSustain)) im Akkubetrieb: „\(blocker.reason)“.",
+                    body: "Seit über \(Format.duration(set.sleepBlockerSustain)) im Akkubetrieb\(launcher): „\(blocker.reason)“.",
                     sustain: set.sleepBlockerSustain,
                     process: ProcessRef(pid: blocker.pid, name: blocker.name)))
             }

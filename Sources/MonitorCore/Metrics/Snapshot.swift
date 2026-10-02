@@ -137,6 +137,17 @@ public struct SystemSnapshot: Sendable {
         self.processes = processes
     }
 
+    /// The same snapshot without a process that was just ended, so the UI updates at once
+    /// instead of waiting for the next sample.
+    public func removing(pid: Int32) -> SystemSnapshot {
+        SystemSnapshot(date: date, cpuPercent: cpuPercent, memoryUsedBytes: memoryUsedBytes,
+                       memoryTotalBytes: memoryTotalBytes, memoryPressure: memoryPressure,
+                       swapUsedBytes: swapUsedBytes, thermal: thermal, disk: disk, isOnline: isOnline,
+                       network: network, power: power,
+                       sleepBlockers: sleepBlockers.filter { $0.pid != pid },
+                       processes: processes.filter { $0.pid != pid })
+    }
+
     public var memoryFraction: Double {
         memoryTotalBytes == 0 ? 0 : Double(memoryUsedBytes) / Double(memoryTotalBytes)
     }
