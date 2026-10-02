@@ -53,7 +53,8 @@ ignorieren oder direkt aus der Mitteilung für eine Stunde stummschalten.
 ## Warum sie so wenig Strom braucht
 
 Das Vorgänger-Plugin für SwiftBar startete bei jeder Messung `top`, `ps`, `awk`, `sed` und `python3`.
-MacMonitor startet **keinen einzigen Hilfsprozess**:
+MacMonitor startet **keinen einzigen Hilfsprozess**. Gemessen auf einem MacBook Pro (M4 Pro), Popover
+geschlossen: **0,12 s CPU-Zeit in 162 s (≈ 0,07 % CPU)** bei konstant ~79 MB Speicher.
 
 - **Direkte Systemaufrufe:** `host_statistics` (CPU), `host_statistics64` (VM), `sysctl`
   (Swap, Speicherdruck), `proc_pid_rusage` (CPU-Zeit und Footprint je Prozess), IOKit (Akku).
@@ -63,6 +64,9 @@ MacMonitor startet **keinen einzigen Hilfsprozess**:
   anderer Arbeit zusammenlegen.
 - **Ereignisse statt Abfragen:** Speicherdruck, Temperatur, Netzwechsel, Stromquelle und Aufwachen
   lösen sofort eine Messung aus, ohne dass dafür häufiger gemessen werden muss.
+- **Ruhige Menüleiste:** Jede Textänderung in der Menüleiste lässt macOS das Symbol auf jedem Bildschirm
+  neu rendern (~40 ms). Standard ist deshalb „Nur Symbol“, das nur bei Warnungen wechselt. Wer CPU/RAM
+  als Zahl sehen will, bekommt sie gedrosselt: neu gezeichnet wird erst ab 5 Punkten Änderung.
 - **Caches:** Prozessnamen werden je PID nur einmal aufgelöst, der SSD-Platz nur alle 5 min gelesen.
 
 ## Installation
