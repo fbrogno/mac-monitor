@@ -9,6 +9,8 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
     var onKill: ((ProcessRef) -> Void)?
     var onMute: ((String) -> Void)?
     private(set) var isAuthorized = false
+    /// Last delivered request per condition key, so a follow-up can replace it in the list.
+    private var deliveredIDs: [String: String] = [:]
 
     private enum Category {
         static let process = "process"
@@ -65,8 +67,15 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         } else {
             content.categoryIdentifier = Category.system
         }
-        // Same identifier per condition: a reminder replaces the earlier banner in the list.
-        center.add(UNNotificationRequest(identifier: c.key, content: content, trigger: nil))
+        // A request that reuses a delivered identifier only updates the list silently, without a
+        // banner. So every event gets a fresh identifier and the previous one for this condition
+        // is removed, keeping one entry per condition in Notification Center.
+        if let previous = deliveredIDs[c.key] {
+            center.removeDeliveredNotifications(withIdentifiers: [previous])
+        }
+        let id = "\(c.key).\(UUID().uuidString)"
+        deliveredIDs[c.key] = id
+        center.add(UNNotificationRequest(identifier: id, content: content, trigger: nil))
     }
 
     func sendTest() {
