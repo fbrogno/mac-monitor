@@ -13,12 +13,15 @@ public enum Rules {
         public var isActive: (String) -> Bool
         /// Process names the user muted for now.
         public var mutedProcesses: Set<String>
+        /// How much swap grew over the last ten minutes (0 if it shrank or is unknown).
+        public var swapGrowthBytes: UInt64
 
         public init(settings: MonitorSettings, isActive: @escaping (String) -> Bool = { _ in false },
-                    mutedProcesses: Set<String> = []) {
+                    mutedProcesses: Set<String> = [], swapGrowthBytes: UInt64 = 0) {
             self.settings = settings
             self.isActive = isActive
             self.mutedProcesses = mutedProcesses
+            self.swapGrowthBytes = swapGrowthBytes
         }
 
         func limit(_ value: Double, key: String) -> Double {
@@ -86,12 +89,17 @@ public enum Rules {
         }
 
         if set.isEnabled(.swap) {
+            // Swap only shrinks when the owning apps quit, so a high value alone is often a leftover.
+            // Report it while it is still growing or memory is actually tight.
             let key = "system.swap"
             let limit = ctx.limit(set.swapThresholdGB * 1_073_741_824, key: key)
-            if Double(s.swapUsedBytes) >= limit {
+            let growing = ctx.swapGrowthBytes >= 1_073_741_824
+            let tight = s.memoryPressure >= .warning
+            if Double(s.swapUsedBytes) >= limit, growing || tight || ctx.isActive(key) {
+                let growth = growing ? " (+\(Format.bytes(ctx.swapGrowthBytes)) in 10 min)" : ""
                 out.append(Condition(
                     key: key, rule: .swap, severity: .warning,
-                    title: "Swap bei \(Format.bytes(s.swapUsedBytes))",
+                    title: "Swap bei \(Format.bytes(s.swapUsedBytes))\(growth)",
                     body: "Der Arbeitsspeicher reicht nicht, macOS lagert auf die SSD aus.",
                     sustain: 0))
             }

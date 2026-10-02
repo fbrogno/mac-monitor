@@ -269,3 +269,43 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
         #expect(Format.hoursMinutes(185) == "3:05 h")
     }
 }
+
+@Suite struct SwapAndRemedyTests {
+    private func snap(swap: UInt64, pressure: MemoryPressure = .normal, processes: [ProcessStat] = []) -> SystemSnapshot {
+        SystemSnapshot(date: .now, cpuPercent: 5, memoryUsedBytes: 8 * gb, memoryTotalBytes: 24 * gb,
+                       memoryPressure: pressure, swapUsedBytes: swap, thermal: .nominal,
+                       disk: DiskStat(availableBytes: 18 * gb, totalBytes: 460 * gb), isOnline: true,
+                       power: .unknown, processes: processes)
+    }
+
+    @Test func leftoverSwapIsQuiet() {
+        let s = MonitorSettings()
+        #expect(!Rules.evaluate(snap(swap: 10 * gb), .init(settings: s)).contains { $0.rule == .swap })
+        #expect(Rules.evaluate(snap(swap: 10 * gb), .init(settings: s, swapGrowthBytes: 2 * gb)).contains { $0.rule == .swap })
+        #expect(Rules.evaluate(snap(swap: 10 * gb, pressure: .warning), .init(settings: s)).contains { $0.rule == .swap })
+    }
+
+    @Test func remedyForDiskPointsToCleanup() throws {
+        let found = Rules.evaluate(snap(swap: 0), .init(settings: MonitorSettings())).first { $0.rule == .disk }
+        let condition = try #require(found)
+        #expect(Remedies.remedy(for: condition, in: snap(swap: 0)).actions.contains(.showCleanup))
+    }
+
+    @Test func memoryRemediesSuggestBiggestProcesses() {
+        let procs = [
+            ProcessStat(pid: 1, name: "small", cpuPercent: 1, footprintBytes: gb / 10),
+            ProcessStat(pid: 2, name: "big", cpuPercent: 1, footprintBytes: 5 * gb),
+        ]
+        let c = Condition(key: "system.swap", rule: .swap, severity: .warning, title: "", body: "", sustain: 0)
+        #expect(Remedies.remedy(for: c, in: snap(swap: 10 * gb, processes: procs)).suspects.first?.name == "big")
+    }
+
+    @Test func processRemediesOfferRestartAndQuit() {
+        let ref = ProcessRef(pid: 7, name: "node")
+        let c = Condition(key: "process.cpu.7", rule: .runawayProcess, severity: .warning, title: "", body: "", sustain: 0, process: ref)
+        let actions = Remedies.remedy(for: c, in: snap(swap: 0)).actions
+        #expect(actions.contains(.restartApp(ref)))
+        #expect(actions.contains(.quit(ref)))
+        #expect(actions.contains(.ignoreForever("node")))
+    }
+}
