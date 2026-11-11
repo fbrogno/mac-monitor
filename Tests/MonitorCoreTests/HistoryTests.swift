@@ -871,3 +871,36 @@ extension HistoryAdapterTests {
         #expect(try await store.bucketCount(.minute) <= 11 * 2 * 60 * 24 + 11 * 2)
     }
 }
+
+// MARK: Chart segments
+
+@Suite struct HistorySegmentTests {
+    private func point(_ minute: Int, span: TimeInterval = 60) -> HistoryPoint {
+        HistoryPoint(date: Date(timeIntervalSince1970: Double(minute) * 60), min: 1, avg: 2, max: 3, count: 1,
+                     resolution: .minute, span: span)
+    }
+
+    @Test func missingBucketsSplitTheSeries() {
+        let segments = [point(0), point(1), point(2), point(10), point(11), point(40)].continuousSegments()
+        #expect(segments.map(\.count) == [3, 2, 1])
+    }
+
+    @Test func contiguousSeriesStaysOneSegment() {
+        #expect([point(0), point(1), point(2)].continuousSegments().count == 1)
+        #expect([HistoryPoint]().continuousSegments().isEmpty)
+    }
+
+    @Test func unsortedInputIsOrderedFirst() {
+        let segments = [point(2), point(0), point(1)].continuousSegments()
+        #expect(segments.count == 1 && segments[0].map(\.date) == segments[0].map(\.date).sorted())
+    }
+
+    @Test func gapAfterAWholeBucketOfQuarterHours() {
+        // 15-minute buckets: one missing bucket (30 min between starts) is a gap, adjacent ones are not.
+        func q(_ i: Int) -> HistoryPoint {
+            HistoryPoint(date: Date(timeIntervalSince1970: Double(i) * 900), min: 0, avg: 0, max: 0, count: 3,
+                         resolution: .quarterHour, span: 900)
+        }
+        #expect([q(0), q(1), q(3)].continuousSegments().map(\.count) == [2, 1])
+    }
+}
