@@ -53,7 +53,22 @@ public final class NetworkSampler {
         defer { last = now }
         guard let last else { return nil }
         interfaceRates = Self.rates(from: last.perInterface, to: now.perInterface)
-        return NetworkCounters.rate(from: last.total, to: now.total)
+        return Self.headlineRate(from: last.perInterface, to: now.perInterface)
+    }
+
+    /// The headline rate: deltas of the physical `en*` interfaces that appear in both readings. An interface
+    /// that is new (its counters have run for hours) or that was reset would otherwise show up as a huge jump.
+    /// Nil when there were `en*` interfaces but none in both readings; zero when there are none at all.
+    static func headlineRate(from old: [String: NetworkCounters], to new: [String: NetworkCounters]) -> NetworkRate? {
+        let physical = rates(from: old, to: new).filter { $0.name.hasPrefix("en") }
+        if physical.isEmpty {
+            let anyPhysical = old.keys.contains { $0.hasPrefix("en") } || new.keys.contains { $0.hasPrefix("en") }
+            let time = new.values.first?.time ?? 0
+            let elapsed = time - (old.values.first?.time ?? time)
+            return anyPhysical || elapsed <= 0 ? nil : NetworkRate(downBytesPerSecond: 0, upBytesPerSecond: 0)
+        }
+        return NetworkRate(downBytesPerSecond: physical.reduce(0) { $0 + $1.rate.downBytesPerSecond },
+                           upBytesPerSecond: physical.reduce(0) { $0 + $1.rate.upBytesPerSecond })
     }
 
     /// Rates for interfaces present in both readings, busiest first; resets yield no entry.

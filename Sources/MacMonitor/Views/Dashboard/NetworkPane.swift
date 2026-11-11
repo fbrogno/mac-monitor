@@ -70,9 +70,12 @@ struct NetworkPane: View {
                 VStack(spacing: 10) {
                     ForEach(volumes) { volume in
                         MeterBar(label: volume.isInternal ? volume.name : String(localized: "\(volume.name) (extern)"),
-                                 value: String(localized: "\(Format.bytes(volume.availableBytes)) frei von \(Format.bytes(volume.totalBytes))"),
+                                 value: volume.isReadOnly
+                                    ? String(localized: "schreibgeschützt")
+                                    : String(localized: "\(Format.bytes(volume.availableBytes)) frei von \(Format.bytes(volume.totalBytes))"),
                                  fraction: 1 - volume.freeFraction,
-                                 tint: volume.freeFraction < 0.1 ? Palette.critical : volume.freeFraction < 0.2 ? Palette.warn : Palette.accent)
+                                 tint: volume.isReadOnly ? Palette.accent
+                                    : volume.freeFraction < 0.1 ? Palette.critical : volume.freeFraction < 0.2 ? Palette.warn : Palette.accent)
                     }
                 }
             }

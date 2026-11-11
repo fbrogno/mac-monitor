@@ -244,6 +244,37 @@ import Testing
     }
 }
 
+@Suite struct NetworkHeadlineTests {
+    private func c(_ rx: UInt64, _ tx: UInt64, _ t: TimeInterval) -> NetworkCounters { NetworkCounters(received: rx, sent: tx, time: t) }
+
+    @Test func sumsOnlyInterfacesPresentInBothReadings() {
+        let old = ["en0": c(1_000, 100, 10)]
+        // en5 (a dock adapter just plugged in) already carries 40 GB: it must not look like 40 GB in one tick.
+        let new = ["en0": c(3_000, 300, 12), "en5": c(40_000_000_000, 9_000_000_000, 12)]
+        let rate = NetworkSampler.headlineRate(from: old, to: new)
+        #expect(rate == NetworkRate(downBytesPerSecond: 1_000, upBytesPerSecond: 100))
+    }
+
+    @Test func ignoresTunnelsAndKeepsRunningInterfaces() {
+        let old = ["en0": c(0, 0, 0), "en1": c(0, 0, 0), "utun4": c(0, 0, 0)]
+        let new = ["en0": c(500, 0, 1), "en1": c(100, 50, 1), "utun4": c(9_999, 9_999, 1)]
+        #expect(NetworkSampler.headlineRate(from: old, to: new) == NetworkRate(downBytesPerSecond: 600, upBytesPerSecond: 50))
+    }
+
+    @Test func aResetInterfaceDropsOutInsteadOfSpoilingTheWholeRate() {
+        let old = ["en0": c(1_000, 0, 0), "en1": c(9_000, 0, 0)]
+        let new = ["en0": c(2_000, 0, 1), "en1": c(10, 0, 1)]   // en1 was replugged: counters restarted
+        #expect(NetworkSampler.headlineRate(from: old, to: new) == NetworkRate(downBytesPerSecond: 1_000, upBytesPerSecond: 0))
+    }
+
+    @Test func noCommonPhysicalInterface() {
+        #expect(NetworkSampler.headlineRate(from: ["en0": c(0, 0, 0)], to: ["en5": c(5, 5, 1)]) == nil)
+        // No physical interface at all: nothing is moving, which is a rate of zero.
+        #expect(NetworkSampler.headlineRate(from: ["utun4": c(0, 0, 0)], to: ["utun4": c(5, 5, 1)])
+                == NetworkRate(downBytesPerSecond: 0, upBytesPerSecond: 0))
+    }
+}
+
 @Suite struct AppGroupingTests {
     private func id(_ pid: Int32, parent: Int32 = 1, responsible: Int32? = nil, _ name: String, _ path: String? = nil)
         -> ProcessIdentity {

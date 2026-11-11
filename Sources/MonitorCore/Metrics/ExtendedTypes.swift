@@ -198,15 +198,19 @@ public struct VolumeStat: Sendable, Equatable, Identifiable {
     public let availableBytes: UInt64
     public let totalBytes: UInt64
     public let isInternal: Bool
+    /// Mounted read-only (an opened disk image, a locked card): "full" there is normal and nothing to act on.
+    public let isReadOnly: Bool
 
     public var id: String { path }
 
-    public init(name: String, path: String, availableBytes: UInt64, totalBytes: UInt64, isInternal: Bool) {
+    public init(name: String, path: String, availableBytes: UInt64, totalBytes: UInt64, isInternal: Bool,
+                isReadOnly: Bool = false) {
         self.name = name
         self.path = path
         self.availableBytes = availableBytes
         self.totalBytes = totalBytes
         self.isInternal = isInternal
+        self.isReadOnly = isReadOnly
     }
 
     public var freeFraction: Double { totalBytes == 0 ? 1 : Double(availableBytes) / Double(totalBytes) }

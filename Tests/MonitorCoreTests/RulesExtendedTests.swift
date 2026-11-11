@@ -253,6 +253,18 @@ private func disabled(_ rule: RuleID) -> MonitorSettings {
         #expect(only(.volumeFull, evaluate(snap(volumes: [full]), settings: disabled(.volumeFull))).isEmpty)
     }
 
+    @Test func readOnlyVolumesNeverCountAsFull() {
+        // An opened disk image is full by construction.
+        let dmg = VolumeStat(name: "MacMonitor", path: "/Volumes/MacMonitor", availableBytes: 0, totalBytes: 5 * gb,
+                             isInternal: false, isReadOnly: true)
+        #expect(only(.volumeFull, evaluate(snap(volumes: [dmg]))).isEmpty)
+        let writable = VolumeStat(name: "MacMonitor", path: "/Volumes/MacMonitor", availableBytes: 0, totalBytes: 5 * gb,
+                                  isInternal: false)
+        #expect(only(.volumeFull, evaluate(snap(volumes: [writable]))).count == 1)
+        // The sampler reads the flag: the system volume is writable, a mounted disk image is not.
+        #expect(VolumeSampler.sample().filter { $0.path == "/" }.allSatisfy { !$0.isReadOnly })
+    }
+
     @Test func volumeRuleLeavesBootVolumeToDiskRule() {
         let boot = VolumeStat(name: "Macintosh HD", path: "/", availableBytes: 20 * gb, totalBytes: 1000 * gb, isInternal: true)
         #expect(only(.volumeFull, evaluate(snap(volumes: [boot]))).isEmpty)

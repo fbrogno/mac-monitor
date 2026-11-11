@@ -6,7 +6,7 @@ public enum VolumeSampler {
     /// hidden), boot volume first.
     public static func sample() -> [VolumeStat] {
         let keys: [URLResourceKey] = [.volumeNameKey, .volumeIsLocalKey, .volumeIsInternalKey,
-                                      .volumeIsBrowsableKey, .volumeTotalCapacityKey,
+                                      .volumeIsBrowsableKey, .volumeIsReadOnlyKey, .volumeTotalCapacityKey,
                                       .volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey]
         let urls = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys,
                                                          options: [.skipHiddenVolumes]) ?? []
@@ -17,7 +17,7 @@ public enum VolumeSampler {
             let available = v.volumeAvailableCapacityForImportantUsage ?? Int64(v.volumeAvailableCapacity ?? 0)
             return VolumeStat(name: v.volumeName ?? url.lastPathComponent, path: url.path,
                               availableBytes: UInt64(max(available, 0)), totalBytes: UInt64(total),
-                              isInternal: v.volumeIsInternal ?? false)
+                              isInternal: v.volumeIsInternal ?? false, isReadOnly: v.volumeIsReadOnly ?? false)
         }
         .sorted { ($0.path == "/" ? 0 : 1, $0.name) < ($1.path == "/" ? 0 : 1, $1.name) }
     }

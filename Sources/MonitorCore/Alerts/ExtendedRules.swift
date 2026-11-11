@@ -114,7 +114,8 @@ extension Rules {
 
         if set.isEnabled(.volumeFull) {
             let diskRuleCoversBootVolume = set.isEnabled(.disk)
-            for volume in s.volumes where volume.totalBytes >= UInt64(gigabyte) {
+            // Read-only volumes (opened disk images, the installer's DMG) are always full and can't be cleaned up.
+            for volume in s.volumes where volume.totalBytes >= UInt64(gigabyte) && !volume.isReadOnly {
                 // The system volume belongs to the "Festplatte voll" rule.
                 if diskRuleCoversBootVolume && volume.path == "/" { continue }
                 let key = "volume.\(volume.path)"
