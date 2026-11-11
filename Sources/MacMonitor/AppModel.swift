@@ -62,6 +62,7 @@ final class AppModel {
 
     @ObservationIgnored let notifier = Notifier()
     @ObservationIgnored let cleanup = CleanupModel()
+    @ObservationIgnored let updater = UpdateController()
     /// Set by the SwiftUI scene so non-view code can open windows.
     @ObservationIgnored var openWindowAction: ((String) -> Void)?
     /// Sleep blockers the user just ended, to notice when their launcher starts them again.
@@ -97,6 +98,9 @@ final class AppModel {
         overlay.onMute = { [weak self] name in self?.mute(name) }
         overlay.onOpen = { [weak self] in self?.openOverview() }
         notifier.onOpen = { [weak self] in self?.openOverview() }
+        notifier.onOpenUpdate = { [weak self] in self?.updater.checkForUpdates() }
+        updater.onScheduledUpdateFound = { [weak self] in self?.notifier.deliverUpdate(version: $0) }
+        updater.start()
         notifier.requestAuthorization()
 
         pathMonitor.pathUpdateHandler = { [weak self] path in

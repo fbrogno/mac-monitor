@@ -10,6 +10,8 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
     var onMute: ((String) -> Void)?
     /// Tapping the notification itself opens the overview.
     var onOpen: (() -> Void)?
+    /// Tapping the update notification opens Sparkle's update window.
+    var onOpenUpdate: (() -> Void)?
     private(set) var isAuthorized = false
     /// Last delivered request per condition key, so a follow-up can replace it in the list.
     private var deliveredIDs: [String: String] = [:]
@@ -80,6 +82,15 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         center.add(UNNotificationRequest(identifier: id, content: content, trigger: nil))
     }
 
+    /// Tells about an update found by a scheduled check (see `UpdateController`).
+    func deliverUpdate(version: String) {
+        let content = UNMutableNotificationContent()
+        content.title = "Update für MacMonitor"
+        content.body = "Version \(version) ist verfügbar."
+        content.userInfo = ["update": true]
+        center.add(UNNotificationRequest(identifier: "macmonitor.update", content: content, trigger: nil))
+    }
+
     /// A harmless sample alert. The time in the body makes repeated tests distinguishable.
     static func testEvent(now: Date = Date()) -> AlertEvent {
         let time = now.formatted(date: .omitted, time: .standard)
@@ -99,6 +110,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         let action = response.actionIdentifier
         let pid = (info["pid"] as? Int).map(Int32.init)
         let name = info["name"] as? String
+        let isUpdate = info["update"] as? Bool ?? false
         await MainActor.run {
             switch action {
             case Action.kill:
@@ -110,7 +122,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
                     at: URL(fileURLWithPath: "/System/Applications/Utilities/Activity Monitor.app"),
                     configuration: NSWorkspace.OpenConfiguration())
             case UNNotificationDefaultActionIdentifier:
-                onOpen?()
+                if isUpdate { onOpenUpdate?() } else { onOpen?() }
             default:
                 break
             }

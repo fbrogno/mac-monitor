@@ -5,6 +5,7 @@ struct SettingsView: View {
     @Bindable var model: AppModel
     @State private var launchAtLogin = LoginItem.isEnabled
     @State private var ignoredText = ""
+    @State private var autoUpdate = false
 
     private let minutes: [TimeInterval] = [60, 120, 180, 300, 600]
 
@@ -88,6 +89,21 @@ struct SettingsView: View {
                 }
             }
 
+            Section("Updates") {
+                LabeledContent("MacMonitor", value: UpdateController.versionText)
+                Toggle("Automatisch nach Updates suchen", isOn: $autoUpdate)
+                    .disabled(!model.updater.isConfigured)
+                    .onChange(of: autoUpdate) { _, on in model.updater.automaticallyChecks = on }
+                HStack {
+                    Button("Nach Updates suchen …") { model.updater.checkForUpdates() }
+                        .disabled(!model.updater.isConfigured)
+                    if !model.updater.isConfigured {
+                        Text("In dieser Version nicht verfügbar.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+            }
+
             Section {
                 TextField("Prozessnamen, durch Komma getrennt", text: $ignoredText, axis: .vertical)
                     .lineLimit(2...4)
@@ -101,10 +117,11 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 480, height: 620)
+        .frame(width: 480, height: 700)
         .onAppear {
             ignoredText = model.settings.ignoredProcesses.joined(separator: ", ")
             launchAtLogin = LoginItem.isEnabled
+            autoUpdate = model.updater.isConfigured && model.updater.automaticallyChecks
         }
     }
 

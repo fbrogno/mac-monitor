@@ -214,6 +214,9 @@ struct PopoverView: View {
         HStack(spacing: 2) {
             FooterButton(title: "Übersicht", symbol: "square.grid.2x2", action: { model.openOverview() })
             FooterButton(title: "Einstellungen", symbol: "gearshape", action: onOpenSettings)
+            if let version = model.updater.availableVersion {
+                FooterButton(title: "Update \(version)", symbol: "arrow.down.circle", action: { model.updater.checkForUpdates() })
+            }
             Spacer()
             FooterButton(title: "Beenden", symbol: "power", action: onQuit)
         }
