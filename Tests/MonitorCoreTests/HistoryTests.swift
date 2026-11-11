@@ -556,6 +556,69 @@ private func condition(_ key: String, rule: RuleID = .cpuHigh, severity: Severit
     }
 }
 
+extension HistoryAdapterTests {
+    private func base() -> SystemSnapshot {
+        SystemSnapshot(
+            date: .now, cpuPercent: 10, memoryUsedBytes: gb, memoryTotalBytes: 8 * gb, memoryPressure: .normal,
+            swapUsedBytes: 0, thermal: .nominal, disk: nil, isOnline: true, power: .unknown, processes: [])
+    }
+
+    @Test func extendedFieldsMapToMetrics() {
+        let snapshot = SystemSnapshot(
+            date: .now, cpuPercent: 10, memoryUsedBytes: gb, memoryTotalBytes: 8 * gb, memoryPressure: .normal,
+            swapUsedBytes: 0, thermal: .nominal, disk: nil, isOnline: true, power: .unknown, processes: [],
+            cpuCores: CPUCoreLoad(perCore: [10, 30, 50, 70, 90], efficiencyCoreCount: 2, performanceCoreCount: 3),
+            gpu: GPUStat(utilizationPercent: 35, memoryUsedBytes: 2 * gb),
+            thermals: ThermalSensors(cpuAverageCelsius: 48, cpuMaxCelsius: 61, batteryCelsius: 31, sensors: []),
+            fans: [FanStat(index: 0, rpm: 1500, minRpm: 1200, maxRpm: 5800), FanStat(index: 1, rpm: 2100, minRpm: 1200, maxRpm: 5800)],
+            powerDraw: SystemPowerDraw(systemWatts: 17.5, cpuWatts: 6.5, gpuWatts: 2.25),
+            diskThroughput: DiskThroughput(readBytesPerSecond: 4000, writeBytesPerSecond: 9000),
+            runtime: RuntimeStat(uptimeSeconds: 100, loadAverage: LoadAverage(one: 2.5, five: 2, fifteen: 1), processCount: 1, threadCount: 1))
+        let v = Dictionary(uniqueKeysWithValues: MetricSample.samples(from: snapshot).map { ($0.key.rawValue, $0.value) })
+        #expect(v["gpu.percent"] == 35)
+        #expect(v["gpu.memory"] == Double(2 * gb))
+        #expect(v["cpu.efficiency"] == 20)
+        #expect(v["cpu.performance"] == 70)
+        #expect(v["temp.cpu.avg"] == 48)
+        #expect(v["temp.cpu.max"] == 61)
+        #expect(v["temp.battery"] == 31)
+        #expect(v["power.system"] == 17.5)
+        #expect(v["power.cpu"] == 6.5)
+        #expect(v["power.gpu"] == 2.25)
+        #expect(v["fan.max"] == 2100)
+        #expect(v["disk.read"] == 4000)
+        #expect(v["disk.write"] == 9000)
+        #expect(v["load.1m"] == 2.5)
+    }
+
+    @Test func missingExtendedFieldsWriteNoRows() {
+        // Nothing reported on this Mac: no row at all, never a stand-in 0.
+        let keys = Set(MetricSample.samples(from: base()).map(\.key.rawValue))
+        let extended: Set = ["gpu.percent", "gpu.memory", "cpu.efficiency", "cpu.performance", "temp.cpu.avg", "temp.cpu.max",
+                             "temp.battery", "power.system", "power.cpu", "power.gpu", "fan.max", "disk.read", "disk.write", "load.1m"]
+        #expect(keys.isDisjoint(with: extended))
+    }
+
+    @Test func partialExtendedFieldsOnlyWriteWhatExists() {
+        // Intel-style core layout (no efficiency cores), no CPU power, no fans.
+        let snapshot = SystemSnapshot(
+            date: .now, cpuPercent: 10, memoryUsedBytes: gb, memoryTotalBytes: 8 * gb, memoryPressure: .normal,
+            swapUsedBytes: 0, thermal: .nominal, disk: nil, isOnline: true, power: .unknown, processes: [],
+            cpuCores: CPUCoreLoad(perCore: [20, 40], efficiencyCoreCount: 0, performanceCoreCount: 2),
+            gpu: GPUStat(utilizationPercent: 0),
+            thermals: ThermalSensors(cpuAverageCelsius: nil, cpuMaxCelsius: nil, batteryCelsius: 30, sensors: []),
+            powerDraw: SystemPowerDraw(systemWatts: 9))
+        let v = Dictionary(uniqueKeysWithValues: MetricSample.samples(from: snapshot).map { ($0.key.rawValue, $0.value) })
+        #expect(v["cpu.efficiency"] == nil)
+        #expect(v["cpu.performance"] == 30)
+        #expect(v["gpu.percent"] == 0)          // a real measured 0 is kept
+        #expect(v["gpu.memory"] == nil)
+        #expect(v["temp.cpu.avg"] == nil && v["temp.battery"] == 30)
+        #expect(v["power.system"] == 9 && v["power.cpu"] == nil)
+        #expect(v["fan.max"] == nil)
+    }
+}
+
 // MARK: Summary
 
 @Suite struct HistorySummaryTests {

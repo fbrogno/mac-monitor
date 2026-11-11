@@ -30,6 +30,28 @@ public struct MetricKey: RawRepresentable, Hashable, Sendable, Codable, Comparab
     public static let batteryPercent: MetricKey = "battery.percent"
     /// 0 nominal, 1 fair, 2 serious, 3 critical.
     public static let thermalLevel: MetricKey = "thermal.level"
+    /// GPU device utilization, 0…100.
+    public static let gpuPercent: MetricKey = "gpu.percent"
+    /// System memory in use by the GPU, bytes.
+    public static let gpuMemory: MetricKey = "gpu.memory"
+    /// Mean load of the efficiency / performance cores, 0…100.
+    public static let cpuEfficiency: MetricKey = "cpu.efficiency"
+    public static let cpuPerformance: MetricKey = "cpu.performance"
+    /// Mean and maximum CPU/SoC die temperature, °C.
+    public static let cpuTempAvg: MetricKey = "temp.cpu.avg"
+    public static let cpuTempMax: MetricKey = "temp.cpu.max"
+    public static let batteryTemp: MetricKey = "temp.battery"
+    /// Whole-system power in watts.
+    public static let powerSystem: MetricKey = "power.system"
+    public static let powerCPU: MetricKey = "power.cpu"
+    public static let powerGPU: MetricKey = "power.gpu"
+    /// Fastest fan, rpm.
+    public static let fanMax: MetricKey = "fan.max"
+    /// Disk throughput in bytes/s.
+    public static let diskRead: MetricKey = "disk.read"
+    public static let diskWrite: MetricKey = "disk.write"
+    /// 1-minute load average.
+    public static let load1: MetricKey = "load.1m"
 }
 
 /// One raw measurement.
@@ -59,6 +81,25 @@ public struct MetricSample: Sendable, Equatable {
             out.append(MetricSample(.netUp, net.upBytesPerSecond))
         }
         if let percent = snapshot.power.batteryPercent { out.append(MetricSample(.batteryPercent, Double(percent))) }
+        // Extended metrics: a row only where the Mac reports a value, never a stand-in 0.
+        if let gpu = snapshot.gpu {
+            out.append(MetricSample(.gpuPercent, gpu.utilizationPercent))
+            if let used = gpu.memoryUsedBytes { out.append(MetricSample(.gpuMemory, Double(used))) }
+        }
+        if let value = snapshot.cpuCores?.efficiencyPercent { out.append(MetricSample(.cpuEfficiency, value)) }
+        if let value = snapshot.cpuCores?.performancePercent { out.append(MetricSample(.cpuPerformance, value)) }
+        if let value = snapshot.thermals?.cpuAverageCelsius { out.append(MetricSample(.cpuTempAvg, value)) }
+        if let value = snapshot.thermals?.cpuMaxCelsius { out.append(MetricSample(.cpuTempMax, value)) }
+        if let value = snapshot.thermals?.batteryCelsius { out.append(MetricSample(.batteryTemp, value)) }
+        if let value = snapshot.powerDraw?.systemWatts { out.append(MetricSample(.powerSystem, value)) }
+        if let value = snapshot.powerDraw?.cpuWatts { out.append(MetricSample(.powerCPU, value)) }
+        if let value = snapshot.powerDraw?.gpuWatts { out.append(MetricSample(.powerGPU, value)) }
+        if let value = snapshot.fans.map(\.rpm).max() { out.append(MetricSample(.fanMax, value)) }
+        if let io = snapshot.diskThroughput {
+            out.append(MetricSample(.diskRead, io.readBytesPerSecond))
+            out.append(MetricSample(.diskWrite, io.writeBytesPerSecond))
+        }
+        if let load = snapshot.runtime?.loadAverage { out.append(MetricSample(.load1, load.one)) }
         return out
     }
 }
