@@ -166,44 +166,44 @@ public struct CustomRuleEvaluator: Sendable {
         let who = rule.processName ?? ""
         switch rule.metric {
         case .cpuTotal:
-            return above ? "Die CPU-Auslastung liegt bei \(v) und damit über der Schwelle von \(t)."
-                         : "Die CPU-Auslastung liegt bei \(v) und damit unter der Schwelle von \(t)."
+            return above ? L("Die CPU-Auslastung liegt bei \(v) und damit über der Schwelle von \(t).")
+                         : L("Die CPU-Auslastung liegt bei \(v) und damit unter der Schwelle von \(t).")
         case .memoryPercent:
-            return above ? "Der Arbeitsspeicher ist zu \(v) belegt, das liegt über der Schwelle von \(t)."
-                         : "Der Arbeitsspeicher ist zu \(v) belegt, das liegt unter der Schwelle von \(t)."
+            return above ? L("Der Arbeitsspeicher ist zu \(v) belegt, das liegt über der Schwelle von \(t).")
+                         : L("Der Arbeitsspeicher ist zu \(v) belegt, das liegt unter der Schwelle von \(t).")
         case .swapGB:
-            return above ? "Der Swap ist \(v) groß und damit über der Schwelle von \(t)."
-                         : "Der Swap ist \(v) groß und damit unter der Schwelle von \(t)."
+            return above ? L("Der Swap ist \(v) groß und damit über der Schwelle von \(t).")
+                         : L("Der Swap ist \(v) groß und damit unter der Schwelle von \(t).")
         case .gpuPercent:
-            return above ? "Die GPU ist zu \(v) ausgelastet, das liegt über der Schwelle von \(t)."
-                         : "Die GPU ist zu \(v) ausgelastet, das liegt unter der Schwelle von \(t)."
+            return above ? L("Die GPU ist zu \(v) ausgelastet, das liegt über der Schwelle von \(t).")
+                         : L("Die GPU ist zu \(v) ausgelastet, das liegt unter der Schwelle von \(t).")
         case .cpuTemperature:
-            return above ? "Die CPU ist \(v) warm und damit über der Schwelle von \(t)."
-                         : "Die CPU ist \(v) warm und damit unter der Schwelle von \(t)."
+            return above ? L("Die CPU ist \(v) warm und damit über der Schwelle von \(t).")
+                         : L("Die CPU ist \(v) warm und damit unter der Schwelle von \(t).")
         case .fanPercent:
-            return above ? "Der Lüfter läuft mit \(v) seiner Höchstdrehzahl, das liegt über der Schwelle von \(t)."
-                         : "Der Lüfter läuft mit \(v) seiner Höchstdrehzahl, das liegt unter der Schwelle von \(t)."
+            return above ? L("Der Lüfter läuft mit \(v) seiner Höchstdrehzahl, das liegt über der Schwelle von \(t).")
+                         : L("Der Lüfter läuft mit \(v) seiner Höchstdrehzahl, das liegt unter der Schwelle von \(t).")
         case .systemWatts:
-            return above ? "Der Mac verbraucht \(v) und damit mehr als die Schwelle von \(t)."
-                         : "Der Mac verbraucht \(v) und damit weniger als die Schwelle von \(t)."
+            return above ? L("Der Mac verbraucht \(v) und damit mehr als die Schwelle von \(t).")
+                         : L("Der Mac verbraucht \(v) und damit weniger als die Schwelle von \(t).")
         case .batteryPercent:
-            return above ? "Der Akku steht bei \(v) und damit über der Schwelle von \(t)."
-                         : "Der Akku steht bei \(v) und damit unter der Schwelle von \(t)."
+            return above ? L("Der Akku steht bei \(v) und damit über der Schwelle von \(t).")
+                         : L("Der Akku steht bei \(v) und damit unter der Schwelle von \(t).")
         case .freeDiskGB:
-            return above ? "Auf der Festplatte sind \(v) frei, das liegt über der Schwelle von \(t)."
-                         : "Auf der Festplatte sind nur noch \(v) frei, das liegt unter der Schwelle von \(t)."
+            return above ? L("Auf der Festplatte sind \(v) frei, das liegt über der Schwelle von \(t).")
+                         : L("Auf der Festplatte sind nur noch \(v) frei, das liegt unter der Schwelle von \(t).")
         case .networkDown:
-            return above ? "Der Download läuft mit \(v) und damit schneller als die Schwelle von \(t)."
-                         : "Der Download läuft mit \(v) und damit langsamer als die Schwelle von \(t)."
+            return above ? L("Der Download läuft mit \(v) und damit schneller als die Schwelle von \(t).")
+                         : L("Der Download läuft mit \(v) und damit langsamer als die Schwelle von \(t).")
         case .networkUp:
-            return above ? "Der Upload läuft mit \(v) und damit schneller als die Schwelle von \(t)."
-                         : "Der Upload läuft mit \(v) und damit langsamer als die Schwelle von \(t)."
+            return above ? L("Der Upload läuft mit \(v) und damit schneller als die Schwelle von \(t).")
+                         : L("Der Upload läuft mit \(v) und damit langsamer als die Schwelle von \(t).")
         case .processCPU:
-            return above ? "\(who) belegt \(v) CPU und damit mehr als die Schwelle von \(t)."
-                         : "\(who) belegt \(v) CPU und damit weniger als die Schwelle von \(t)."
+            return above ? L("\(who) belegt \(v) CPU und damit mehr als die Schwelle von \(t).")
+                         : L("\(who) belegt \(v) CPU und damit weniger als die Schwelle von \(t).")
         case .processMemory:
-            return above ? "\(who) belegt \(v) Arbeitsspeicher und damit mehr als die Schwelle von \(t)."
-                         : "\(who) belegt \(v) Arbeitsspeicher und damit weniger als die Schwelle von \(t)."
+            return above ? L("\(who) belegt \(v) Arbeitsspeicher und damit mehr als die Schwelle von \(t).")
+                         : L("\(who) belegt \(v) Arbeitsspeicher und damit weniger als die Schwelle von \(t).")
         }
     }
 

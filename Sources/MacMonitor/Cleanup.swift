@@ -33,47 +33,47 @@ struct CleanupTarget: Identifiable, Sendable {
         func h(_ path: String) -> String { home + "/" + path }
         var targets: [CleanupTarget] = [
             CleanupTarget(
-                id: "caches", title: "App-Caches", detail: "~/Library/Caches",
-                consequence: "Apps laden Vorschaubilder und Daten beim nächsten Start neu. Offene Apps solltest du danach neu starten.",
+                id: "caches", title: String(localized: "App-Caches"), detail: "~/Library/Caches",
+                consequence: String(localized: "Apps laden Vorschaubilder und Daten beim nächsten Start neu. Offene Apps solltest du danach neu starten."),
                 measuredPaths: [h("Library/Caches")],
                 // Playwright keeps its browser binaries here and does not re-download them by itself.
                 method: .emptyFolders([h("Library/Caches")], keeping: ["ms-playwright"])),
             CleanupTarget(
-                id: "derived", title: "Xcode DerivedData", detail: "Build-Zwischenstände",
-                consequence: "Der nächste Xcode-Build dauert einmal länger.",
+                id: "derived", title: String(localized: "Xcode DerivedData"), detail: String(localized: "Build-Zwischenstände"),
+                consequence: String(localized: "Der nächste Xcode-Build dauert einmal länger."),
                 measuredPaths: [h("Library/Developer/Xcode/DerivedData")],
                 method: .emptyFolders([h("Library/Developer/Xcode/DerivedData")])),
             CleanupTarget(
-                id: "npm", title: "npm-Cache", detail: "~/.npm",
-                consequence: "Pakete werden bei der nächsten Installation neu geladen.",
+                id: "npm", title: String(localized: "npm-Cache"), detail: "~/.npm",
+                consequence: String(localized: "Pakete werden bei der nächsten Installation neu geladen."),
                 measuredPaths: [h(".npm")], method: .emptyFolders([h(".npm/_cacache")])),
             // Only uv: other folders in ~/.cache hold indexes and data that are not caches
             // in the throw-away sense (e.g. qmd search indexes).
             CleanupTarget(
-                id: "uv", title: "uv-Cache (Python)", detail: "~/.cache/uv",
-                consequence: "Python-Pakete werden bei der nächsten Installation neu geladen.",
+                id: "uv", title: String(localized: "uv-Cache (Python)"), detail: "~/.cache/uv",
+                consequence: String(localized: "Python-Pakete werden bei der nächsten Installation neu geladen."),
                 measuredPaths: [h(".cache/uv")], method: .emptyFolders([h(".cache/uv")])),
             CleanupTarget(
-                id: "gradle", title: "Gradle-Cache", detail: "~/.gradle/caches",
-                consequence: "Der nächste Gradle-Build lädt Abhängigkeiten neu.",
+                id: "gradle", title: String(localized: "Gradle-Cache"), detail: "~/.gradle/caches",
+                consequence: String(localized: "Der nächste Gradle-Build lädt Abhängigkeiten neu."),
                 measuredPaths: [h(".gradle/caches")], method: .emptyFolders([h(".gradle/caches")])),
         ]
         if let xcrun = ["/usr/bin/xcrun"].first(where: FileManager.default.isExecutableFile(atPath:)) {
             targets.append(CleanupTarget(
-                id: "simulators", title: "Veraltete Simulatoren", detail: "iOS-Simulatoren nicht mehr installierter Versionen",
-                consequence: "Entfernt nur Simulatoren, deren iOS-Version nicht mehr installiert ist.",
+                id: "simulators", title: String(localized: "Veraltete Simulatoren"), detail: String(localized: "iOS-Simulatoren nicht mehr installierter Versionen"),
+                consequence: String(localized: "Entfernt nur Simulatoren, deren iOS-Version nicht mehr installiert ist."),
                 measuredPaths: [h("Library/Developer/CoreSimulator")],
                 method: .command(executable: xcrun, arguments: [["simctl", "delete", "unavailable"]])))
         }
         if let docker = ["/usr/local/bin/docker", "/opt/homebrew/bin/docker"].first(where: FileManager.default.isExecutableFile(atPath:)) {
             targets.append(CleanupTarget(
-                id: "docker", title: "Docker: ungenutzte Images & Build-Cache", detail: "Container und Volumes bleiben erhalten",
-                consequence: "Entfernt Images ohne Container und den Build-Cache. Laufende und gestoppte Container sowie Volumes bleiben.",
+                id: "docker", title: String(localized: "Docker: ungenutzte Images & Build-Cache"), detail: String(localized: "Container und Volumes bleiben erhalten"),
+                consequence: String(localized: "Entfernt Images ohne Container und den Build-Cache. Laufende und gestoppte Container sowie Volumes bleiben."),
                 measuredPaths: [h("Library/Containers/com.docker.docker")],
                 method: .command(executable: docker, arguments: [["image", "prune", "-a", "-f"], ["builder", "prune", "-f"]])))
         }
         targets.append(CleanupTarget(
-            id: "downloads", title: "Downloads", detail: "Deine Dateien – nur du entscheidest",
+            id: "downloads", title: String(localized: "Downloads"), detail: String(localized: "Deine Dateien – nur du entscheidest"),
             consequence: "", measuredPaths: [h("Downloads")], method: .revealOnly(h("Downloads"))))
         return targets
     }

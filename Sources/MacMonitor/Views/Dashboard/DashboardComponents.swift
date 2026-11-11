@@ -193,5 +193,5 @@ func durationText(_ seconds: TimeInterval) -> String {
     let minutes = Int((seconds / 60).rounded())
     if minutes < 60 { return "\(minutes) min" }
     let hours = minutes / 60
-    return hours < 48 ? "\(hours) h \(minutes % 60) min" : "\(hours / 24) Tage \(hours % 24) h"
+    return hours < 48 ? "\(hours) h \(minutes % 60) min" : String(localized: "\(hours / 24) Tage") + " \(hours % 24) h"
 }

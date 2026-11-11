@@ -43,7 +43,6 @@ struct PopoverView: View {
         }
         .padding(14)
         .frame(width: 340)
-        .environment(\.locale, Locale(identifier: "de_DE"))
     }
 
     // MARK: Header
@@ -63,7 +62,7 @@ struct PopoverView: View {
         let color = worst.map(Palette.severity) ?? Palette.ok
         return HStack(spacing: 5) {
             Circle().fill(color).frame(width: 7, height: 7)
-            Text(count == 0 ? "Alles ruhig" : count == 1 ? "1 Auffälligkeit" : "\(count) Auffälligkeiten")
+            Text(count == 0 ? String(localized: "Alles ruhig") : String(localized: "\(count) Auffälligkeiten"))
                 .font(.system(size: 11, weight: .medium))
         }
         .padding(.horizontal, 9).padding(.vertical, 4)
@@ -129,7 +128,7 @@ struct PopoverView: View {
                 if s.power.batteryPercent != nil {
                     stat(batteryTitle(s.power), batteryValue(s.power), symbol: batterySymbol(s.power),
                          tint: (s.power.batteryPercent ?? 100) <= 15 && s.power.onBattery ? Palette.critical : .secondary)
-                        .help(s.power.health.map { "Akkuzustand \($0.capacityPercent) % der ursprünglichen Kapazität, \($0.cycleCount) Ladezyklen" } ?? "")
+                        .help(s.power.health.map { String(localized: "Akkuzustand \($0.capacityPercent) % der ursprünglichen Kapazität, \($0.cycleCount) Ladezyklen") } ?? "")
                 }
                 let blockers = visibleBlockers(s)
                 stat("Ruhezustand", sleepValue(blockers), symbol: blockers.isEmpty ? "moon.zzz" : "cup.and.saucer",
@@ -138,7 +137,7 @@ struct PopoverView: View {
         }
     }
 
-    private func chartCard(title: String, value: String, detail: String, values: [Double], tint: Color) -> some View {
+    private func chartCard(title: LocalizedStringKey, value: String, detail: LocalizedStringKey, values: [Double], tint: Color) -> some View {
         Card {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title).font(.system(size: 10, weight: .medium)).foregroundStyle(.secondary).textCase(.uppercase)
@@ -149,7 +148,7 @@ struct PopoverView: View {
         }
     }
 
-    private func stat(_ title: String, _ value: String, symbol: String, tint: Color) -> some View {
+    private func stat(_ title: LocalizedStringKey, _ value: String, symbol: String, tint: Color) -> some View {
         Card {
             HStack(spacing: 8) {
                 Image(systemName: symbol).font(.system(size: 13)).foregroundStyle(tint).frame(width: 18)
@@ -243,7 +242,7 @@ struct PopoverView: View {
                         .font(.system(size: 10))
                         .foregroundStyle(e.kind == .resolved ? Palette.ok : Palette.severity(e.condition.severity))
                         .frame(width: 14)
-                    Text(e.kind == .resolved ? "Behoben: \(e.condition.title)" : e.condition.title)
+                    Text(e.kind == .resolved ? String(localized: "Behoben: \(e.condition.title)") : e.condition.title)
                         .font(.system(size: 11)).lineLimit(1)
                     Spacer(minLength: 4)
                     Text(e.date, format: .relative(presentation: .numeric, unitsStyle: .abbreviated))
@@ -273,9 +272,9 @@ struct PopoverView: View {
 
     private func pressureText(_ p: MemoryPressure) -> String {
         switch p {
-        case .normal: "Druck normal"
-        case .warning: "Druck erhöht"
-        case .critical: "Druck kritisch"
+        case .normal: String(localized: "Druck normal")
+        case .warning: String(localized: "Druck erhöht")
+        case .critical: String(localized: "Druck kritisch")
         }
     }
 
@@ -289,10 +288,10 @@ struct PopoverView: View {
 
     private func thermalText(_ t: ThermalLevel) -> String {
         switch t {
-        case .nominal: "Normal"
-        case .fair: "Warm"
-        case .serious: "Heiß – drosselt"
-        case .critical: "Kritisch"
+        case .nominal: String(localized: "Normal")
+        case .fair: String(localized: "Warm")
+        case .serious: String(localized: "Heiß – drosselt")
+        case .critical: String(localized: "Kritisch")
         }
     }
 
@@ -302,20 +301,22 @@ struct PopoverView: View {
     }
 
     private func networkValue(_ s: SystemSnapshot) -> String {
-        guard s.isOnline else { return "Offline" }
-        guard let n = s.network else { return "Online" }
+        guard s.isOnline else { return String(localized: "Offline") }
+        guard let n = s.network else { return String(localized: "Online") }
         return "↓ \(Format.rate(n.downBytesPerSecond))  ↑ \(Format.rate(n.upBytesPerSecond))"
     }
 
-    private func batteryTitle(_ p: PowerState) -> String {
+    private func batteryTitle(_ p: PowerState) -> LocalizedStringKey {
         guard let health = p.health else { return "Akku" }
         return "Akku · \(health.capacityPercent) %"
     }
 
     private func batteryValue(_ p: PowerState) -> String {
-        let percent = "\(p.batteryPercent ?? 0) %"
+        let percent = Format.percent(Double(p.batteryPercent ?? 0))
         if p.onBattery, let minutes = p.minutesRemaining { return "\(percent) · \(Format.hoursMinutes(minutes))" }
-        if !p.onBattery { return p.isCharging ? "\(percent) · lädt" : "\(percent) · Netzteil" }
+        if !p.onBattery {
+            return p.isCharging ? String(localized: "\(percent) · lädt") : String(localized: "\(percent) · Netzteil")
+        }
         return percent
     }
 
@@ -331,8 +332,8 @@ struct PopoverView: View {
     }
 
     private func sleepValue(_ blockers: [SleepBlocker]) -> String {
-        guard let first = blockers.first else { return "möglich" }
+        guard let first = blockers.first else { return String(localized: "möglich") }
         let more = blockers.count > 1 ? " +\(blockers.count - 1)" : ""
-        return "blockiert: \(first.name)\(more)"
+        return String(localized: "blockiert: \(first.name)\(more)")
     }
 }

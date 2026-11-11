@@ -5,6 +5,11 @@ import SwiftUI
 // (`MacMonitor --render-docs`) draw exactly the same thing. No WidgetKit here: the extension
 // adds the container background and the tap target.
 
+/// Texts of this module come from its own catalog, not from the host process's bundle.
+func L(_ text: String.LocalizationValue) -> String {
+    String(localized: text, bundle: .module)
+}
+
 public enum WidgetSize: Sendable {
     case small, medium, large
 }
@@ -54,11 +59,11 @@ public struct WidgetStateView<Live: View>: View {
         case .live(let snapshot):
             live(snapshot)
         case .stale(let lastSeen, _):
-            message(String(localized: "MacMonitor läuft nicht"),
-                    detail: String(localized: "Zuletzt gesehen: \(lastSeen.formatted(date: .abbreviated, time: .shortened))"))
+            message(L("MacMonitor läuft nicht"),
+                    detail: L("Zuletzt gesehen: \(lastSeen.formatted(date: .abbreviated, time: .shortened))"))
         case .noData:
-            message(String(localized: "MacMonitor läuft nicht"),
-                    detail: String(localized: "Noch keine Werte. Starte MacMonitor, dann erscheinen sie hier."))
+            message(L("MacMonitor läuft nicht"),
+                    detail: L("Noch keine Werte. Starte MacMonitor, dann erscheinen sie hier."))
         }
     }
 
@@ -158,7 +163,14 @@ private func headline(_ text: String, symbol: String) -> some View {
         .labelStyle(.titleAndIcon)
 }
 
-private func percentText(_ value: Double) -> String { "\(Int(value.rounded())) %" }
+/// "issue" / "issues" for the label under a big number: the plural variation of "%lld issues"
+/// without the number, so the catalog stays the only place that knows the plural rules.
+private func issueWord(_ count: Int) -> String {
+    L("\(count) Auffälligkeiten").replacingOccurrences(of: "\(count)", with: "")
+        .trimmingCharacters(in: .whitespaces)
+}
+
+private func percentText(_ value: Double) -> String { Format.percent(value) }
 
 // MARK: - Status
 
@@ -175,7 +187,7 @@ public struct StatusWidgetView: View {
         WidgetStateView(content: content, size: size) { s in
             let tint = WidgetPalette.severity(s.worstSeverity)
             let count = s.anomalies.count
-            let title = count == 0 ? String(localized: "Alles ruhig") : String(localized: "\(count) Auffälligkeiten")
+            let title = count == 0 ? L("Alles ruhig") : L("\(count) Auffälligkeiten")
             if size == .small {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
@@ -185,7 +197,7 @@ public struct StatusWidgetView: View {
                         } else {
                             VStack(alignment: .leading, spacing: 0) {
                                 Text("\(count)").font(.system(size: 20, weight: .semibold, design: .rounded)).monospacedDigit()
-                                Text(count == 1 ? "Auffälligkeit" : "Auffälligkeiten")
+                                Text(issueWord(count))
                                     .font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
                                     .lineLimit(1).minimumScaleFactor(0.8)
                             }
@@ -205,11 +217,11 @@ public struct StatusWidgetView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(spacing: 10) {
                             lamp(tint, count: count, diameter: 34)
-                            Text(count == 1 ? String(localized: "1 Auffälligkeit") : title)
+                            Text(title)
                                 .font(.system(size: 17, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.7)
                         }
                         if s.anomalies.isEmpty {
-                            Text("Keine Auffälligkeiten in den letzten Messungen.")
+                            Text("Keine Auffälligkeiten in den letzten Messungen.", bundle: .module)
                                 .font(.system(size: 12)).foregroundStyle(.secondary)
                         } else {
                             ForEach(Array(s.anomalies.prefix(size == .large ? 5 : 2).enumerated()), id: \.offset) { _, a in
@@ -219,7 +231,7 @@ public struct StatusWidgetView: View {
                                 }
                             }
                             if s.anomalies.count > (size == .large ? 5 : 2) {
-                                Text("+ \(s.anomalies.count - (size == .large ? 5 : 2)) weitere")
+                                Text("+ \(s.anomalies.count - (size == .large ? 5 : 2)) weitere", bundle: .module)
                                     .font(.system(size: 11)).foregroundStyle(.secondary)
                             }
                         }
@@ -266,7 +278,7 @@ public struct LoadWidgetView: View {
     public var body: some View {
         WidgetStateView(content: content, size: .medium) { s in
             VStack(alignment: .leading, spacing: 8) {
-                headline(String(localized: "Auslastung"), symbol: "gauge.with.dots.needle.50percent")
+                headline(L("Auslastung"), symbol: "gauge.with.dots.needle.50percent")
                 HStack(spacing: 12) {
                     column("CPU", value: s.cpuPercent, series: s.cpuSeries)
                     column("RAM", value: s.memoryPercent, series: s.memorySeries)
@@ -322,37 +334,37 @@ public struct BatteryWidgetView: View {
                 let tint = b.isCharging || !b.onBattery ? WidgetPalette.ok : (b.percent <= 10 ? WidgetPalette.critical : b.percent <= 20 ? WidgetPalette.warn : WidgetPalette.ok)
                 if size == .small {
                     VStack(alignment: .leading, spacing: 6) {
-                        headline(String(localized: "Akku"), symbol: symbol(b))
+                        headline(L("Akku"), symbol: symbol(b))
                         Spacer(minLength: 0)
-                        Text("\(b.percent) %").font(.system(size: 34, weight: .semibold, design: .rounded)).monospacedDigit()
+                        Text(percentText(Double(b.percent))).font(.system(size: 34, weight: .semibold, design: .rounded)).monospacedDigit()
                         Bar(fraction: Double(b.percent) / 100, tint: tint)
                         Text(state(b)).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(2)
                     }
                 } else {
                     HStack(alignment: .center, spacing: 18) {
                         VStack(alignment: .leading, spacing: 6) {
-                            headline(String(localized: "Akku & Energie"), symbol: symbol(b))
+                            headline(L("Akku & Energie"), symbol: symbol(b))
                             Spacer(minLength: 0)
-                            Text("\(b.percent) %").font(.system(size: 40, weight: .semibold, design: .rounded)).monospacedDigit()
+                            Text(percentText(Double(b.percent))).font(.system(size: 40, weight: .semibold, design: .rounded)).monospacedDigit()
                             Bar(fraction: Double(b.percent) / 100, tint: tint)
                             Text(state(b)).font(.system(size: 12)).foregroundStyle(.secondary)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         VStack(alignment: .leading, spacing: 10) {
-                            fact("bolt.fill", String(localized: "Leistung"), s.powerWatts.map(Format.watts) ?? "–")
-                            fact("heart.fill", String(localized: "Zustand"), b.healthPercent.map { "\($0) %" } ?? "–")
-                            fact("arrow.triangle.2.circlepath", String(localized: "Ladezyklen"), b.cycleCount.map(String.init) ?? "–")
+                            fact("bolt.fill", L("Leistung"), s.powerWatts.map(Format.watts) ?? "–")
+                            fact("heart.fill", L("Zustand"), b.healthPercent.map { percentText(Double($0)) } ?? "–")
+                            fact("arrow.triangle.2.circlepath", L("Ladezyklen"), b.cycleCount.map(String.init) ?? "–")
                         }
                         .frame(width: 130, alignment: .leading)
                     }
                 }
             } else {
                 VStack(alignment: .leading, spacing: 6) {
-                    headline(String(localized: "Energie"), symbol: "powerplug.fill")
+                    headline(L("Energie"), symbol: "powerplug.fill")
                     Spacer(minLength: 0)
                     Text(s.powerWatts.map(Format.watts) ?? "–")
                         .font(.system(size: 34, weight: .semibold, design: .rounded)).monospacedDigit()
-                    Text("Kein Akku, Netzbetrieb").font(.system(size: 12)).foregroundStyle(.secondary)
+                    Text("Kein Akku, Netzbetrieb", bundle: .module).font(.system(size: 12)).foregroundStyle(.secondary)
                 }
             }
         }
@@ -363,10 +375,10 @@ public struct BatteryWidgetView: View {
     }
 
     private func state(_ b: WidgetSnapshot.Battery) -> String {
-        if b.isCharging { return String(localized: "Lädt") }
-        if !b.onBattery { return String(localized: "Netzteil, voll") }
-        if let m = b.minutesRemaining { return String(localized: "Noch \(Format.hoursMinutes(m))") }
-        return String(localized: "Auf Akku")
+        if b.isCharging { return L("Lädt") }
+        if !b.onBattery { return L("Netzteil, voll") }
+        if let m = b.minutesRemaining { return L("Noch \(Format.hoursMinutes(m))") }
+        return L("Auf Akku")
     }
 
     private func fact(_ symbol: String, _ title: String, _ value: String) -> some View {
@@ -398,31 +410,31 @@ public struct StorageWidgetView: View {
                 let tint = WidgetPalette.free(freeFraction)
                 if size == .small {
                     VStack(alignment: .leading, spacing: 6) {
-                        headline(String(localized: "Speicherplatz"), symbol: "internaldrive.fill")
+                        headline(L("Speicherplatz"), symbol: "internaldrive.fill")
                         Spacer(minLength: 0)
                         Text(Format.bytes(free)).font(.system(size: 26, weight: .semibold, design: .rounded)).monospacedDigit()
                             .minimumScaleFactor(0.7).lineLimit(1)
-                        Text("frei von \(Format.bytes(total))").font(.system(size: 11)).foregroundStyle(.secondary)
+                        Text("frei von \(Format.bytes(total))", bundle: .module).font(.system(size: 11)).foregroundStyle(.secondary)
                         Bar(fraction: 1 - freeFraction, tint: tint)
                     }
                 } else {
                     HStack(spacing: 18) {
-                        Ring(fraction: 1 - freeFraction, tint: tint, lineWidth: 9, label: "belegt",
+                        Ring(fraction: 1 - freeFraction, tint: tint, lineWidth: 9, label: L("belegt"),
                              value: percentText((1 - freeFraction) * 100))
                             .frame(width: 96, height: 96)
                         VStack(alignment: .leading, spacing: 6) {
-                            headline(String(localized: "Speicherplatz"), symbol: "internaldrive.fill")
+                            headline(L("Speicherplatz"), symbol: "internaldrive.fill")
                             Text(Format.bytes(free)).font(.system(size: 30, weight: .semibold, design: .rounded)).monospacedDigit()
-                            Text("frei von \(Format.bytes(total))").font(.system(size: 12)).foregroundStyle(.secondary)
+                            Text("frei von \(Format.bytes(total))", bundle: .module).font(.system(size: 12)).foregroundStyle(.secondary)
                             Bar(fraction: 1 - freeFraction, tint: tint)
                             if freeFraction < 0.1 {
-                                Text("Wenig Platz. Aufräumen lohnt sich.").font(.system(size: 11, weight: .medium)).foregroundStyle(tint)
+                                Text("Wenig Platz. Aufräumen lohnt sich.", bundle: .module).font(.system(size: 11, weight: .medium)).foregroundStyle(tint)
                             }
                         }
                     }
                 }
             } else {
-                Text("Kein Wert für den Speicherplatz").font(.system(size: 13)).foregroundStyle(.secondary)
+                Text("Kein Wert für den Speicherplatz", bundle: .module).font(.system(size: 13)).foregroundStyle(.secondary)
             }
         }
     }
@@ -444,9 +456,9 @@ public struct TopAppsWidgetView: View {
             let rows = Array(s.topApps.prefix(size == .large ? 5 : 3))
             VStack(alignment: .leading, spacing: size == .large ? 10 : 8) {
                 HStack {
-                    headline(String(localized: "Größte Verbraucher"), symbol: "list.number")
+                    headline(L("Größte Verbraucher"), symbol: "list.number")
                     Spacer()
-                    Text("CPU").font(.system(size: 10, weight: .semibold)).foregroundStyle(.secondary)
+                    Text("CPU", bundle: .module).font(.system(size: 10, weight: .semibold)).foregroundStyle(.secondary)
                 }
                 ForEach(Array(rows.enumerated()), id: \.offset) { index, app in
                     if size == .large && index > 0 { Divider().opacity(0.5) }
@@ -454,23 +466,23 @@ public struct TopAppsWidgetView: View {
                         VStack(alignment: .leading, spacing: 1) {
                             Text(app.name).font(.system(size: 13, weight: .medium)).lineLimit(1)
                             if size == .large {
-                                Text("\(Format.bytes(app.memoryBytes)) RAM · \(Format.milliwatts(app.energyMilliwatts))")
+                                Text("\(Format.bytes(app.memoryBytes)) RAM · \(Format.milliwatts(app.energyMilliwatts))", bundle: .module)
                                     .font(.system(size: 11)).monospacedDigit().foregroundStyle(.secondary).lineLimit(1)
                             }
                         }
                         Spacer(minLength: 4)
                         Bar(fraction: min(app.cpuPercent, 100) / 100, tint: WidgetPalette.load(app.cpuPercent), height: 5)
                             .frame(width: size == .large ? 56 : 40)
-                        Text("\(Int(app.cpuPercent.rounded())) %").font(.system(size: 12)).monospacedDigit()
+                        Text(percentText(app.cpuPercent)).font(.system(size: 12)).monospacedDigit()
                             .frame(width: 44, alignment: .trailing)
                     }
                 }
                 if rows.isEmpty {
-                    Text("Keine Apps mit nennenswerter Last").font(.system(size: 12)).foregroundStyle(.secondary)
+                    Text("Keine Apps mit nennenswerter Last", bundle: .module).font(.system(size: 12)).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
                 if size == .large {
-                    Text("Nach CPU sortiert, Stand \(s.date.formatted(date: .omitted, time: .shortened))")
+                    Text("Nach CPU sortiert, Stand \(s.date.formatted(date: .omitted, time: .shortened))", bundle: .module)
                         .font(.system(size: 10)).foregroundStyle(.tertiary)
                 }
             }
@@ -501,9 +513,9 @@ extension WidgetSnapshot {
             battery: .init(percent: 82, onBattery: true, isCharging: false, minutesRemaining: 312, healthPercent: 96, cycleCount: 143),
             diskFreeBytes: 312 * gb, diskTotalBytes: 994 * gb,
             anomalies: alerts ? [
-                .init(key: "a", title: "node hängt bei 100 % CPU", severity: Severity.warning.rawValue),
-                .init(key: "b", title: "Arbeitsspeicher wird knapp", severity: Severity.warning.rawValue),
-                .init(key: "c", title: "Swap wächst schnell", severity: Severity.info.rawValue),
+                .init(key: "a", title: L("\("node") hängt bei \(Format.percent(100)) CPU"), severity: Severity.warning.rawValue),
+                .init(key: "b", title: L("Arbeitsspeicher wird knapp"), severity: Severity.warning.rawValue),
+                .init(key: "c", title: L("Swap wächst schnell"), severity: Severity.info.rawValue),
             ] : [],
             topApps: [
                 .init(name: "node", cpuPercent: alerts ? 99.6 : 12.4, memoryBytes: 1_400_000_000, energyMilliwatts: alerts ? 5200 : 640),

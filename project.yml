@@ -4,6 +4,7 @@ options:
   deploymentTarget:
     macOS: "15.0"
   createIntermediateGroups: true
+  developmentLanguage: de    # texts are German at the source, English comes from the .xcstrings catalogs
 configFiles:
   Debug: Config/Sparkle.xcconfig
   Release: Config/Sparkle.xcconfig

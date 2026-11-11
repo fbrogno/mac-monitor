@@ -29,6 +29,9 @@ jobs:
           swift --version
           brew install xcodegen
 
+      - name: Texts (string catalogs complete)
+        run: scripts/check-l10n.sh
+
       - name: Tests
         run: swift test
 

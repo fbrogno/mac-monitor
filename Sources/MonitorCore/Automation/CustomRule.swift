@@ -27,19 +27,19 @@ public enum CustomMetric: String, CaseIterable, Codable, Sendable {
 
     public var title: String {
         switch self {
-        case .cpuTotal: "CPU gesamt"
-        case .memoryPercent: "Arbeitsspeicher belegt"
-        case .swapGB: "Swap"
-        case .gpuPercent: "GPU-Auslastung"
-        case .cpuTemperature: "CPU-Temperatur"
-        case .fanPercent: "Lüfterdrehzahl"
-        case .systemWatts: "Systemleistung"
-        case .batteryPercent: "Akkustand"
-        case .freeDiskGB: "Freier Speicherplatz"
-        case .networkDown: "Netzwerk Download"
-        case .networkUp: "Netzwerk Upload"
-        case .processCPU: "CPU eines Prozesses"
-        case .processMemory: "RAM eines Prozesses"
+        case .cpuTotal: L("CPU gesamt")
+        case .memoryPercent: L("Arbeitsspeicher belegt")
+        case .swapGB: L("Swap")
+        case .gpuPercent: L("GPU-Auslastung")
+        case .cpuTemperature: L("CPU-Temperatur")
+        case .fanPercent: L("Lüfterdrehzahl")
+        case .systemWatts: L("Systemleistung")
+        case .batteryPercent: L("Akkustand")
+        case .freeDiskGB: L("Freier Speicherplatz")
+        case .networkDown: L("Netzwerk Download")
+        case .networkUp: L("Netzwerk Upload")
+        case .processCPU: L("CPU eines Prozesses")
+        case .processMemory: L("RAM eines Prozesses")
         }
     }
 
@@ -84,8 +84,8 @@ public enum CustomComparison: String, CaseIterable, Codable, Sendable {
 
     public var title: String {
         switch self {
-        case .above: "liegt über"
-        case .below: "liegt unter"
+        case .above: L("liegt über")
+        case .below: L("liegt unter")
         }
     }
 }
@@ -96,9 +96,9 @@ public enum PowerCondition: String, CaseIterable, Codable, Sendable {
 
     public var title: String {
         switch self {
-        case .always: "Immer"
-        case .onlyOnBattery: "Nur im Akkubetrieb"
-        case .onlyOnAC: "Nur am Netzteil"
+        case .always: L("Immer")
+        case .onlyOnBattery: L("Nur im Akkubetrieb")
+        case .onlyOnAC: L("Nur am Netzteil")
         }
     }
 
@@ -127,11 +127,11 @@ public enum RuleAction: Codable, Equatable, Hashable, Sendable {
 
         public var title: String {
             switch self {
-            case .showNotification: "Mitteilung zeigen"
-            case .runShortcut: "Kurzbefehl ausführen"
-            case .quitProcess: "Prozess beenden"
-            case .throttleProcess: "Prozess drosseln"
-            case .openURL: "URL öffnen"
+            case .showNotification: L("Mitteilung zeigen")
+            case .runShortcut: L("Kurzbefehl ausführen")
+            case .quitProcess: L("Prozess beenden")
+            case .throttleProcess: L("Prozess drosseln")
+            case .openURL: L("URL öffnen")
             }
         }
     }
@@ -288,26 +288,26 @@ extension CustomRule {
     public static let templates: [CustomRule] = [
         CustomRule(
             id: UUID(uuidString: "6F1D0A10-0000-4000-8000-000000000001")!,
-            name: "Chrome frisst RAM", metric: .processMemory, processName: "Google Chrome",
+            name: L("Chrome frisst RAM"), metric: .processMemory, processName: "Google Chrome",
             comparison: .above, threshold: 4, minDuration: 120, severity: .warning, cooldown: 1800,
             actions: [.showNotification, .quitProcess(askFirst: true)]),
         CustomRule(
             id: UUID(uuidString: "6F1D0A10-0000-4000-8000-000000000002")!,
-            name: "Mac wird heiß", metric: .cpuTemperature, comparison: .above, threshold: 90,
+            name: L("Mac wird heiß"), metric: .cpuTemperature, comparison: .above, threshold: 90,
             minDuration: 120, severity: .warning, cooldown: 900, actions: [.showNotification]),
         CustomRule(
             id: UUID(uuidString: "6F1D0A10-0000-4000-8000-000000000003")!,
-            name: "Akku unter 20 %", metric: .batteryPercent, comparison: .below, threshold: 20,
+            name: L("Akku unter 20 %"), metric: .batteryPercent, comparison: .below, threshold: 20,
             minDuration: 30, powerCondition: .onlyOnBattery, severity: .warning, cooldown: 3600,
-            actions: [.showNotification, .runShortcut(name: "Energie sparen")]),
+            actions: [.showNotification, .runShortcut(name: L("Energie sparen"))]),
         CustomRule(
             id: UUID(uuidString: "6F1D0A10-0000-4000-8000-000000000004")!,
-            name: "Xcode zu hungrig", metric: .processCPU, processName: "Xcode",
+            name: L("Xcode zu hungrig"), metric: .processCPU, processName: "Xcode",
             comparison: .above, threshold: 300, minDuration: 300, severity: .info, cooldown: 1800,
             actions: [.showNotification, .throttleProcess]),
         CustomRule(
             id: UUID(uuidString: "6F1D0A10-0000-4000-8000-000000000005")!,
-            name: "Großer Upload läuft", metric: .networkUp, comparison: .above, threshold: 5,
+            name: L("Großer Upload läuft"), metric: .networkUp, comparison: .above, threshold: 5,
             minDuration: 300, severity: .info, cooldown: 3600, actions: [.showNotification]),
     ]
 

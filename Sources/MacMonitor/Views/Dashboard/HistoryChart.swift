@@ -21,7 +21,7 @@ enum ChartUnit {
     /// Shorter text for axis labels.
     func axis(_ value: Double) -> String {
         switch self {
-        case .percent: "\(Int(value.rounded())) %"
+        case .percent: Format.percent(value)
         case .bytes: Format.bytes(UInt64(max(0, value)))
         case .bytesPerSecond: Format.rate(value)
         case .watts: "\(Int(value.rounded())) W"
@@ -130,7 +130,7 @@ struct HistoryChart: View {
             if !compact {
                 AxisMarks(values: xTicks) { _ in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.08))
-                    AxisValueLabel(format: xFormat).font(.system(size: 10)).foregroundStyle(Color.secondary)
+                    AxisValueLabel(format: xFormat, collisionResolution: .disabled).font(.system(size: 10)).foregroundStyle(Color.secondary)
                 }
             }
         }

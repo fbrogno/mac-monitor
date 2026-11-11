@@ -303,7 +303,7 @@ enum IntentText {
         if let gpu = s.gpuPercent { parts.append(String(localized: "GPU \(Format.percent(gpu))")) }
         if let t = s.temperatureCelsius { parts.append(Format.celsius(t)) }
         if let w = s.powerWatts { parts.append(Format.watts(w)) }
-        if let b = s.batteryPercent { parts.append(String(localized: "Akku \(b) %")) }
+        if let b = s.batteryPercent { parts.append(String(localized: "Akku \(Format.percent(Double(b)))")) }
         if let free = s.freeDiskBytes { parts.append(String(localized: "\(Format.bytes(free)) frei")) }
         let anomalies = s.anomalyCount == 0
             ? String(localized: "Keine Auffälligkeiten.")

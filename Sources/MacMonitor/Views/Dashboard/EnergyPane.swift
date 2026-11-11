@@ -101,7 +101,7 @@ struct EnergyPane: View {
                 }
                 if let health { FactRow(String(localized: "Ladezyklen"), "\(health.cycleCount)") }
                 if let detail {
-                    FactRow(String(localized: "Zustand"), detail.condition.rawValue,
+                    FactRow(String(localized: "Zustand"), detail.condition.title,
                             tint: detail.condition == .normal ? Palette.ok : Palette.warn)
                     if let temperature = detail.temperatureCelsius { FactRow(String(localized: "Temperatur"), Format.celsius(temperature)) }
                     if let adapter = detail.adapterWatts, !s.power.onBattery { FactRow(String(localized: "Netzteil"), "\(adapter) W") }

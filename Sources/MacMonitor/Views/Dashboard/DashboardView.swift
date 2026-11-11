@@ -17,7 +17,6 @@ struct DashboardView: View {
             ScrollView { DashboardDetail(model: model).padding(24) }
         }
         .frame(minWidth: 900, minHeight: 600)
-        .environment(\.locale, Locale(identifier: "de_DE"))
         .confirmationAlert(model: model, host: .dashboard)
         .onAppear { model.isDashboardOpen = true }
         .onDisappear { model.isDashboardOpen = false }
@@ -64,7 +63,6 @@ struct DashboardDetail: View {
             pane
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .environment(\.locale, Locale(identifier: "de_DE"))
     }
 
     @ViewBuilder private var headerControl: some View {

@@ -94,12 +94,12 @@ enum DemoHistory {
         }
         let node = ProcessRef(pid: 4182, name: "node")
         let incidents: [(TimeInterval, TimeInterval?, Condition)] = [
-            (-6.2 * 86_400, 1500, condition("process.cpu.node", .runawayProcess, .warning, "node hängt bei 100 % CPU", node)),
-            (-4.1 * 86_400, 2700, condition("system.memory", .memoryPressure, .warning, "Speicherdruck erhöht")),
-            (-3.4 * 86_400, 620, condition("system.network", .network, .warning, "Keine Internetverbindung")),
-            (-1.8 * 86_400, 4100, condition("system.memory", .memoryPressure, .critical, "Speicherdruck kritisch")),
-            (-0.9 * 86_400, 900, condition("process.cpu.node", .runawayProcess, .warning, "node hängt bei 100 % CPU", node)),
-            (-0.1 * 86_400, nil, condition("system.memory", .memoryPressure, .warning, "Speicherdruck erhöht")),
+            (-6.2 * 86_400, 1500, condition("process.cpu.node", .runawayProcess, .warning, String(localized: "\("node") hängt bei \(Format.percent(100)) CPU"), node)),
+            (-4.1 * 86_400, 2700, condition("system.memory", .memoryPressure, .warning, String(localized: "Speicherdruck erhöht"))),
+            (-3.4 * 86_400, 620, condition("system.network", .network, .warning, String(localized: "Keine Internetverbindung"))),
+            (-1.8 * 86_400, 4100, condition("system.memory", .memoryPressure, .critical, String(localized: "Speicherdruck kritisch"))),
+            (-0.9 * 86_400, 900, condition("process.cpu.node", .runawayProcess, .warning, String(localized: "\("node") hängt bei \(Format.percent(100)) CPU"), node)),
+            (-0.1 * 86_400, nil, condition("system.memory", .memoryPressure, .warning, String(localized: "Speicherdruck erhöht"))),
         ]
         for (offset, length, c) in incidents {
             let begin = now.addingTimeInterval(offset)
