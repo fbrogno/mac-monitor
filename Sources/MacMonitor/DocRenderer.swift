@@ -72,14 +72,14 @@ enum DocRenderer {
         broken.processName = ""
 
         let shots: [(String, SettingsTab, CustomRule?, CGFloat)] = [
-            ("settings-rules", .rules, nil, 760), ("settings-custom-rule", .customRules, broken, 800),
-            ("settings-quiet", .quiet, nil, 640), ("settings-menubar", .menuBar, nil, 640),
+            ("settings-rules", .rules, nil, 735), ("settings-custom-rule", .customRules, broken, 800),
+            ("settings-quiet", .quiet, nil, 730), ("settings-menubar", .menuBar, nil, 740),
         ]
         for (name, tab, preview, height) in shots {
             model.settingsTab = tab
             writeHosted(SettingsShot(model: model, previewRule: preview, height: height), to: url.appendingPathComponent("\(name).png"))
         }
-        writeHosted(WelcomeShot(model: model), to: url.appendingPathComponent("welcome.png"))
+        writeHosted(WelcomeShot(model: AppModel.demo(alerts: false)), to: url.appendingPathComponent("welcome.png"))
     }
 
     /// Captures a SwiftUI view with real AppKit controls at 2x. Needs a window, which stays hidden.
