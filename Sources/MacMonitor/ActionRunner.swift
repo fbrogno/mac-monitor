@@ -29,7 +29,7 @@ extension AppModel {
         let decision = QuietPolicy.decide(severity: item.condition.severity, kind: .fired, settings: settings.quiet, context: quiet)
         notifier.deliver(event, decision: decision)
         if decision.overlay { overlay.show(event, mode: settings.overlayMode) }
-        logAction("Regel „\(item.ruleName)“ hat eine Mitteilung gezeigt.")
+        logAction(String(localized: "Regel „\(item.ruleName)“ hat eine Mitteilung gezeigt."))
     }
 
     // MARK: Shortcut
@@ -39,15 +39,15 @@ extension AppModel {
             let result = await ShortcutRunner.run(name: name, timeout: 60)
             switch result {
             case .success:
-                self?.logAction("Regel „\(rule)“ hat den Kurzbefehl „\(name)“ ausgeführt.")
+                self?.logAction(String(localized: "Regel „\(rule)“ hat den Kurzbefehl „\(name)“ ausgeführt."))
             case .failed(let message):
-                self?.logAction("Regel „\(rule)“: Der Kurzbefehl „\(name)“ ist fehlgeschlagen.", detail: message, isError: true)
+                self?.logAction(String(localized: "Regel „\(rule)“: Der Kurzbefehl „\(name)“ ist fehlgeschlagen."), detail: message, isError: true)
             case .timedOut:
-                self?.logAction("Regel „\(rule)“: Der Kurzbefehl „\(name)“ wurde nach einer Minute abgebrochen.", isError: true)
+                self?.logAction(String(localized: "Regel „\(rule)“: Der Kurzbefehl „\(name)“ wurde nach einer Minute abgebrochen."), isError: true)
             case .unavailable:
-                self?.logAction("Regel „\(rule)“: Das Programm für Kurzbefehle ist auf diesem Mac nicht verfügbar.", isError: true)
+                self?.logAction(String(localized: "Regel „\(rule)“: Das Programm für Kurzbefehle ist auf diesem Mac nicht verfügbar."), isError: true)
             case .invalidName:
-                self?.logAction("Regel „\(rule)“: Der Name des Kurzbefehls ist ungültig.", isError: true)
+                self?.logAction(String(localized: "Regel „\(rule)“: Der Name des Kurzbefehls ist ungültig."), isError: true)
             }
         }
     }
@@ -56,18 +56,18 @@ extension AppModel {
 
     private func openURL(_ text: String, rule: String) {
         guard let url = ActionURLPolicy.url(from: text) else {
-            logAction("Regel „\(rule)“: Die Adresse „\(text)“ darf nicht geöffnet werden.", isError: true)
+            logAction(String(localized: "Regel „\(rule)“: Die Adresse „\(text)“ darf nicht geöffnet werden."), isError: true)
             return
         }
         // A web address always opens in the browser; any other scheme only if some app handles it.
         guard ActionURLPolicy.isWeb(url) || NSWorkspace.shared.urlForApplication(toOpen: url) != nil else {
-            logAction("Regel „\(rule)“: Kein Programm auf diesem Mac öffnet „\(text)“.", isError: true)
+            logAction(String(localized: "Regel „\(rule)“: Kein Programm auf diesem Mac öffnet „\(text)“."), isError: true)
             return
         }
         if NSWorkspace.shared.open(url) {
-            logAction("Regel „\(rule)“ hat „\(text)“ geöffnet.")
+            logAction(String(localized: "Regel „\(rule)“ hat „\(text)“ geöffnet."))
         } else {
-            logAction("Regel „\(rule)“: „\(text)“ konnte nicht geöffnet werden.", isError: true)
+            logAction(String(localized: "Regel „\(rule)“: „\(text)“ konnte nicht geöffnet werden."), isError: true)
         }
     }
 
@@ -93,18 +93,18 @@ extension AppModel {
         if pendingConfirmation?.title.contains(label) == true { return }
         let helpers = targets.count - 1
         ask(Confirmation(
-            title: "„\(label)“ beenden?",
+            title: String(localized: "„\(label)“ beenden?"),
             message: helpers > 0
-                ? "Die Regel „\(item.ruleName)“ möchte „\(label)“ beenden, dazu \(helpers) Hilfsprozesse. Ungesicherte Daten können verloren gehen."
-                : "Die Regel „\(item.ruleName)“ möchte „\(label)“ beenden. Ungesicherte Daten können verloren gehen.",
-            confirmTitle: "Beenden",
+                ? String(localized: "Die Regel „\(item.ruleName)“ möchte „\(label)“ beenden, dazu \(String(localized: "\(helpers) Hilfsprozesse")). Ungesicherte Daten können verloren gehen.")
+                : String(localized: "Die Regel „\(item.ruleName)“ möchte „\(label)“ beenden. Ungesicherte Daten können verloren gehen."),
+            confirmTitle: String(localized: "Beenden"),
             action: { [weak self] in self?.finishQuit(targets, rule: item.ruleName, label: label) }))
     }
 
     /// Sends SIGTERM, main process first. Right before, every PID is checked again (protected list, still the same process).
     func finishQuit(_ targets: [ProcessRef], rule: String, label: String) {
         let results = ProcessControl.terminate(targets.filter { !isProtectedNow($0) })
-        report(results, rule: rule, label: label, verb: "beendet", failure: "konnte nicht beendet werden")
+        report(results, rule: rule, label: label, kind: .quit)
         requestSample()
     }
 
@@ -117,8 +117,8 @@ extension AppModel {
         if results.contains(where: { $0.outcome == .done }) {
             throttledByRule[item.ruleID, default: []].append(label)
         }
-        report(results, rule: item.ruleName, label: label, verb: "gedrosselt", failure: "konnte nicht gedrosselt werden",
-               note: "Die Priorität bleibt niedrig, bis das Programm neu gestartet wird.")
+        report(results, rule: item.ruleName, label: label, kind: .throttle,
+               note: String(localized: "Die Priorität bleibt niedrig, bis das Programm neu gestartet wird."))
     }
 
     /// The full protection check on the newest snapshot, for PIDs that are in it.
@@ -127,26 +127,36 @@ extension AppModel {
         return ProtectedProcesses.isProtected(stat)
     }
 
-    private func report(_ results: [ProcessControl.Result], rule: String, label: String, verb: String, failure: String, note: String = "") {
+    private enum ReportKind { case quit, throttle }
+
+    private func report(_ results: [ProcessControl.Result], rule: String, label: String, kind: ReportKind, note: String = "") {
         let done = results.filter { $0.outcome == .done }.count
         let reused = results.filter { if case .skipped(.pidReused) = $0.outcome { return true } else { return false } }.count
         let failed = results.filter { if case .failed = $0.outcome { return true } else { return false } }.count
         let protected = results.filter { $0.outcome == .skipped(.protected) }.count
         if done > 0 {
             var detail = [String]()
-            if reused > 0 { detail.append("\(reused) Prozesse wurden übersprungen, weil ihre Nummer inzwischen ein anderes Programm betrifft.") }
-            if failed > 0 { detail.append("\(failed) Prozesse ließen sich nicht ändern.") }
+            if reused > 0 { detail.append(String(localized: "\(reused) Prozesse wurden übersprungen, weil ihre Nummer inzwischen ein anderes Programm betrifft.")) }
+            if failed > 0 { detail.append(String(localized: "\(failed) Prozesse ließen sich nicht ändern.")) }
             if !note.isEmpty { detail.append(note) }
-            let count = done > 1 ? " (\(done) Prozesse)" : ""
-            logAction("Regel „\(rule)“ hat „\(label)“ \(verb)\(count).", detail: detail.joined(separator: " "), isError: failed > 0)
+            let text: String
+            switch (kind, done > 1) {
+            case (.quit, false): text = String(localized: "Regel „\(rule)“ hat „\(label)“ beendet.")
+            case (.quit, true): text = String(localized: "Regel „\(rule)“ hat „\(label)“ beendet (\(String(localized: "\(done) Prozesse"))).")
+            case (.throttle, false): text = String(localized: "Regel „\(rule)“ hat „\(label)“ gedrosselt.")
+            case (.throttle, true): text = String(localized: "Regel „\(rule)“ hat „\(label)“ gedrosselt (\(String(localized: "\(done) Prozesse"))).")
+            }
+            logAction(text, detail: detail.joined(separator: " "), isError: failed > 0)
         } else if reused > 0 {
-            logAction("Regel „\(rule)“: „\(label)“ läuft nicht mehr, die Prozessnummer gehört jetzt einem anderen Programm. Es wurde nichts verändert.", isError: true)
+            logAction(String(localized: "Regel „\(rule)“: „\(label)“ läuft nicht mehr, die Prozessnummer gehört jetzt einem anderen Programm. Es wurde nichts verändert."), isError: true)
         } else if protected > 0 {
-            logAction("Regel „\(rule)“: „\(label)“ ist geschützt und wurde nicht angefasst.", isError: true)
+            logAction(String(localized: "Regel „\(rule)“: „\(label)“ ist geschützt und wurde nicht angefasst."), isError: true)
         } else if failed > 0 {
-            logAction("Regel „\(rule)“: „\(label)“ \(failure).", isError: true)
+            logAction(kind == .quit
+                      ? String(localized: "Regel „\(rule)“: „\(label)“ konnte nicht beendet werden.")
+                      : String(localized: "Regel „\(rule)“: „\(label)“ konnte nicht gedrosselt werden."), isError: true)
         } else {
-            logAction("Regel „\(rule)“: „\(label)“ läuft schon nicht mehr.")
+            logAction(String(localized: "Regel „\(rule)“: „\(label)“ läuft schon nicht mehr."))
         }
     }
 
@@ -155,9 +165,9 @@ extension AppModel {
         for event in events where event.kind == .resolved {
             guard let rule = settings.customRules.first(where: { $0.conditionKey == event.condition.key }),
                   let apps = throttledByRule.removeValue(forKey: rule.id) else { continue }
-            let list = Array(Set(apps)).sorted().map { "„\($0)“" }.joined(separator: ", ")
-            logAction("Die Bedingung der Regel „\(rule.name)“ ist vorbei.",
-                      detail: "\(list) bleibt gedrosselt, bis das Programm neu gestartet wird.")
+            let list = Array(Set(apps)).sorted().map { String(localized: "„\($0)“") }.joined(separator: ", ")
+            logAction(String(localized: "Die Bedingung der Regel „\(rule.name)“ ist vorbei."),
+                      detail: String(localized: "\(list) bleibt gedrosselt, bis das Programm neu gestartet wird."))
         }
     }
 

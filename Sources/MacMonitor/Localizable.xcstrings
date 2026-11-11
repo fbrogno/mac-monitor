@@ -17,6 +17,22 @@
         }
       }
     },
+    "%@ %@ %@, mindestens %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ %3$@, mindestens %4$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ %3$@ for at least %4$@."
+          }
+        }
+      }
+    },
     "%@ (extern)" : {
       "localizations" : {
         "de" : {
@@ -45,6 +61,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ memory"
+          }
+        }
+      }
+    },
+    "%@ Ungesicherte Daten in diesem Prozess können verloren gehen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Ungesicherte Daten in diesem Prozess können verloren gehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Unsaved data in this process may be lost."
           }
         }
       }
@@ -113,6 +145,22 @@
         }
       }
     },
+    "%@ bleibt gedrosselt, bis das Programm neu gestartet wird." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ bleibt gedrosselt, bis das Programm neu gestartet wird."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Throttled until restarted: %@."
+          }
+        }
+      }
+    },
     "%@ frei" : {
       "localizations" : {
         "de" : {
@@ -161,6 +209,38 @@
         }
       }
     },
+    "%@ neu starten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ neu starten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart %@"
+          }
+        }
+      }
+    },
+    "%@ neu starten?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ neu starten?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart %@?"
+          }
+        }
+      }
+    },
     "%@ von %@" : {
       "localizations" : {
         "de" : {
@@ -205,6 +285,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ of %2$@ free. Everything here rebuilds itself when needed – your files stay untouched."
+          }
+        }
+      }
+    },
+    "%@ von „%@“" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ von „%2$@“"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ of “%2$@”"
           }
         }
       }
@@ -513,6 +609,46 @@
         }
       }
     },
+    "%lld Hilfsprozesse" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Hilfsprozess"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Hilfsprozesse"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld helper process"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld helper processes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld Kerne" : {
       "localizations" : {
         "de" : {
@@ -546,6 +682,166 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld cores"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld Prozesse" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Prozess"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Prozesse"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld process"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld processes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld Prozesse ließen sich nicht ändern." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Prozess ließ sich nicht ändern."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Prozesse ließen sich nicht ändern."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld process couldn’t be changed."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld processes couldn’t be changed."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld Prozesse wurden übersprungen, weil ihre Nummer inzwischen ein anderes Programm betrifft." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Prozess wurde übersprungen, weil seine Nummer inzwischen ein anderes Programm betrifft."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Prozesse wurden übersprungen, weil ihre Nummer inzwischen ein anderes Programm betrifft."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld process was skipped because its ID now belongs to a different app."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld processes were skipped because their IDs now belong to different apps."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld Stunden" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Stunde"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Stunden"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hour"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hours"
                 }
               }
             }
@@ -721,34 +1017,82 @@
         }
       }
     },
-    "Ab Anteil am RAM" : {
+    "Ab Abnutzung" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ab Anteil am RAM"
+            "value" : "Ab Abnutzung"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAM share above"
+            "value" : "Wear above"
           }
         }
       }
     },
-    "Ab CPU" : {
+    "Ab Anteil am Arbeitsspeicher" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ab CPU"
+            "value" : "Ab Anteil am Arbeitsspeicher"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CPU above"
+            "value" : "Memory share above"
+          }
+        }
+      }
+    },
+    "Ab CPU-Last eines Prozesses" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab CPU-Last eines Prozesses"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Process CPU load above"
+          }
+        }
+      }
+    },
+    "Ab Drehzahl-Anteil" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab Drehzahl-Anteil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan speed above"
+          }
+        }
+      }
+    },
+    "Ab GPU-Auslastung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab GPU-Auslastung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU usage above"
           }
         }
       }
@@ -769,18 +1113,50 @@
         }
       }
     },
-    "Ab Swap" : {
+    "Ab Leistung im Schnitt" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ab Swap"
+            "value" : "Ab Leistung im Schnitt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Swap above"
+            "value" : "Average power above"
+          }
+        }
+      }
+    },
+    "Ab Swap-Größe" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab Swap-Größe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap size above"
+          }
+        }
+      }
+    },
+    "Ab Temperatur" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab Temperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperature above"
           }
         }
       }
@@ -797,6 +1173,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Abklingzeit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abklingzeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cooldown"
+          }
+        }
+      }
+    },
+    "Adresse" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Address"
           }
         }
       }
@@ -913,6 +1321,38 @@
         }
       }
     },
+    "Aktion entfernen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktion entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove action"
+          }
+        }
+      }
+    },
+    "Aktion hinzufügen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktion hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Action"
+          }
+        }
+      }
+    },
     "Aktive Schnittstelle" : {
       "localizations" : {
         "de" : {
@@ -925,6 +1365,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Active interface"
+          }
+        }
+      }
+    },
+    "Aktivitätsanzeige" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktivitätsanzeige"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity Monitor"
           }
         }
       }
@@ -973,6 +1429,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All"
+          }
+        }
+      }
+    },
+    "Alle Messwerte und der Verlauf bleiben auf diesem Mac." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Messwerte und der Verlauf bleiben auf diesem Mac."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All measurements and the history stay on this Mac."
           }
         }
       }
@@ -1073,6 +1545,22 @@
         }
       }
     },
+    "Als JSON exportieren …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als JSON exportieren …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export as JSON…"
+          }
+        }
+      }
+    },
     "Anteil der Zeit mit erhöhtem oder kritischem Druck, je Zeitabschnitt." : {
       "localizations" : {
         "de" : {
@@ -1117,6 +1605,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Number of issues"
+          }
+        }
+      }
+    },
+    "Anzeige neben dem Symbol" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeige neben dem Symbol"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shown next to the icon"
           }
         }
       }
@@ -1265,6 +1769,22 @@
         }
       }
     },
+    "Auf Standard zurücksetzen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf Standard zurücksetzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset to Defaults"
+          }
+        }
+      }
+    },
     "Auf diesem Mac nicht verfügbar" : {
       "localizations" : {
         "de" : {
@@ -1393,6 +1913,38 @@
         }
       }
     },
+    "Aus Vorlage" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus Vorlage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From Template"
+          }
+        }
+      }
+    },
+    "Aus der Meldung heraus kannst du Programme beenden oder neu starten. Eigene Regeln erledigen das auf Wunsch von selbst." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus der Meldung heraus kannst du Programme beenden oder neu starten. Eigene Regeln erledigen das auf Wunsch von selbst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can quit or restart apps right from an alert. Custom rules can do that for you automatically."
+          }
+        }
+      }
+    },
     "Ausgelöst" : {
       "localizations" : {
         "de" : {
@@ -1473,6 +2025,22 @@
         }
       }
     },
+    "Bearbeiten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        }
+      }
+    },
     "Beenden" : {
       "localizations" : {
         "de" : {
@@ -1533,6 +2101,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resolved: %@"
+          }
+        }
+      }
+    },
+    "Behält deinen Mac im Blick und meldet sich nur, wenn etwas wirklich auffällt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behält deinen Mac im Blick und meldet sich nur, wenn etwas wirklich auffällt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeps an eye on your Mac and only speaks up when something is really wrong."
+          }
+        }
+      }
+    },
+    "Bei Präsentation oder Bildschirmspiegelung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei Präsentation oder Bildschirmspiegelung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "During presentations or screen mirroring"
+          }
+        }
+      }
+    },
+    "Bei gesperrtem Bildschirm" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei gesperrtem Bildschirm"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When the screen is locked"
           }
         }
       }
@@ -1633,6 +2249,22 @@
         }
       }
     },
+    "Bericht im Dashboard öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bericht im Dashboard öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Report in Dashboard"
+          }
+        }
+      }
+    },
     "Bericht wird erstellt …" : {
       "localizations" : {
         "de" : {
@@ -1677,6 +2309,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Power-on hours"
+          }
+        }
+      }
+    },
+    "Bis" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To"
           }
         }
       }
@@ -1825,6 +2473,22 @@
         }
       }
     },
+    "CPU Effizienz-Kern %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU Effizienz-Kern %lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU Efficiency Core %lld"
+          }
+        }
+      }
+    },
     "CPU Mittel" : {
       "localizations" : {
         "de" : {
@@ -1837,6 +2501,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CPU mean"
+          }
+        }
+      }
+    },
+    "CPU Performance-Kern %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU Performance-Kern %lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU Performance Core %lld"
           }
         }
       }
@@ -1869,6 +2549,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CPU and GPU"
+          }
+        }
+      }
+    },
+    "CPU, Speicher, Temperatur, Akku, Netzwerk und mehr, sparsam und ohne Hilfsprozesse." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU, Speicher, Temperatur, Akku, Netzwerk und mehr, sparsam und ohne Hilfsprozesse."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU, memory, temperature, battery, network and more, with a light footprint and no helper processes."
           }
         }
       }
@@ -1937,6 +2633,86 @@
         }
       }
     },
+    "Dann" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dann"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Then"
+          }
+        }
+      }
+    },
+    "Dann gibt es kein Hinweisfenster. Warnungen landen still in der Mitteilungszentrale." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dann gibt es kein Hinweisfenster. Warnungen landen still in der Mitteilungszentrale."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No notice window appears then. Warnings go quietly to Notification Center."
+          }
+        }
+      }
+    },
+    "Dann: %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dann: %@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Then: %@."
+          }
+        }
+      }
+    },
+    "Das Kürzel konnte nicht eingerichtet werden (Fehler %d)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Kürzel konnte nicht eingerichtet werden (Fehler %d)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The shortcut couldn’t be set up (error %d)."
+          }
+        }
+      }
+    },
+    "Das WLAN wird für etwa 3 Sekunden ausgeschaltet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das WLAN wird für etwa 3 Sekunden ausgeschaltet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fi will be turned off for about 3 seconds."
+          }
+        }
+      }
+    },
     "Dashboard" : {
       "localizations" : {
         "de" : {
@@ -1986,6 +2762,22 @@
         }
       }
     },
+    "Daten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        }
+      }
+    },
     "Datendurchsatz und Speicherplatz" : {
       "localizations" : {
         "de" : {
@@ -1998,6 +2790,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Throughput and storage"
+          }
+        }
+      }
+    },
+    "Datenschutz" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy"
           }
         }
       }
@@ -2034,6 +2842,38 @@
         }
       }
     },
+    "Dauerhaft ignorierte Prozesse" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dauerhaft ignorierte Prozesse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always ignored processes"
+          }
+        }
+      }
+    },
+    "Dein Mac im Blick, ohne dass du hinschauen musst." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Mac im Blick, ohne dass du hinschauen musst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mac at a glance, without having to look."
+          }
+        }
+      }
+    },
     "Deine Dateien – nur du entscheidest" : {
       "localizations" : {
         "de" : {
@@ -2046,6 +2886,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your files – only you decide"
+          }
+        }
+      }
+    },
+    "Deine jetzigen Einstellungen, auch die eigenen Regeln, werden dadurch ersetzt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine jetzigen Einstellungen, auch die eigenen Regeln, werden dadurch ersetzt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This replaces your current settings, including your custom rules."
+          }
+        }
+      }
+    },
+    "Der Bericht im Dashboard exportiert auch einzelne Zeiträume." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bericht im Dashboard exportiert auch einzelne Zeiträume."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The report in the dashboard can also export individual periods."
           }
         }
       }
@@ -2078,6 +2950,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The export failed: %@"
+          }
+        }
+      }
+    },
+    "Der Prozess bekommt keine Gelegenheit zu speichern." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Prozess bekommt keine Gelegenheit zu speichern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The process won’t get a chance to save."
+          }
+        }
+      }
+    },
+    "Der Verlauf ist gerade nicht verfügbar. MacMonitor misst trotzdem weiter." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Verlauf ist gerade nicht verfügbar. MacMonitor misst trotzdem weiter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The history is unavailable right now. MacMonitor keeps measuring anyway."
           }
         }
       }
@@ -2179,6 +3083,238 @@
         }
       }
     },
+    "Die App wird beendet und sofort wieder geöffnet. Sie fragt selbst nach, falls etwas ungespeichert ist." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App wird beendet und sofort wieder geöffnet. Sie fragt selbst nach, falls etwas ungespeichert ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app will quit and reopen right away. It asks for itself if anything is unsaved."
+          }
+        }
+      }
+    },
+    "Die Bedingung der Regel „%@“ ist vorbei." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Bedingung der Regel „%@“ ist vorbei."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The condition of rule “%@” has ended."
+          }
+        }
+      }
+    },
+    "Die Datei enthält alle Einstellungen, auch deine eigenen Regeln und Tastenkürzel, als JSON. Du kannst sie auf einem anderen Mac wieder einlesen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei enthält alle Einstellungen, auch deine eigenen Regeln und Tastenkürzel, als JSON. Du kannst sie auf einem anderen Mac wieder einlesen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file contains all settings, including your custom rules and keyboard shortcuts, as JSON. You can import it on another Mac."
+          }
+        }
+      }
+    },
+    "Die Datei konnte nicht gelesen werden: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei konnte nicht gelesen werden: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file couldn’t be read: %@"
+          }
+        }
+      }
+    },
+    "Die Einstellungen wurden übernommen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellungen wurden übernommen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The settings were applied."
+          }
+        }
+      }
+    },
+    "Die Einstellungen wurden übernommen. %lld unlesbare oder unvollständige eigene Regeln wurden übersprungen." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Die Einstellungen wurden übernommen. %lld unlesbare oder unvollständige eigene Regel wurde übersprungen."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Die Einstellungen wurden übernommen. %lld unlesbare oder unvollständige eigene Regeln wurden übersprungen."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The settings were applied. %lld unreadable or incomplete custom rule was skipped."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The settings were applied. %lld unreadable or incomplete custom rules were skipped."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Die Internetverbindung ist zurück." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Internetverbindung ist zurück."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The internet connection is back."
+          }
+        }
+      }
+    },
+    "Die Kürzel gelten in jedem Programm und brauchen keine zusätzliche Berechtigung. Standardmäßig ist keines belegt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Kürzel gelten in jedem Programm und brauchen keine zusätzliche Berechtigung. Standardmäßig ist keines belegt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcuts work in every app and need no extra permission. None are set by default."
+          }
+        }
+      }
+    },
+    "Die Liste der Kurzbefehle ist nicht verfügbar. Gib den Namen von Hand ein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Liste der Kurzbefehle ist nicht verfügbar. Gib den Namen von Hand ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The list of shortcuts isn’t available. Enter the name manually."
+          }
+        }
+      }
+    },
+    "Die Priorität bleibt niedrig, bis das Programm neu gestartet wird." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Priorität bleibt niedrig, bis das Programm neu gestartet wird."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The priority stays low until the app is restarted."
+          }
+        }
+      }
+    },
+    "Die Regel wird entfernt. Das lässt sich nicht rückgängig machen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Regel wird entfernt. Das lässt sich nicht rückgängig machen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The rule will be removed. This can’t be undone."
+          }
+        }
+      }
+    },
+    "Die Regel „%@“ möchte „%@“ beenden, dazu %@. Ungesicherte Daten können verloren gehen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Regel „%1$@“ möchte „%2$@“ beenden, dazu %3$@. Ungesicherte Daten können verloren gehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The rule “%1$@” wants to quit “%2$@” and %3$@. Unsaved data may be lost."
+          }
+        }
+      }
+    },
+    "Die Regel „%@“ möchte „%@“ beenden. Ungesicherte Daten können verloren gehen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Regel „%1$@“ möchte „%2$@“ beenden. Ungesicherte Daten können verloren gehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The rule “%1$@” wants to quit “%2$@”. Unsaved data may be lost."
+          }
+        }
+      }
+    },
     "Die Stummschaltung ist aufgehoben." : {
       "localizations" : {
         "de" : {
@@ -2259,6 +3395,22 @@
         }
       }
     },
+    "Diese Regel ist unvollständig und läuft nicht. Öffne sie, um das zu beheben." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Regel ist unvollständig und läuft nicht. Öffne sie, um das zu beheben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This rule is incomplete and isn’t running. Open it to fix that."
+          }
+        }
+      }
+    },
     "Dieser Mac hat keinen Akku" : {
       "localizations" : {
         "de" : {
@@ -2271,6 +3423,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "This Mac has no battery"
+          }
+        }
+      }
+    },
+    "Dieses Kürzel ist schon für „%@“ belegt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Kürzel ist schon für „%@“ belegt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This shortcut is already used for “%@”."
+          }
+        }
+      }
+    },
+    "Dieses Kürzel ist schon von einem anderen Programm belegt. Wähle eine andere Kombination." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Kürzel ist schon von einem anderen Programm belegt. Wähle eine andere Kombination."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This shortcut is already used by another app. Choose a different combination."
           }
         }
       }
@@ -2371,6 +3555,54 @@
         }
       }
     },
+    "Eigene Regeln" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Regeln"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Rules"
+          }
+        }
+      }
+    },
+    "Eigene Regeln melden nur das, was du in ihren Aktionen festlegst. Programme des Systems und MacMonitor selbst werden nie beendet oder gedrosselt. „Prozess beenden“ fragt auf Wunsch vorher nach." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Regeln melden nur das, was du in ihren Aktionen festlegst. Programme des Systems und MacMonitor selbst werden nie beendet oder gedrosselt. „Prozess beenden“ fragt auf Wunsch vorher nach."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom rules only do what you set in their actions. System processes and MacMonitor itself are never quit or throttled. “Quit process” can ask first if you like."
+          }
+        }
+      }
+    },
+    "Ein hängendes Programm, zu wenig Platz oder Hitze lösen eine Mitteilung aus. Sonst bleibt es still." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein hängendes Programm, zu wenig Platz oder Hitze lösen eine Mitteilung aus. Sonst bleibt es still."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A frozen app, low disk space or heat triggers a notification. Otherwise it stays quiet."
+          }
+        }
+      }
+    },
     "Einstellungen" : {
       "localizations" : {
         "de" : {
@@ -2383,6 +3615,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
+          }
+        }
+      }
+    },
+    "Einstellungen aus „%@“ übernehmen?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen aus „%@“ übernehmen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply settings from “%@”?"
+          }
+        }
+      }
+    },
+    "Einstellungen exportieren …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen exportieren …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export Settings…"
+          }
+        }
+      }
+    },
+    "Einstellungen exportiert nach „%@“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen exportiert nach „%@“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings exported to “%@”."
+          }
+        }
+      }
+    },
+    "Einstellungen importieren …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen importieren …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Settings…"
+          }
+        }
+      }
+    },
+    "Einstellungen sichern" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen sichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back Up Settings"
+          }
+        }
+      }
+    },
+    "Einstellungen …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings…"
           }
         }
       }
@@ -2531,6 +3859,22 @@
         }
       }
     },
+    "Entladen mindestens für" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entladen mindestens für"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discharging for at least"
+          }
+        }
+      }
+    },
     "Entwicklungsbuild" : {
       "localizations" : {
         "de" : {
@@ -2595,6 +3939,38 @@
         }
       }
     },
+    "Erkannt wird ein gespiegelter Bildschirm, etwa ein Beamer im Spiegelmodus. Eine Bildschirmfreigabe in Zoom oder Teams und Folien im Vollbild erkennt MacMonitor nicht." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erkannt wird ein gespiegelter Bildschirm, etwa ein Beamer im Spiegelmodus. Eine Bildschirmfreigabe in Zoom oder Teams und Folien im Vollbild erkennt MacMonitor nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A mirrored display is detected, such as a projector in mirroring mode. MacMonitor doesn’t detect screen sharing in Zoom or Teams, or full-screen slides."
+          }
+        }
+      }
+    },
+    "Erlaubt. Meldungen erscheinen als Mitteilung." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaubt. Meldungen erscheinen als Mitteilung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allowed. Alerts appear as notifications."
+          }
+        }
+      }
+    },
     "Erste Messung läuft …" : {
       "localizations" : {
         "de" : {
@@ -2607,6 +3983,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "First measurement in progress…"
+          }
+        }
+      }
+    },
+    "Es wird nichts ignoriert." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es wird nichts ignoriert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing is ignored."
           }
         }
       }
@@ -2639,6 +4031,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exported to “%@”."
+          }
+        }
+      }
+    },
+    "Fertig" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fertig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
+    "Fokus beachten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus beachten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respect Focus"
+          }
+        }
+      }
+    },
+    "Folgt der Systemsprache" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folgt der Systemsprache"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follows the system language"
           }
         }
       }
@@ -2771,6 +4211,38 @@
         }
       }
     },
+    "Gehäuse links" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gehäuse links"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Left Enclosure"
+          }
+        }
+      }
+    },
+    "Gehäuse rechts" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gehäuse rechts"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Right Enclosure"
+          }
+        }
+      }
+    },
     "Gerade ist genug Arbeitsspeicher frei, deshalb keine Warnung. Der Swap belegt aber SSD-Platz." : {
       "localizations" : {
         "de" : {
@@ -2783,6 +4255,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "There is enough free memory right now, so no alert. But swap takes up SSD space."
+          }
+        }
+      }
+    },
+    "Gerade ist kein Prozess stummgeschaltet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerade ist kein Prozess stummgeschaltet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No process is muted right now."
+          }
+        }
+      }
+    },
+    "Gerade stummgeschaltet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerade stummgeschaltet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currently muted"
           }
         }
       }
@@ -2831,6 +4335,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sent ↑"
+          }
+        }
+      }
+    },
+    "Gilt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gilt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies"
+          }
+        }
+      }
+    },
+    "GitHub" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
           }
         }
       }
@@ -2947,6 +4483,22 @@
         }
       }
     },
+    "Hilft beim Beheben" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilft beim Beheben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helps you fix it"
+          }
+        }
+      }
+    },
     "Hinweis" : {
       "localizations" : {
         "de" : {
@@ -2959,6 +4511,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notice"
+          }
+        }
+      }
+    },
+    "Hinzufügen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
           }
         }
       }
@@ -2979,18 +4547,18 @@
         }
       }
     },
-    "Ignorierte Prozesse" : {
+    "Ignoriert" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ignorierte Prozesse"
+            "value" : "Ignoriert"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ignored processes"
+            "value" : "Ignored"
           }
         }
       }
@@ -3043,6 +4611,38 @@
         }
       }
     },
+    "In den Systemeinstellungen ausgeschaltet. Ohne Mitteilungen siehst du nur das Hinweisfenster." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In den Systemeinstellungen ausgeschaltet. Ohne Mitteilungen siehst du nur das Hinweisfenster."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turned off in System Settings. Without notifications you only see the notice window."
+          }
+        }
+      }
+    },
+    "In der Menüleiste zeigen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In der Menüleiste zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in menu bar"
+          }
+        }
+      }
+    },
     "In diesem Zeitraum liegen keine Messwerte vor." : {
       "localizations" : {
         "de" : {
@@ -3071,6 +4671,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not available in this version."
+          }
+        }
+      }
+    },
+    "In ruhigen Zeiten bleiben Hinweise ganz weg. Warnungen kommen leise in die Mitteilungszentrale, ohne Hinweisfenster und ohne Ton. Erinnerungen und „Behoben“-Meldungen machen nie ein Geräusch." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In ruhigen Zeiten bleiben Hinweise ganz weg. Warnungen kommen leise in die Mitteilungszentrale, ohne Hinweisfenster und ohne Ton. Erinnerungen und „Behoben“-Meldungen machen nie ein Geräusch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "During quiet times, notices stay away entirely. Warnings arrive silently in Notification Center, with no notice window and no sound. Reminders and “Resolved” alerts never make a sound."
+          }
+        }
+      }
+    },
+    "Info" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
           }
         }
       }
@@ -3347,6 +4979,102 @@
         }
       }
     },
+    "Kritische Meldungen kommen immer durch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kritische Meldungen kommen immer durch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Critical alerts always get through"
+          }
+        }
+      }
+    },
+    "Kurzbefehl" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurzbefehl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut"
+          }
+        }
+      }
+    },
+    "Kurzbefehl auswählen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurzbefehl auswählen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose shortcut"
+          }
+        }
+      }
+    },
+    "Kürzel drücken …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kürzel drücken …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press shortcut…"
+          }
+        }
+      }
+    },
+    "Kürzel entfernen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kürzel entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove shortcut"
+          }
+        }
+      }
+    },
+    "Lade Kurzbefehle …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lade Kurzbefehle …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading shortcuts…"
+          }
+        }
+      }
+    },
     "Ladeleistung" : {
       "localizations" : {
         "de" : {
@@ -3427,6 +5155,38 @@
         }
       }
     },
+    "Laufende Prozesse" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufende Prozesse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Running processes"
+          }
+        }
+      }
+    },
+    "Laufendes Programm auswählen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufendes Programm auswählen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose running app"
+          }
+        }
+      }
+    },
     "Laufwerke" : {
       "localizations" : {
         "de" : {
@@ -3471,6 +5231,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uptime and load"
+          }
+        }
+      }
+    },
+    "Leere Regel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leere Regel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empty Rule"
           }
         }
       }
@@ -3635,6 +5411,22 @@
         }
       }
     },
+    "Liegt „Bis“ vor „Von“, gilt die Ruhezeit über Mitternacht hinaus." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liegt „Bis“ vor „Von“, gilt die Ruhezeit über Mitternacht hinaus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If “To” is earlier than “From”, quiet hours continue past midnight."
+          }
+        }
+      }
+    },
     "Linie" : {
       "localizations" : {
         "de" : {
@@ -3651,6 +5443,38 @@
         }
       }
     },
+    "Lizenz" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lizenz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "License"
+          }
+        }
+      }
+    },
+    "Lizenz: privat, alle Rechte vorbehalten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lizenz: privat, alle Rechte vorbehalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "License: private, all rights reserved"
+          }
+        }
+      }
+    },
     "Lokale IP-Adresse" : {
       "localizations" : {
         "de" : {
@@ -3663,6 +5487,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Local IP address"
+          }
+        }
+      }
+    },
+    "Löschen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
           }
         }
       }
@@ -3747,6 +5587,38 @@
         }
       }
     },
+    "MacMonitor auf GitHub" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor auf GitHub"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor on GitHub"
+          }
+        }
+      }
+    },
+    "MacMonitor ist bereit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor ist bereit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor is ready"
+          }
+        }
+      }
+    },
     "MacMonitor meldet sich, sobald etwas länger aus dem Rahmen fällt." : {
       "localizations" : {
         "de" : {
@@ -3759,6 +5631,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MacMonitor will let you know as soon as something stays out of the ordinary."
+          }
+        }
+      }
+    },
+    "MacMonitor sendet keine Daten; nur die Update-Prüfung fragt GitHub." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor sendet keine Daten; nur die Update-Prüfung fragt GitHub."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor sends no data; only the update check contacts GitHub."
           }
         }
       }
@@ -3811,6 +5699,22 @@
         }
       }
     },
+    "MacMonitor-Einstellungen.json" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor-Einstellungen.json"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor Settings.json"
+          }
+        }
+      }
+    },
     "Max" : {
       "localizations" : {
         "de" : {
@@ -3823,6 +5727,294 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Max"
+          }
+        }
+      }
+    },
+    "Meldet sich nur bei Auffälligem" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet sich nur bei Auffälligem"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only speaks up when needed"
+          }
+        }
+      }
+    },
+    "Meldet, wenn auf dem Startvolume der freie Platz knapp wird." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn auf dem Startvolume der freie Platz knapp wird."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when free space on the startup volume runs low."
+          }
+        }
+      }
+    },
+    "Meldet, wenn auf einem weiteren Volume, etwa einer externen Platte, der Platz knapp wird. Nutzt dieselben Schwellen wie „Festplatte voll“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn auf einem weiteren Volume, etwa einer externen Platte, der Platz knapp wird. Nutzt dieselben Schwellen wie „Festplatte voll“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when space runs low on another volume, such as an external drive. Uses the same thresholds as “Disk full”."
+          }
+        }
+      }
+    },
+    "Meldet, wenn der Akku deutlich an Kapazität verloren hat. Erinnert höchstens einmal pro Woche." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn der Akku deutlich an Kapazität verloren hat. Erinnert höchstens einmal pro Woche."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when the battery has lost a lot of capacity. Reminds you at most once a week."
+          }
+        }
+      }
+    },
+    "Meldet, wenn der Akku trotz angeschlossenem Netzteil weiter entlädt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn der Akku trotz angeschlossenem Netzteil weiter entlädt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when the battery keeps discharging even though the power adapter is connected."
+          }
+        }
+      }
+    },
+    "Meldet, wenn der Mac keine Internetverbindung mehr hat, und wenn sie zurück ist." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn der Mac keine Internetverbindung mehr hat, und wenn sie zurück ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when the Mac loses its internet connection, and when it’s back."
+          }
+        }
+      }
+    },
+    "Meldet, wenn die CPU dauerhaft zu heiß ist, noch bevor macOS drosselt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn die CPU dauerhaft zu heiß ist, noch bevor macOS drosselt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when the CPU stays too hot, before macOS throttles it."
+          }
+        }
+      }
+    },
+    "Meldet, wenn die CPU des ganzen Macs lange ausgelastet ist." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn die CPU des ganzen Macs lange ausgelastet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when the CPU of the whole Mac stays busy for a long time."
+          }
+        }
+      }
+    },
+    "Meldet, wenn die Grafikeinheit dauerhaft stark ausgelastet ist. Standardmäßig aus." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn die Grafikeinheit dauerhaft stark ausgelastet ist. Standardmäßig aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when the GPU stays heavily loaded. Off by default."
+          }
+        }
+      }
+    },
+    "Meldet, wenn die SSD stark abgenutzt ist oder ihre Reserve schrumpft. Erinnert höchstens einmal pro Woche." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn die SSD stark abgenutzt ist oder ihre Reserve schrumpft. Erinnert höchstens einmal pro Woche."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when the SSD is heavily worn or its spare capacity shrinks. Reminds you at most once a week."
+          }
+        }
+      }
+    },
+    "Meldet, wenn ein Lüfter dauerhaft fast auf voller Drehzahl läuft." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn ein Lüfter dauerhaft fast auf voller Drehzahl läuft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when a fan keeps running at nearly full speed."
+          }
+        }
+      }
+    },
+    "Meldet, wenn ein Programm im Akkubetrieb im Schnitt der letzten 5 Minuten viel Strom zieht." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn ein Programm im Akkubetrieb im Schnitt der letzten 5 Minuten viel Strom zieht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when an app draws a lot of power on battery, averaged over the last 5 minutes."
+          }
+        }
+      }
+    },
+    "Meldet, wenn ein Programm im Akkubetrieb lange verhindert, dass der Mac schläft." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn ein Programm im Akkubetrieb lange verhindert, dass der Mac schläft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when an app keeps the Mac from sleeping for a long time on battery."
+          }
+        }
+      }
+    },
+    "Meldet, wenn ein einzelnes Programm einen großen Teil des Arbeitsspeichers belegt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn ein einzelnes Programm einen großen Teil des Arbeitsspeichers belegt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when a single app uses a large share of memory."
+          }
+        }
+      }
+    },
+    "Meldet, wenn ein einzelnes Programm lange ununterbrochen viel CPU braucht." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn ein einzelnes Programm lange ununterbrochen viel CPU braucht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when a single app uses a lot of CPU for a long time without a break."
+          }
+        }
+      }
+    },
+    "Meldet, wenn macOS den Arbeitsspeicher als knapp einstuft." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn macOS den Arbeitsspeicher als knapp einstuft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when macOS considers memory to be running low."
+          }
+        }
+      }
+    },
+    "Meldet, wenn macOS den Mac wegen Hitze drosselt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn macOS den Mac wegen Hitze drosselt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when macOS throttles the Mac because of heat."
+          }
+        }
+      }
+    },
+    "Meldet, wenn viel Speicher auf die SSD ausgelagert wird und der Swap weiter wächst." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet, wenn viel Speicher auf die SSD ausgelagert wird und der Swap weiter wächst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerts you when a lot of memory is moved to the SSD and swap keeps growing."
           }
         }
       }
@@ -3940,6 +6132,22 @@
         }
       }
     },
+    "Messgröße" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messgröße"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measurement"
+          }
+        }
+      }
+    },
     "Min" : {
       "localizations" : {
         "de" : {
@@ -3952,6 +6160,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Min"
+          }
+        }
+      }
+    },
+    "Mindestens für" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindestens für"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For at least"
           }
         }
       }
@@ -3972,6 +6196,22 @@
         }
       }
     },
+    "Minutenwerte %@ · 15-Minuten-Werte %@ · Tageswerte 2 Jahre · Ereignisse %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutenwerte %1$@ · 15-Minuten-Werte %2$@ · Tageswerte 2 Jahre · Ereignisse %3$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per-minute values %1$@ · 15-minute values %2$@ · daily values 2 years · events %3$@"
+          }
+        }
+      }
+    },
     "Minutenwerte 2 Tage · 15-Minuten-Werte 30 Tage · Tageswerte 2 Jahre" : {
       "localizations" : {
         "de" : {
@@ -3988,18 +6228,98 @@
         }
       }
     },
-    "Mitteilungs-Einstellungen …" : {
+    "Misst im Hintergrund" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mitteilungs-Einstellungen …"
+            "value" : "Misst im Hintergrund"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notification Settings…"
+            "value" : "Measures in the background"
+          }
+        }
+      }
+    },
+    "Mit einer eigenen Regel sagst du MacMonitor, worauf es achten soll und was dann passieren soll, zum Beispiel eine Mitteilung zeigen, einen Kurzbefehl starten oder ein Programm drosseln. Starte am besten mit einer Vorlage." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit einer eigenen Regel sagst du MacMonitor, worauf es achten soll und was dann passieren soll, zum Beispiel eine Mitteilung zeigen, einen Kurzbefehl starten oder ein Programm drosseln. Starte am besten mit einer Vorlage."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A custom rule tells MacMonitor what to watch for and what to do then, such as showing a notification, running a shortcut or throttling an app. It’s easiest to start from a template."
+          }
+        }
+      }
+    },
+    "Mitteilungen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        }
+      }
+    },
+    "Mitteilungen erlauben" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen erlauben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow Notifications"
+          }
+        }
+      }
+    },
+    "Mitteilungen sind für MacMonitor in den Systemeinstellungen ausgeschaltet. Ohne sie siehst du nur das Hinweisfenster." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen sind für MacMonitor in den Systemeinstellungen ausgeschaltet. Ohne sie siehst du nur das Hinweisfenster."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications for MacMonitor are turned off in System Settings. Without them you only see the notice window."
+          }
+        }
+      }
+    },
+    "Mitteilungs-Einstellungen von macOS …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungs-Einstellungen von macOS …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS Notification Settings…"
           }
         }
       }
@@ -4052,6 +6372,22 @@
         }
       }
     },
+    "Nach einem Auslösen führt die Regel ihre Aktionen frühestens nach dieser Zeit wieder aus." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach einem Auslösen führt die Regel ihre Aktionen frühestens nach dieser Zeit wieder aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After it triggers, the rule runs its actions again no sooner than this."
+          }
+        }
+      }
+    },
     "Name" : {
       "localizations" : {
         "de" : {
@@ -4064,6 +6400,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Name"
+          }
+        }
+      }
+    },
+    "Name des Kurzbefehls" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name des Kurzbefehls"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut name"
+          }
+        }
+      }
+    },
+    "Name des Programms" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name des Programms"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App name"
+          }
+        }
+      }
+    },
+    "Name des Prozesses" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name des Prozesses"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Process name"
           }
         }
       }
@@ -4096,6 +6480,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Power adapter"
+          }
+        }
+      }
+    },
+    "Netzteil-Anschluss" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netzteil-Anschluss"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power Adapter Port"
           }
         }
       }
@@ -4164,6 +6564,22 @@
         }
       }
     },
+    "Netzwerk-Einstellungen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netzwerk-Einstellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network Settings"
+          }
+        }
+      }
+    },
     "Neu messen" : {
       "localizations" : {
         "de" : {
@@ -4196,6 +6612,22 @@
         }
       }
     },
+    "Neue Regel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Regel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Rule"
+          }
+        }
+      }
+    },
     "Neural Engine" : {
       "localizations" : {
         "de" : {
@@ -4208,6 +6640,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Neural Engine"
+          }
+        }
+      }
+    },
+    "Nicht belegt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht belegt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not set"
+          }
+        }
+      }
+    },
+    "Nicht mehr ignorieren" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht mehr ignorieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop ignoring"
+          }
+        }
+      }
+    },
+    "Nicht verfügbar: macOS verrät den Fokus nur Apps mit einer besonderen Apple-Berechtigung, die MacMonitor nicht hat. macOS selbst hält Mitteilungen im Fokus ohnehin zurück. Für das Hinweisfenster und den Ton helfen die Ruhezeiten unten." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht verfügbar: macOS verrät den Fokus nur Apps mit einer besonderen Apple-Berechtigung, die MacMonitor nicht hat. macOS selbst hält Mitteilungen im Fokus ohnehin zurück. Für das Hinweisfenster und den Ton helfen die Ruhezeiten unten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not available: macOS only reveals Focus to apps with a special Apple entitlement, which MacMonitor doesn’t have. macOS itself holds back notifications during a Focus anyway. For the notice window and sound, use the quiet hours below."
           }
         }
       }
@@ -4228,6 +6708,22 @@
         }
       }
     },
+    "Nie mehr melden" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie mehr melden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Never Report Again"
+          }
+        }
+      }
+    },
     "Noch keine Messwerte in diesem Zeitraum" : {
       "localizations" : {
         "de" : {
@@ -4240,6 +6736,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No measurements in this period yet"
+          }
+        }
+      }
+    },
+    "Noch keine eigenen Regeln" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine eigenen Regeln"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No custom rules yet"
+          }
+        }
+      }
+    },
+    "Noch nicht gefragt. Ohne Erlaubnis kann MacMonitor keine Mitteilungen senden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht gefragt. Ohne Erlaubnis kann MacMonitor keine Mitteilungen senden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not asked yet. Without permission, MacMonitor can’t send notifications."
           }
         }
       }
@@ -4260,6 +6788,38 @@
         }
       }
     },
+    "Nur Symbol" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Symbol"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon only"
+          }
+        }
+      }
+    },
+    "Oder Reserve unter" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oder Reserve unter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Or spare capacity below"
+          }
+        }
+      }
+    },
     "Offline" : {
       "localizations" : {
         "de" : {
@@ -4272,6 +6832,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Offline"
+          }
+        }
+      }
+    },
+    "Offline mindestens für" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline mindestens für"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline for at least"
+          }
+        }
+      }
+    },
+    "Ohne Namen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Namen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untitled"
           }
         }
       }
@@ -4304,6 +6896,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "PID %d"
+          }
+        }
+      }
+    },
+    "PID %d, dazu %@, die in der Regel mit enden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PID %1$d, dazu %2$@, die in der Regel mit enden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PID %1$d, plus %2$@ that normally quit with it."
+          }
+        }
+      }
+    },
+    "PID %d." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PID %d."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PID %d."
           }
         }
       }
@@ -4356,6 +6980,22 @@
         }
       }
     },
+    "Programm" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programm"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        }
+      }
+    },
     "Prozesse" : {
       "localizations" : {
         "de" : {
@@ -4372,18 +7012,18 @@
         }
       }
     },
-    "Prozessnamen, durch Komma getrennt" : {
+    "Prozessname" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prozessnamen, durch Komma getrennt"
+            "value" : "Prozessname"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Process names, comma-separated"
+            "value" : "Process name"
           }
         }
       }
@@ -4468,6 +7108,374 @@
         }
       }
     },
+    "Regel bearbeiten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Rule"
+          }
+        }
+      }
+    },
+    "Regel hinzufügen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Rule"
+          }
+        }
+      }
+    },
+    "Regel „%@“ hat den Kurzbefehl „%@“ ausgeführt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“ hat den Kurzbefehl „%2$@“ ausgeführt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@” ran the shortcut “%2$@”."
+          }
+        }
+      }
+    },
+    "Regel „%@“ hat eine Mitteilung gezeigt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%@“ hat eine Mitteilung gezeigt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%@” showed a notification."
+          }
+        }
+      }
+    },
+    "Regel „%@“ hat „%@“ beendet (%@)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“ hat „%2$@“ beendet (%3$@)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@” quit “%2$@” (%3$@)."
+          }
+        }
+      }
+    },
+    "Regel „%@“ hat „%@“ beendet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“ hat „%2$@“ beendet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@” quit “%2$@”."
+          }
+        }
+      }
+    },
+    "Regel „%@“ hat „%@“ gedrosselt (%@)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“ hat „%2$@“ gedrosselt (%3$@)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@” throttled “%2$@” (%3$@)."
+          }
+        }
+      }
+    },
+    "Regel „%@“ hat „%@“ gedrosselt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“ hat „%2$@“ gedrosselt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@” throttled “%2$@”."
+          }
+        }
+      }
+    },
+    "Regel „%@“ hat „%@“ geöffnet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“ hat „%2$@“ geöffnet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@” opened “%2$@”."
+          }
+        }
+      }
+    },
+    "Regel „%@“ löschen?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%@“ löschen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete rule “%@”?"
+          }
+        }
+      }
+    },
+    "Regel „%@“: Das Programm für Kurzbefehle ist auf diesem Mac nicht verfügbar." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%@“: Das Programm für Kurzbefehle ist auf diesem Mac nicht verfügbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%@”: The Shortcuts app isn’t available on this Mac."
+          }
+        }
+      }
+    },
+    "Regel „%@“: Der Kurzbefehl „%@“ ist fehlgeschlagen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: Der Kurzbefehl „%2$@“ ist fehlgeschlagen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: The shortcut “%2$@” failed."
+          }
+        }
+      }
+    },
+    "Regel „%@“: Der Kurzbefehl „%@“ wurde nach einer Minute abgebrochen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: Der Kurzbefehl „%2$@“ wurde nach einer Minute abgebrochen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: The shortcut “%2$@” was canceled after one minute."
+          }
+        }
+      }
+    },
+    "Regel „%@“: Der Name des Kurzbefehls ist ungültig." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%@“: Der Name des Kurzbefehls ist ungültig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%@”: The shortcut name is invalid."
+          }
+        }
+      }
+    },
+    "Regel „%@“: Die Adresse „%@“ darf nicht geöffnet werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: Die Adresse „%2$@“ darf nicht geöffnet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: The address “%2$@” can’t be opened."
+          }
+        }
+      }
+    },
+    "Regel „%@“: Kein Programm auf diesem Mac öffnet „%@“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: Kein Programm auf diesem Mac öffnet „%2$@“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: No app on this Mac opens “%2$@”."
+          }
+        }
+      }
+    },
+    "Regel „%@“: „%@“ ist geschützt und wurde nicht angefasst." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: „%2$@“ ist geschützt und wurde nicht angefasst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: “%2$@” is protected and was left alone."
+          }
+        }
+      }
+    },
+    "Regel „%@“: „%@“ konnte nicht beendet werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: „%2$@“ konnte nicht beendet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: “%2$@” couldn’t be quit."
+          }
+        }
+      }
+    },
+    "Regel „%@“: „%@“ konnte nicht gedrosselt werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: „%2$@“ konnte nicht gedrosselt werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: “%2$@” couldn’t be throttled."
+          }
+        }
+      }
+    },
+    "Regel „%@“: „%@“ konnte nicht geöffnet werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: „%2$@“ konnte nicht geöffnet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: “%2$@” couldn’t be opened."
+          }
+        }
+      }
+    },
+    "Regel „%@“: „%@“ läuft nicht mehr, die Prozessnummer gehört jetzt einem anderen Programm. Es wurde nichts verändert." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: „%2$@“ läuft nicht mehr, die Prozessnummer gehört jetzt einem anderen Programm. Es wurde nichts verändert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: “%2$@” is no longer running, and its process ID now belongs to a different app. Nothing was changed."
+          }
+        }
+      }
+    },
+    "Regel „%@“: „%@“ läuft schon nicht mehr." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regel „%1$@“: „%2$@“ läuft schon nicht mehr."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule “%1$@”: “%2$@” is no longer running."
+          }
+        }
+      }
+    },
+    "Regeln" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regeln"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rules"
+          }
+        }
+      }
+    },
     "Reserve" : {
       "localizations" : {
         "de" : {
@@ -4496,6 +7504,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Raw log"
+          }
+        }
+      }
+    },
+    "Ruhe" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruhe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiet"
+          }
+        }
+      }
+    },
+    "Ruhezeiten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruhezeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiet hours"
           }
         }
       }
@@ -4628,6 +7668,22 @@
         }
       }
     },
+    "Schwelle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwelle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Threshold"
+          }
+        }
+      }
+    },
     "Schweregrad" : {
       "localizations" : {
         "de" : {
@@ -4660,6 +7716,22 @@
         }
       }
     },
+    "Senkt die Priorität des Programms. Sie bleibt niedrig, bis es neu gestartet wird." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senkt die Priorität des Programms. Sie bleibt niedrig, bis es neu gestartet wird."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lowers the app’s priority. It stays low until the app is restarted."
+          }
+        }
+      }
+    },
     "Sensoren" : {
       "localizations" : {
         "de" : {
@@ -4672,6 +7744,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sensors"
+          }
+        }
+      }
+    },
+    "Sofort beenden" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sofort beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Force Quit"
           }
         }
       }
@@ -4772,6 +7860,38 @@
         }
       }
     },
+    "Speichern" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "Speicherverwaltung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherverwaltung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storage Management"
+          }
+        }
+      }
+    },
     "Speicherverwaltung von macOS" : {
       "localizations" : {
         "de" : {
@@ -4804,6 +7924,22 @@
         }
       }
     },
+    "Sprache" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        }
+      }
+    },
     "Stand %@" : {
       "localizations" : {
         "de" : {
@@ -4832,6 +7968,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Status"
+          }
+        }
+      }
+    },
+    "Stumm aufheben" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stumm aufheben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unmute"
+          }
+        }
+      }
+    },
+    "Stummschalten geht über „1 h stumm“ in einer Mitteilung. Nach Ablauf meldet MacMonitor wieder." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stummschalten geht über „1 h stumm“ in einer Mitteilung. Nach Ablauf meldet MacMonitor wieder."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use “Mute 1 h” in a notification to mute a process. When it ends, MacMonitor alerts again."
           }
         }
       }
@@ -4884,6 +8052,38 @@
         }
       }
     },
+    "Symbol und CPU" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol und CPU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon and CPU"
+          }
+        }
+      }
+    },
+    "Symbol, CPU und RAM" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol, CPU und RAM"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon, CPU and RAM"
+          }
+        }
+      }
+    },
     "System" : {
       "localizations" : {
         "de" : {
@@ -4896,6 +8096,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "System"
+          }
+        }
+      }
+    },
+    "Systemeinstellungen öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemeinstellungen öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open System Settings"
           }
         }
       }
@@ -4980,6 +8196,22 @@
         }
       }
     },
+    "Tastenkürzel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastenkürzel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keyboard Shortcuts"
+          }
+        }
+      }
+    },
     "Temperatur" : {
       "localizations" : {
         "de" : {
@@ -5060,6 +8292,22 @@
         }
       }
     },
+    "Testmitteilung von %@. Du wirst nur gestört, wenn etwas wirklich auffällt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testmitteilung von %@. Du wirst nur gestört, wenn etwas wirklich auffällt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test notification from %@. You’ll only be interrupted when something really stands out."
+          }
+        }
+      }
+    },
     "Threads" : {
       "localizations" : {
         "de" : {
@@ -5092,6 +8340,22 @@
         }
       }
     },
+    "Ton bei Warnungen und kritischen Meldungen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton bei Warnungen und kritischen Meldungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sound for warnings and critical alerts"
+          }
+        }
+      }
+    },
     "Update %@" : {
       "localizations" : {
         "de" : {
@@ -5108,6 +8372,22 @@
         }
       }
     },
+    "Update für MacMonitor" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update für MacMonitor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update for MacMonitor"
+          }
+        }
+      }
+    },
     "Updates" : {
       "localizations" : {
         "de" : {
@@ -5120,6 +8400,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Updates"
+          }
+        }
+      }
+    },
+    "Updates & Info" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates & Info"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates & About"
           }
         }
       }
@@ -5188,6 +8484,22 @@
         }
       }
     },
+    "Vergleich" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vergleich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparison"
+          }
+        }
+      }
+    },
     "Verlauf" : {
       "localizations" : {
         "de" : {
@@ -5200,6 +8512,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "History"
+          }
+        }
+      }
+    },
+    "Verlauf als CSV exportieren …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf als CSV exportieren …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export History as CSV…"
           }
         }
       }
@@ -5300,6 +8628,38 @@
         }
       }
     },
+    "Version %@ ist verfügbar." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@ ist verfügbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@ is available."
+          }
+        }
+      }
+    },
+    "Von" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From"
+          }
+        }
+      }
+    },
     "Vorfälle" : {
       "localizations" : {
         "de" : {
@@ -5348,6 +8708,38 @@
         }
       }
     },
+    "Vorher fragen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorher fragen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask first"
+          }
+        }
+      }
+    },
+    "Vorschau" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview"
+          }
+        }
+      }
+    },
     "WLAN" : {
       "localizations" : {
         "de" : {
@@ -5360,6 +8752,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wi-Fi"
+          }
+        }
+      }
+    },
+    "WLAN neu starten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WLAN neu starten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart Wi-Fi"
+          }
+        }
+      }
+    },
+    "WLAN neu starten?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WLAN neu starten?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart Wi-Fi?"
           }
         }
       }
@@ -5380,6 +8804,22 @@
         }
       }
     },
+    "Wann Ruhe herrscht" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wann Ruhe herrscht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When it stays quiet"
+          }
+        }
+      }
+    },
     "Warm" : {
       "localizations" : {
         "de" : {
@@ -5396,18 +8836,50 @@
         }
       }
     },
-    "Warnen unter" : {
+    "Warnen unter Kapazität von" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Warnen unter"
+            "value" : "Warnen unter Kapazität von"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Warn below"
+            "value" : "Warn below capacity of"
+          }
+        }
+      }
+    },
+    "Warnen unter freiem Platz von" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warnen unter freiem Platz von"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warn below free space of"
+          }
+        }
+      }
+    },
+    "Warnstufe mindestens für" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warnstufe mindestens für"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warning level for at least"
           }
         }
       }
@@ -5428,6 +8900,102 @@
         }
       }
     },
+    "Was trotzdem passiert" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was trotzdem passiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What still happens"
+          }
+        }
+      }
+    },
+    "Wenn" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If"
+          }
+        }
+      }
+    },
+    "Wie wichtig" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie wichtig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importance"
+          }
+        }
+      }
+    },
+    "Wieder online" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wieder online"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back online"
+          }
+        }
+      }
+    },
+    "Willkommen bei MacMonitor" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommen bei MacMonitor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to MacMonitor"
+          }
+        }
+      }
+    },
+    "Willkommensfenster zeigen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommensfenster zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Welcome Window"
+          }
+        }
+      }
+    },
     "Woche" : {
       "localizations" : {
         "de" : {
@@ -5444,6 +9012,22 @@
         }
       }
     },
+    "Wähle bis zu drei Werte. Ohne Auswahl zeigt die Menüleiste nur das Symbol." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle bis zu drei Werte. Ohne Auswahl zeigt die Menüleiste nur das Symbol."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose up to three values. With none selected, the menu bar shows only the icon."
+          }
+        }
+      }
+    },
     "Xcode DerivedData" : {
       "localizations" : {
         "de" : {
@@ -5456,6 +9040,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Xcode DerivedData"
+          }
+        }
+      }
+    },
+    "Zahlen in der Menüleiste kosten etwas Strom. Mehr Auswahl gibt es später in den Einstellungen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahlen in der Menüleiste kosten etwas Strom. Mehr Auswahl gibt es später in den Einstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numbers in the menu bar use a little power. There are more choices later in Settings."
+          }
+        }
+      }
+    },
+    "Zahlen in der Menüleiste kosten etwas Strom: Jede Änderung des Textes lässt macOS die Menüleiste auf jedem Bildschirm neu zeichnen. MacMonitor ändert den Text deshalb nur bei spürbaren Änderungen und höchstens alle 10 Sekunden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahlen in der Menüleiste kosten etwas Strom: Jede Änderung des Textes lässt macOS die Menüleiste auf jedem Bildschirm neu zeichnen. MacMonitor ändert den Text deshalb nur bei spürbaren Änderungen und höchstens alle 10 Sekunden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numbers in the menu bar use a little power: every change to the text makes macOS redraw the menu bar on every display. That’s why MacMonitor only changes the text for noticeable changes and at most every 10 seconds."
+          }
+        }
+      }
+    },
+    "Zeigt eine Mitteilung mit dem Namen der Regel." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt eine Mitteilung mit dem Namen der Regel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows a notification with the rule’s name."
           }
         }
       }
@@ -5540,18 +9172,18 @@
         }
       }
     },
-    "Zusätzlicher Hinweis am aktiven Bildschirm" : {
+    "Zusätzliches Hinweisfenster" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zusätzlicher Hinweis am aktiven Bildschirm"
+            "value" : "Zusätzliches Hinweisfenster"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extra notice on the active display"
+            "value" : "Additional notice window"
           }
         }
       }
@@ -5604,6 +9236,22 @@
         }
       }
     },
+    "einem anderen Programm" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "einem anderen Programm"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "another app"
+          }
+        }
+      }
+    },
     "gestartet von %@ · %@" : {
       "localizations" : {
         "de" : {
@@ -5616,6 +9264,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "started by %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "https://example.com" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://example.com"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://example.com"
           }
         }
       }
@@ -5700,6 +9364,22 @@
         }
       }
     },
+    "macOS zeigt Mitteilungen nur auf dem Hauptbildschirm. Das Hinweisfenster erscheint zusätzlich dort, wo du gerade arbeitest." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS zeigt Mitteilungen nur auf dem Hauptbildschirm. Das Hinweisfenster erscheint zusätzlich dort, wo du gerade arbeitest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS shows notifications only on the main display. The notice window also appears wherever you’re working."
+          }
+        }
+      }
+    },
     "möglich" : {
       "localizations" : {
         "de" : {
@@ -5760,6 +9440,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "npm cache"
+          }
+        }
+      }
+    },
+    "nur Symbol" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nur Symbol"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "icon only"
+          }
+        }
+      }
+    },
+    "oder unter einem Anteil von" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "oder unter einem Anteil von"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "or below a share of"
+          }
+        }
+      }
+    },
+    "schreibgeschützt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "schreibgeschützt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "read-only"
+          }
+        }
+      }
+    },
+    "sofort" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sofort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "immediately"
           }
         }
       }
@@ -5844,6 +9588,38 @@
         }
       }
     },
+    "z. B. Chrome frisst RAM" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z. B. Chrome frisst RAM"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. Chrome is eating RAM"
+          }
+        }
+      }
+    },
+    "Ändern …" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ändern …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change…"
+          }
+        }
+      }
+    },
     "Öffnen" : {
       "localizations" : {
         "de" : {
@@ -5892,6 +9668,22 @@
         }
       }
     },
+    "Über MacMonitor" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über MacMonitor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About MacMonitor"
+          }
+        }
+      }
+    },
     "Überblick" : {
       "localizations" : {
         "de" : {
@@ -5904,6 +9696,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "At a Glance"
+          }
+        }
+      }
+    },
+    "Übernehmen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übernehmen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply"
           }
         }
       }
@@ -5952,6 +9760,166 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "–"
+          }
+        }
+      }
+    },
+    "„%@“" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”"
+          }
+        }
+      }
+    },
+    "„%@“ beenden?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ beenden?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit “%@”?"
+          }
+        }
+      }
+    },
+    "„%@“ beendet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ beendet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” quit."
+          }
+        }
+      }
+    },
+    "„%@“ gehört dem System oder einem anderen Benutzer und kann nicht beendet werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ gehört dem System oder einem anderen Benutzer und kann nicht beendet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” belongs to the system or another user and can’t be quit."
+          }
+        }
+      }
+    },
+    "„%@“ ist geschützt und wurde nicht angefasst." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ ist geschützt und wurde nicht angefasst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” is protected and was left alone."
+          }
+        }
+      }
+    },
+    "„%@“ konnte nicht beendet werden (%@)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%1$@“ konnte nicht beendet werden (%2$@)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%1$@” couldn’t be quit (%2$@)."
+          }
+        }
+      }
+    },
+    "„%@“ läuft schon nicht mehr." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ läuft schon nicht mehr."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” is no longer running."
+          }
+        }
+      }
+    },
+    "„%@“ reagiert nicht auf Beenden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ reagiert nicht auf Beenden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” isn’t responding to Quit."
+          }
+        }
+      }
+    },
+    "„%@“ sofort beenden?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ sofort beenden?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Force quit “%@”?"
+          }
+        }
+      }
+    },
+    "„%@“ wurde von %@ sofort neu gestartet. Beenden hilft erst, wenn %@ fertig ist. Du kannst „%@“ auch ignorieren." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%1$@“ wurde von %2$@ sofort neu gestartet. Beenden hilft erst, wenn %3$@ fertig ist. Du kannst „%4$@“ auch ignorieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%1$@” was restarted right away by %2$@. Quitting won’t help until %3$@ is done. You can also ignore “%4$@”."
           }
         }
       }

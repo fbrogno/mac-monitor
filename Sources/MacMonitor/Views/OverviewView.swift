@@ -332,8 +332,7 @@ struct ProcessActionRow: View {
 }
 
 struct ActionButton: View {
-    /// Titles are looked up in the catalog once more, so German texts from other places (confirmations,
-    /// `AppModel.title(for:)`) show up translated as long as the same key exists.
+    /// An already localized title (`String(localized:)`, `Confirmation`, `AppModel.title(for:)`), shown as is.
     var title: String
     var tint: Color = .primary
     var prominent = false
@@ -343,7 +342,7 @@ struct ActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text(LocalizedStringKey(title))
+            Text(verbatim: title)
                 .font(.system(size: compact ? 10 : 12, weight: .medium))
                 .foregroundStyle(prominent ? Color.white : tint)
                 .padding(.horizontal, compact ? 7 : 11)

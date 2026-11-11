@@ -92,7 +92,7 @@ private struct CustomRuleRow: View {
                 .disabled(!rule.isValid)
             VStack(alignment: .leading, spacing: 3) {
                 Text(rule.name.isEmpty ? String(localized: "Ohne Namen") : rule.name).fontWeight(.medium)
-                SettingsNote(LocalizedStringKey(RuleSummary.text(for: rule)))
+                SettingsNote(verbatim: RuleSummary.text(for: rule))
                 if !rule.isValid {
                     SettingsNote("Diese Regel ist unvollständig und läuft nicht. Öffne sie, um das zu beheben.", tint: Palette.warn)
                 }
@@ -109,7 +109,7 @@ private struct CustomRuleRow: View {
 enum RuleSummary {
     static func text(for rule: CustomRule) -> String {
         let subject = rule.metric.needsProcess && !(rule.processName ?? "").isEmpty
-            ? "\(rule.metric.title) von „\(rule.processName ?? "")“" : rule.metric.title
+            ? String(localized: "\(rule.metric.title) von „\(rule.processName ?? "")“") : rule.metric.title
         let condition = String(localized: "\(subject) \(rule.comparison.title) \(rule.metric.format(rule.threshold)), mindestens \(DurationPicker.text(rule.minDuration)).")
         let actions = rule.actions.map { $0.kind.title }.joined(separator: ", ")
         return actions.isEmpty ? condition : condition + " " + String(localized: "Dann: \(actions).")

@@ -8,10 +8,10 @@ public enum RuleGroup: String, CaseIterable, Sendable, Identifiable {
 
     public var title: String {
         switch self {
-        case .processes: "Prozesse"
-        case .system: "System"
-        case .energy: "Energie & Akku"
-        case .storage: "Speicherplatz"
+        case .processes: L("Prozesse")
+        case .system: L("System")
+        case .energy: L("Energie & Akku")
+        case .storage: L("Speicherplatz")
         }
     }
 

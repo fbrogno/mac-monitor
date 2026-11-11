@@ -48,7 +48,7 @@ struct GeneralPane: View {
                         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension")!)
                     }
                 }
-                if !notificationWarning.isEmpty { SettingsNote(LocalizedStringKey(notificationWarning), tint: Palette.warn) }
+                if !notificationWarning.isEmpty { SettingsNote(verbatim: notificationWarning, tint: Palette.warn) }
             } header: {
                 Text("Meldungen")
             }

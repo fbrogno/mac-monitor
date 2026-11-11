@@ -405,13 +405,13 @@ final class AppModel {
     /// `label` is the name shown in the question when it differs from the process name (an app and its main process).
     func confirmKill(_ process: ProcessRef, label: String? = nil, helpers: Int = 0, host: ConfirmationHost? = nil) {
         let detail = helpers > 0
-            ? "PID \(process.pid), dazu \(helpers) Hilfsprozesse, die in der Regel mit enden."
-            : "PID \(process.pid)."
+            ? String(localized: "PID \(process.pid), dazu \(String(localized: "\(helpers) Hilfsprozesse")), die in der Regel mit enden.")
+            : String(localized: "PID \(process.pid).")
         ask(Confirmation(
-            title: "„\(label ?? process.name)“ beenden?",
-            message: "\(detail) Ungesicherte Daten in diesem Prozess können verloren gehen.",
-            confirmTitle: "Beenden",
-            alternativeTitle: "Sofort beenden",
+            title: String(localized: "„\(label ?? process.name)“ beenden?"),
+            message: String(localized: "\(detail) Ungesicherte Daten in diesem Prozess können verloren gehen."),
+            confirmTitle: String(localized: "Beenden"),
+            alternativeTitle: String(localized: "Sofort beenden"),
             alternative: { [weak self] in self?.signal(process, SIGKILL) },
             action: { [weak self] in self?.signal(process, SIGTERM) }), host: host)
     }
@@ -446,16 +446,16 @@ final class AppModel {
             break
         case .skipped(.gone), .skipped(.pidReused), .skipped(.allowed):
             forget(process.pid)
-            feedback = Feedback(text: "„\(process.name)“ läuft schon nicht mehr.")
+            feedback = Feedback(text: String(localized: "„\(process.name)“ läuft schon nicht mehr."))
             return
         case .skipped(.protected):
-            feedback = Feedback(text: "„\(process.name)“ ist geschützt und wurde nicht angefasst.", isError: true)
+            feedback = Feedback(text: String(localized: "„\(process.name)“ ist geschützt und wurde nicht angefasst."), isError: true)
             return
         case .failed(let error):
             feedback = Feedback(
                 text: error == EPERM
-                    ? "„\(process.name)“ gehört dem System oder einem anderen Benutzer und kann nicht beendet werden."
-                    : "„\(process.name)“ konnte nicht beendet werden (\(String(cString: strerror(error)))).",
+                    ? String(localized: "„\(process.name)“ gehört dem System oder einem anderen Benutzer und kann nicht beendet werden.")
+                    : String(localized: "„\(process.name)“ konnte nicht beendet werden (\(String(cString: strerror(error))))."),
                 isError: true)
             return
         }
@@ -467,10 +467,10 @@ final class AppModel {
             guard let self else { return }
             if signal == SIGTERM, ProcessControl.isRunning(process) {
                 self.feedback = Feedback(
-                    text: "„\(process.name)“ reagiert nicht auf Beenden.", isError: true,
-                    actionTitle: "Sofort beenden", action: { [weak self] in self?.signal(process, SIGKILL) })
+                    text: String(localized: "„\(process.name)“ reagiert nicht auf Beenden."), isError: true,
+                    actionTitle: String(localized: "Sofort beenden"), action: { [weak self] in self?.signal(process, SIGKILL) })
             } else {
-                self.feedback = Feedback(text: "„\(process.name)“ beendet.")
+                self.feedback = Feedback(text: String(localized: "„\(process.name)“ beendet."))
             }
         }
     }
@@ -489,10 +489,10 @@ final class AppModel {
         for blocker in snapshot.sleepBlockers {
             guard let ended = endedBlockers[blocker.identity], ended.blocker.pid != blocker.pid else { continue }
             endedBlockers[blocker.identity] = nil
-            let launcher = blocker.parentName ?? "einem anderen Programm"
+            let launcher = blocker.parentName ?? String(localized: "einem anderen Programm")
             feedback = Feedback(
-                text: "„\(blocker.name)“ wurde von \(launcher) sofort neu gestartet. Beenden hilft erst, wenn \(launcher) fertig ist. Du kannst „\(blocker.name)“ auch ignorieren.",
-                isError: true, actionTitle: "Ignorieren",
+                text: String(localized: "„\(blocker.name)“ wurde von \(launcher) sofort neu gestartet. Beenden hilft erst, wenn \(launcher) fertig ist. Du kannst „\(blocker.name)“ auch ignorieren."),
+                isError: true, actionTitle: String(localized: "Ignorieren"),
                 action: { [weak self] in self?.perform(.ignoreForever(blocker.name)) })
         }
     }
@@ -557,10 +557,12 @@ extension AppModel {
             gpu: GPUStat(utilizationPercent: alerts ? 34 : 9, memoryUsedBytes: 1_900_000_000, memoryAllocatedBytes: 3_200_000_000),
             thermals: ThermalSensors(
                 cpuAverageCelsius: alerts ? 58 : 44, cpuMaxCelsius: alerts ? 71 : 52, batteryCelsius: 31.4,
-                sensors: [("CPU Performance-Kern 1", 71.0), ("CPU Performance-Kern 2", 68.5), ("CPU Performance-Kern 3", 66.2),
-                          ("CPU Performance-Kern 4", 63.9), ("CPU Effizienz-Kern 1", 52.4), ("CPU Effizienz-Kern 2", 51.8),
-                          ("GPU Cluster 1", 49.6), ("GPU Cluster 2", 48.7), ("SSD", 38.0), ("Akku", 31.4),
-                          ("Gehäuse links", 33.1), ("Gehäuse rechts", 32.6), ("Netzteil-Anschluss", 29.8)]
+                sensors: [(String(localized: "CPU Performance-Kern \(1)"), 71.0), (String(localized: "CPU Performance-Kern \(2)"), 68.5),
+                          (String(localized: "CPU Performance-Kern \(3)"), 66.2), (String(localized: "CPU Performance-Kern \(4)"), 63.9),
+                          (String(localized: "CPU Effizienz-Kern \(1)"), 52.4), (String(localized: "CPU Effizienz-Kern \(2)"), 51.8),
+                          ("GPU Cluster 1", 49.6), ("GPU Cluster 2", 48.7), ("SSD", 38.0), (String(localized: "Akku"), 31.4),
+                          (String(localized: "Gehäuse links"), 33.1), (String(localized: "Gehäuse rechts"), 32.6),
+                          (String(localized: "Netzteil-Anschluss"), 29.8)]
                     .map { TemperatureReading(name: $0.0, celsius: $0.1) }),
             fans: [FanStat(index: 0, rpm: alerts ? 2480 : 1210, minRpm: 1200, maxRpm: 5779),
                    FanStat(index: 1, rpm: alerts ? 2510 : 1230, minRpm: 1200, maxRpm: 6241)],
@@ -594,7 +596,7 @@ extension AppModel {
                 AlertEvent(date: Date().addingTimeInterval(Double(-90 - $0.offset * 240)), kind: .fired, condition: $0.element)
             } + [AlertEvent(date: Date().addingTimeInterval(-5400), kind: .resolved,
                             condition: Condition(key: "system.network", rule: .network, severity: .warning,
-                                                 title: "Keine Internetverbindung", body: "", sustain: 30))]
+                                                 title: String(localized: "Keine Internetverbindung"), body: "", sustain: 30))]
         }
         if history {
             model.historyState = .active

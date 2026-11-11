@@ -57,3 +57,30 @@ aus dem Zertifikat der Signaturidentität und setzt sie in die Vorlagen `Resourc
 (Ausgabe nach `build/entitlements/`). Die Erweiterung wird vor der App signiert, beide mit Hardened Runtime.
 Mit ad-hoc- oder Apple-Development-Signatur (CI) wird die Erweiterung wieder aus dem Bundle entfernt und das gemeldet.
 `release.sh` verlangt die Erweiterung, Sandbox und App-Gruppe in den Entitlements sowie `Metadata.appintents`.
+
+## Zertifikat läuft ab
+
+Das Developer-ID-Application-Zertifikat läuft am **01.02.2027** ab. Danach kann der Release-Workflow nicht mehr
+signieren. Rechtzeitig vorher:
+
+1. Im Apple-Developer-Konto ein neues Developer-ID-Application-Zertifikat anlegen und in den Schlüsselbund laden.
+2. `./scripts/setup-release-secrets.sh` erneut ausführen. Es ersetzt `DEVELOPER_ID_P12_BASE64` und
+   `DEVELOPER_ID_P12_PASSWORD` im Repo.
+3. Einen Probelauf mit `scripts/release.sh --skip-notarize` machen, dann den nächsten Tag setzen.
+
+Bereits veröffentlichte Versionen laufen weiter: Gatekeeper prüft die Notarisierung und den Zeitstempel zum
+Signierzeitpunkt, nicht das heutige Datum des Zertifikats. Auch Sparkle-Updates bleiben gültig, denn sie
+hängen am EdDSA-Schlüssel, nicht am Zertifikat.
+
+## Empfohlene Repo-Einstellungen
+
+Diese Einstellungen liegen in GitHub und nicht im Repo; sie schützen die Release-Secrets:
+
+- **Environment `release`** (Settings → Environments): Der Release-Job verweist darauf (`environment: release`).
+  Dort „Required reviewers“ setzen, damit jeder Release freigegeben werden muss, und unter „Deployment branches
+  and tags“ nur Tags `v*` zulassen. Die Secrets setzt `setup-release-secrets.sh` als Repo-Secrets; wer sie lieber
+  nur im Environment hält, verschiebt sie dorthin.
+- **Tag-Schutz für `v*`** (Settings → Rules → Rulesets, Ziel „Tags“, Muster `v*`): Nur Maintainer dürfen
+  Release-Tags anlegen, ändern oder löschen. Ein Tag löst den signierten Release aus; ohne Schutz könnte
+  ihn jeder mit Schreibrecht auslösen oder einen veröffentlichten Tag umbiegen.
+- Branch-Schutz für `main`: Pull Request und grüner Check `CI` vor dem Merge.

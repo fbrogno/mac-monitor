@@ -55,9 +55,9 @@ final class HotKeyManager {
                                          GetApplicationEventTarget(), 0, &ref)
         if status == noErr, let ref { return .success(ref) }
         if status == OSStatus(eventHotKeyExistsErr) {
-            return .failure("Dieses Kürzel ist schon von einem anderen Programm belegt. Wähle eine andere Kombination.")
+            return .failure(String(localized: "Dieses Kürzel ist schon von einem anderen Programm belegt. Wähle eine andere Kombination."))
         }
-        return .failure("Das Kürzel konnte nicht eingerichtet werden (Fehler \(status)).")
+        return .failure(String(localized: "Das Kürzel konnte nicht eingerichtet werden (Fehler \(status))."))
     }
 
     private func installHandlerIfNeeded() {

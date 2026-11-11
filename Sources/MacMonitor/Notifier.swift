@@ -32,9 +32,9 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
     /// Delegate and action buttons; no question to the user yet.
     func configure() {
         center.delegate = self
-        let kill = UNNotificationAction(identifier: Action.kill, title: "Beenden …", options: [.foreground, .destructive])
-        let mute = UNNotificationAction(identifier: Action.mute, title: "1 h stumm", options: [])
-        let activity = UNNotificationAction(identifier: Action.activity, title: "Aktivitätsanzeige", options: [.foreground])
+        let kill = UNNotificationAction(identifier: Action.kill, title: String(localized: "Beenden …"), options: [.foreground, .destructive])
+        let mute = UNNotificationAction(identifier: Action.mute, title: String(localized: "1 h stumm"), options: [])
+        let activity = UNNotificationAction(identifier: Action.activity, title: String(localized: "Aktivitätsanzeige"), options: [.foreground])
         center.setNotificationCategories([
             UNNotificationCategory(identifier: Category.process, actions: [kill, mute, activity], intentIdentifiers: []),
             UNNotificationCategory(identifier: Category.system, actions: [activity], intentIdentifiers: []),
@@ -67,13 +67,13 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
             content.title = c.title
             content.body = c.body
         case .reminder:
-            content.title = "Immer noch: \(c.title)"
+            content.title = String(localized: "Immer noch: \(c.title)")
             content.body = c.body
         case .resolved:
             // Only the end of an outage is news; other recoveries stay silent.
             guard c.rule == .network else { return }
-            content.title = "Wieder online"
-            content.body = "Die Internetverbindung ist zurück."
+            content.title = String(localized: "Wieder online")
+            content.body = String(localized: "Die Internetverbindung ist zurück.")
         }
         content.threadIdentifier = c.rule.rawValue
         if event.kind != .resolved {
@@ -103,8 +103,8 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
     /// Tells about an update found by a scheduled check (see `UpdateController`).
     func deliverUpdate(version: String) {
         let content = UNMutableNotificationContent()
-        content.title = "Update für MacMonitor"
-        content.body = "Version \(version) ist verfügbar."
+        content.title = String(localized: "Update für MacMonitor")
+        content.body = String(localized: "Version \(version) ist verfügbar.")
         content.userInfo = ["update": true]
         center.add(UNNotificationRequest(identifier: "macmonitor.update", content: content, trigger: nil))
     }
@@ -114,8 +114,8 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         let time = now.formatted(date: .omitted, time: .standard)
         return AlertEvent(date: now, kind: .fired, condition: Condition(
             key: "test", rule: .cpuHigh, severity: .info,
-            title: "MacMonitor ist bereit",
-            body: "Testmitteilung von \(time). Du wirst nur gestört, wenn etwas wirklich auffällt.",
+            title: String(localized: "MacMonitor ist bereit"),
+            body: String(localized: "Testmitteilung von \(time). Du wirst nur gestört, wenn etwas wirklich auffällt."),
             sustain: 0))
     }
 

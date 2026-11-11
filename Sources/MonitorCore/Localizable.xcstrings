@@ -201,12 +201,44 @@
         }
       }
     },
+    "Akku" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery"
+          }
+        }
+      }
+    },
     "Akku entlädt sich trotz Netzteil" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Akku entlädt sich trotz Netzteil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery draining while plugged in"
+          }
+        }
+      }
+    },
+    "Akku entlädt trotz Netzteil" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku entlädt trotz Netzteil"
           }
         },
         "en" : {
@@ -245,6 +277,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Battery below 20%"
+          }
+        }
+      }
+    },
+    "Akku-Gesundheit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku-Gesundheit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery health"
           }
         }
       }
@@ -293,6 +341,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "If it is working on purpose, wait it out or mute the alert."
+          }
+        }
+      }
+    },
+    "Arbeitsspeicher" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitsspeicher"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory"
           }
         }
       }
@@ -377,6 +441,22 @@
         }
       }
     },
+    "Aus" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
     "Beende Apps mit hohem Verbrauch, die größten stehen unten." : {
       "localizations" : {
         "de" : {
@@ -457,6 +537,22 @@
         }
       }
     },
+    "Beendet mit Code %d." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beendet mit Code %d."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exited with code %d."
+          }
+        }
+      }
+    },
     "Bei Browsern helfen auch weniger offene Tabs." : {
       "localizations" : {
         "de" : {
@@ -521,6 +617,22 @@
         }
       }
     },
+    "CPU" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU"
+          }
+        }
+      }
+    },
     "CPU bei %@ °C" : {
       "localizations" : {
         "de" : {
@@ -533,6 +645,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CPU at %@ °C"
+          }
+        }
+      }
+    },
+    "CPU dauerhaft hoch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU dauerhaft hoch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sustained high CPU"
           }
         }
       }
@@ -601,6 +729,22 @@
         }
       }
     },
+    "CPU-Temperatur hoch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU-Temperatur hoch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High CPU temperature"
+          }
+        }
+      }
+    },
     "Chrome frisst RAM" : {
       "localizations" : {
         "de" : {
@@ -613,6 +757,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chrome is eating RAM"
+          }
+        }
+      }
+    },
+    "Das Kürzel „%@“ gehört macOS oder dem aktiven Programm. Wähle eine andere Kombination." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Kürzel „%@“ gehört macOS oder dem aktiven Programm. Wähle eine andere Kombination."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The shortcut “%@” is used by macOS or the active app. Choose a different combination."
           }
         }
       }
@@ -661,6 +821,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "That is %1$@ of your memory (PID %2$@)."
+          }
+        }
+      }
+    },
+    "Dashboard öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dashboard öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Dashboard"
           }
         }
       }
@@ -1033,6 +1209,46 @@
         }
       }
     },
+    "Der Name ist zu lang. Er darf höchstens %lld Zeichen haben." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Der Name ist zu lang. Er darf höchstens %lld Zeichen haben."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Der Name ist zu lang. Er darf höchstens %lld Zeichen haben."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The name is too long. It can have at most %lld character."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The name is too long. It can have at most %lld characters."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Der Prozess belegt ungewöhnlich viel Arbeitsspeicher. Wächst das mit der Laufzeit, ist es meist ein Speicherleck." : {
       "localizations" : {
         "de" : {
@@ -1141,6 +1357,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Upload speed is %1$@, faster than the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Die Abklingzeit darf nicht negativ sein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Abklingzeit darf nicht negativ sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The cooldown can’t be negative."
           }
         }
       }
@@ -1273,6 +1505,70 @@
         }
       }
     },
+    "Die Datei ist kein gültiges JSON und konnte nicht gelesen werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei ist kein gültiges JSON und konnte nicht gelesen werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file isn’t valid JSON and couldn’t be read."
+          }
+        }
+      }
+    },
+    "Die Datei stammt aus einer neueren Version von MacMonitor. Aktualisiere die App und versuche es erneut." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei stammt aus einer neueren Version von MacMonitor. Aktualisiere die App und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is from a newer version of MacMonitor. Update the app and try again."
+          }
+        }
+      }
+    },
+    "Die Datei stammt nicht von MacMonitor oder enthält keine Einstellungen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei stammt nicht von MacMonitor oder enthält keine Einstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file isn’t from MacMonitor or doesn’t contain any settings."
+          }
+        }
+      }
+    },
+    "Die Dauer darf nicht negativ sein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Dauer darf nicht negativ sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The duration can’t be negative."
+          }
+        }
+      }
+    },
     "Die GPU ist zu %@ ausgelastet, das liegt unter der Schwelle von %@." : {
       "localizations" : {
         "de" : {
@@ -1385,6 +1681,22 @@
         }
       }
     },
+    "Die Schwelle darf nicht negativ sein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Schwelle darf nicht negativ sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The threshold can’t be negative."
+          }
+        }
+      }
+    },
     "Die Speicherverwaltung zeigt, was am meisten Platz belegt." : {
       "localizations" : {
         "de" : {
@@ -1401,6 +1713,38 @@
         }
       }
     },
+    "Diese Adresse kann nicht geöffnet werden. Sie muss mit https:// oder http:// beginnen oder die Adresse einer App sein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Adresse kann nicht geöffnet werden. Sie muss mit https:// oder http:// beginnen oder die Adresse einer App sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This address can’t be opened. It must start with https:// or http://, or be the address of an app."
+          }
+        }
+      }
+    },
+    "Diese Aktion braucht eine Messgröße, die zu einem Prozess gehört." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Aktion braucht eine Messgröße, die zu einem Prozess gehört."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action needs a metric that belongs to a process."
+          }
+        }
+      }
+    },
     "Diese Meldung stammt aus einer eigenen Regel, die du selbst eingerichtet hast." : {
       "localizations" : {
         "de" : {
@@ -1413,6 +1757,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "This alert comes from a custom rule you set up yourself."
+          }
+        }
+      }
+    },
+    "Diese Messgröße geht nur bis 100 Prozent. Wähle eine Schwelle von höchstens 100." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Messgröße geht nur bis 100 Prozent. Wähle eine Schwelle von höchstens 100."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This metric only goes up to 100 percent. Choose a threshold of 100 or less."
+          }
+        }
+      }
+    },
+    "Diese Taste kann nicht als Kürzel verwendet werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Taste kann nicht als Kürzel verwendet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This key can’t be used as a shortcut."
+          }
+        }
+      }
+    },
+    "Eigene Regel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Regel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom rule"
           }
         }
       }
@@ -1449,6 +1841,38 @@
         }
       }
     },
+    "Ein Tastenkürzel braucht mindestens eine der Tasten ⌃, ⌥ oder ⌘, sonst würde es beim Tippen auslösen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Tastenkürzel braucht mindestens eine der Tasten ⌃, ⌥ oder ⌘, sonst würde es beim Tippen auslösen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A shortcut needs at least one of the keys ⌃, ⌥ or ⌘, otherwise it would trigger while you type."
+          }
+        }
+      }
+    },
+    "Energie & Akku" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energie & Akku"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energy & Battery"
+          }
+        }
+      }
+    },
     "Energie sparen" : {
       "localizations" : {
         "de" : {
@@ -1465,6 +1889,38 @@
         }
       }
     },
+    "Energiefresser im Akkubetrieb" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energiefresser im Akkubetrieb"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energy hog on battery power"
+          }
+        }
+      }
+    },
+    "Festplatte voll" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festplatte voll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disk full"
+          }
+        }
+      }
+    },
     "Freier Speicherplatz" : {
       "localizations" : {
         "de" : {
@@ -1477,6 +1933,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Free storage"
+          }
+        }
+      }
+    },
+    "Füge mindestens eine Aktion hinzu, sonst passiert bei dieser Regel nichts." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füge mindestens eine Aktion hinzu, sonst passiert bei dieser Regel nichts."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add at least one action, otherwise this rule does nothing."
+          }
+        }
+      }
+    },
+    "GPU" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU"
+          }
+        }
+      }
+    },
+    "GPU dauerhaft hoch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU dauerhaft hoch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sustained high GPU"
           }
         }
       }
@@ -1513,6 +2017,54 @@
         }
       }
     },
+    "Gib der Regel einen Namen, damit du sie in der Liste wiederfindest." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib der Regel einen Namen, damit du sie in der Liste wiederfindest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give the rule a name so you can find it in the list."
+          }
+        }
+      }
+    },
+    "Gib eine Adresse ein, die mit https:// beginnt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib eine Adresse ein, die mit https:// beginnt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter an address that starts with https://."
+          }
+        }
+      }
+    },
+    "Gib für die Schwelle eine Zahl ein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib für die Schwelle eine Zahl ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a number for the threshold."
+          }
+        }
+      }
+    },
     "Großer Upload läuft" : {
       "localizations" : {
         "de" : {
@@ -1541,6 +2093,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Biggest consumers: %@"
+          }
+        }
+      }
+    },
+    "Hilfe" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilfe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help"
           }
         }
       }
@@ -1577,6 +2145,22 @@
         }
       }
     },
+    "Hängender Prozess" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hängender Prozess"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runaway process"
+          }
+        }
+      }
+    },
     "Immer" : {
       "localizations" : {
         "de" : {
@@ -1589,6 +2173,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Always"
+          }
+        }
+      }
+    },
+    "Internet weg" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internet weg"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internet down"
           }
         }
       }
@@ -1625,6 +2225,38 @@
         }
       }
     },
+    "Leertaste" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leertaste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Space"
+          }
+        }
+      }
+    },
+    "Leistung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power"
+          }
+        }
+      }
+    },
     "Lösche große, nicht mehr benötigte Dateien oder verschiebe sie auf ein anderes Laufwerk." : {
       "localizations" : {
         "de" : {
@@ -1653,6 +2285,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fan %1$lld is running at %2$@ of its maximum speed"
+          }
+        }
+      }
+    },
+    "Lüfter am Anschlag" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter am Anschlag"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan at maximum"
           }
         }
       }
@@ -1737,6 +2385,22 @@
         }
       }
     },
+    "Menüleisten-Fenster öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menüleisten-Fenster öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Menu Bar Window"
+          }
+        }
+      }
+    },
     "Mitteilung zeigen" : {
       "localizations" : {
         "de" : {
@@ -1749,6 +2413,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show notification"
+          }
+        }
+      }
+    },
+    "Netz ↓ (Download)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz ↓ (Download)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network ↓ (Download)"
           }
         }
       }
@@ -1797,6 +2477,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Normal"
+          }
+        }
+      }
+    },
+    "Nur Symbol" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Symbol"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon only"
           }
         }
       }
@@ -1929,6 +2625,22 @@
         }
       }
     },
+    "Prozesse" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prozesse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Processes"
+          }
+        }
+      }
+    },
     "Prüfe große Dateien in Downloads und Filme." : {
       "localizations" : {
         "de" : {
@@ -1993,6 +2705,22 @@
         }
       }
     },
+    "Ruhezustand blockiert" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruhezustand blockiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep prevented"
+          }
+        }
+      }
+    },
     "Räume Caches auf, die sich von selbst neu aufbauen (unten unter „SSD aufräumen“)." : {
       "localizations" : {
         "de" : {
@@ -2037,6 +2765,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SSD spare capacity down to %lld%%"
+          }
+        }
+      }
+    },
+    "SSD-Verschleiß" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSD-Verschleiß"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSD wear"
           }
         }
       }
@@ -2169,6 +2913,22 @@
         }
       }
     },
+    "Speicherdruck" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherdruck"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory pressure"
+          }
+        }
+      }
+    },
     "Speicherdruck erhöht" : {
       "localizations" : {
         "de" : {
@@ -2197,6 +2957,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memory pressure critical"
+          }
+        }
+      }
+    },
+    "Speicherfresser" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherfresser"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory hog"
+          }
+        }
+      }
+    },
+    "Speicherplatz" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherplatz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storage"
           }
         }
       }
@@ -2265,6 +3057,70 @@
         }
       }
     },
+    "Swap-Nutzung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap-Nutzung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap usage"
+          }
+        }
+      }
+    },
+    "Symbol + CPU" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol + CPU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon + CPU"
+          }
+        }
+      }
+    },
+    "Symbol + CPU + RAM" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol + CPU + RAM"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon + CPU + RAM"
+          }
+        }
+      }
+    },
+    "System" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        }
+      }
+    },
     "Systemleistung" : {
       "localizations" : {
         "de" : {
@@ -2277,6 +3133,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "System power"
+          }
+        }
+      }
+    },
+    "Temperatur" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperature"
           }
         }
       }
@@ -2313,6 +3185,22 @@
         }
       }
     },
+    "Volume voll" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume voll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume full"
+          }
+        }
+      }
+    },
     "WLAN aus- und wieder einschalten löst die meisten Hänger." : {
       "localizations" : {
         "de" : {
@@ -2325,6 +3213,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Turning Wi-Fi off and on again fixes most hiccups."
+          }
+        }
+      }
+    },
+    "Wenn ich an einem anderen Bildschirm bin" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn ich an einem anderen Bildschirm bin"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When I’m on another display"
+          }
+        }
+      }
+    },
+    "Wähle ein Programm aus oder gib den Namen eines Programms ein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle ein Programm aus oder gib den Namen eines Programms ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose an app or enter an app name."
+          }
+        }
+      }
+    },
+    "Wähle einen Kurzbefehl aus oder gib seinen Namen ein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle einen Kurzbefehl aus oder gib seinen Namen ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a shortcut or enter its name."
           }
         }
       }
@@ -2453,6 +3389,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "macOS is reducing performance. Biggest consumer: %1$@ (%2$@)."
+          }
+        }
+      }
+    },
+    "Überhitzung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überhitzung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overheating"
+          }
+        }
+      }
+    },
+    "Übersicht öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersicht öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Overview"
+          }
+        }
+      }
+    },
+    "„%@“ gehört zum System oder zu MacMonitor und wird nie beendet oder gedrosselt. Wähle ein anderes Programm." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ gehört zum System oder zu MacMonitor und wird nie beendet oder gedrosselt. Wähle ein anderes Programm."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” belongs to the system or to MacMonitor and is never quit or throttled. Choose a different app."
+          }
+        }
+      }
+    },
+    "„Prozess beenden“ geht nur mit der Messgröße „CPU eines Prozesses“ oder „RAM eines Prozesses“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Prozess beenden“ geht nur mit der Messgröße „CPU eines Prozesses“ oder „RAM eines Prozesses“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Quit process” only works with the metric “CPU of a process” or “RAM of a process”."
+          }
+        }
+      }
+    },
+    "„Prozess drosseln“ geht nur mit der Messgröße „CPU eines Prozesses“ oder „RAM eines Prozesses“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Prozess drosseln“ geht nur mit der Messgröße „CPU eines Prozesses“ oder „RAM eines Prozesses“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Throttle process” only works with the metric “CPU of a process” or “RAM of a process”."
           }
         }
       }

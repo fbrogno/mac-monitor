@@ -108,7 +108,7 @@ struct DataPane: View {
 
     private func exportSettings() {
         let panel = NSSavePanel()
-        panel.nameFieldStringValue = "MacMonitor-Einstellungen.json"
+        panel.nameFieldStringValue = String(localized: "MacMonitor-Einstellungen.json")
         panel.allowedContentTypes = [.json]
         panel.canCreateDirectories = true
         panel.begin { [weak model] response in

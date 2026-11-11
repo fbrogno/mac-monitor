@@ -6,9 +6,9 @@ public enum HotKeyAction: String, CaseIterable, Codable, Sendable, Hashable {
 
     public var title: String {
         switch self {
-        case .openPopover: "Menüleisten-Fenster öffnen"
-        case .openDashboard: "Dashboard öffnen"
-        case .openOverview: "Übersicht öffnen"
+        case .openPopover: L("Menüleisten-Fenster öffnen")
+        case .openDashboard: L("Dashboard öffnen")
+        case .openOverview: L("Übersicht öffnen")
         }
     }
 }
@@ -38,22 +38,25 @@ public struct HotKeyBinding: Codable, Equatable, Hashable, Sendable {
         public var message: String {
             switch self {
             case .needsModifier:
-                "Ein Tastenkürzel braucht mindestens eine der Tasten ⌃, ⌥ oder ⌘, sonst würde es beim Tippen auslösen."
+                L("Ein Tastenkürzel braucht mindestens eine der Tasten ⌃, ⌥ oder ⌘, sonst würde es beim Tippen auslösen.")
             case .reserved(let name):
-                "Das Kürzel „\(name)“ gehört macOS oder dem aktiven Programm. Wähle eine andere Kombination."
+                L("Das Kürzel „\(name)“ gehört macOS oder dem aktiven Programm. Wähle eine andere Kombination.")
             case .unknownKey:
-                "Diese Taste kann nicht als Kürzel verwendet werden."
+                L("Diese Taste kann nicht als Kürzel verwendet werden.")
             }
         }
     }
 
     /// Combinations that macOS or nearly every app uses (virtual key codes: Q 12, W 13, H 4, M 46, Tab 48, Space 49, Esc 53).
-    static let reserved: [(key: UInt32, modifiers: UInt32, name: String)] = [
+    static var reserved: [(key: UInt32, modifiers: UInt32, name: String)] {
+        let space = L("Leertaste")
+        return [
         (12, command, "⌘Q"), (13, command, "⌘W"), (4, command, "⌘H"), (46, command, "⌘M"),
-        (48, command, "⌘⇥"), (49, command, "⌘Leertaste"), (49, control, "⌃Leertaste"),
-        (49, command | option, "⌥⌘Leertaste"), (53, command | option, "⌥⌘⎋"),
+        (48, command, "⌘⇥"), (49, command, "⌘\(space)"), (49, control, "⌃\(space)"),
+        (49, command | option, "⌥⌘\(space)"), (53, command | option, "⌥⌘⎋"),
         (12, command | control, "⌃⌘Q"),
-    ]
+        ]
+    }
 
     /// nil when the combination is usable.
     public func validate() -> Problem? {
@@ -75,7 +78,7 @@ public struct HotKeyBinding: Codable, Equatable, Hashable, Sendable {
     /// (the app asks the keyboard layout for those).
     public static func specialKeyName(_ keyCode: UInt32) -> String? {
         let names: [UInt32: String] = [
-            36: "↩", 48: "⇥", 49: "Leertaste", 51: "⌫", 53: "⎋", 71: "⌧", 76: "⌅", 114: "Hilfe", 115: "↖", 116: "⇞",
+            36: "↩", 48: "⇥", 49: L("Leertaste"), 51: "⌫", 53: "⎋", 71: "⌧", 76: "⌅", 114: L("Hilfe"), 115: "↖", 116: "⇞",
             117: "⌦", 119: "↘", 121: "⇟", 123: "←", 124: "→", 125: "↓", 126: "↑",
             122: "F1", 120: "F2", 99: "F3", 118: "F4", 96: "F5", 97: "F6", 98: "F7", 100: "F8", 101: "F9",
             109: "F10", 103: "F11", 111: "F12", 105: "F13", 107: "F14", 113: "F15", 106: "F16", 64: "F17",

@@ -18,24 +18,24 @@ public enum RuleID: String, CaseIterable, Codable, Sendable {
 
     public var title: String {
         switch self {
-        case .runawayProcess: "Hängender Prozess"
-        case .memoryHog: "Speicherfresser"
-        case .cpuHigh: "CPU dauerhaft hoch"
-        case .memoryPressure: "Speicherdruck"
-        case .swap: "Swap-Nutzung"
-        case .thermal: "Überhitzung"
-        case .disk: "Festplatte voll"
-        case .network: "Internet weg"
-        case .sleepBlocker: "Ruhezustand blockiert"
-        case .cpuTemperature: "CPU-Temperatur hoch"
-        case .fanMaxed: "Lüfter am Anschlag"
-        case .batteryHealth: "Akku-Gesundheit"
-        case .batteryDrainOnAC: "Akku entlädt trotz Netzteil"
-        case .energyHog: "Energiefresser im Akkubetrieb"
-        case .ssdWear: "SSD-Verschleiß"
-        case .volumeFull: "Volume voll"
-        case .gpuHigh: "GPU dauerhaft hoch"
-        case .custom: "Eigene Regel"
+        case .runawayProcess: L("Hängender Prozess")
+        case .memoryHog: L("Speicherfresser")
+        case .cpuHigh: L("CPU dauerhaft hoch")
+        case .memoryPressure: L("Speicherdruck")
+        case .swap: L("Swap-Nutzung")
+        case .thermal: L("Überhitzung")
+        case .disk: L("Festplatte voll")
+        case .network: L("Internet weg")
+        case .sleepBlocker: L("Ruhezustand blockiert")
+        case .cpuTemperature: L("CPU-Temperatur hoch")
+        case .fanMaxed: L("Lüfter am Anschlag")
+        case .batteryHealth: L("Akku-Gesundheit")
+        case .batteryDrainOnAC: L("Akku entlädt trotz Netzteil")
+        case .energyHog: L("Energiefresser im Akkubetrieb")
+        case .ssdWear: L("SSD-Verschleiß")
+        case .volumeFull: L("Volume voll")
+        case .gpuHigh: L("GPU dauerhaft hoch")
+        case .custom: L("Eigene Regel")
         }
     }
 }
@@ -66,9 +66,9 @@ public enum MenuBarStyle: String, CaseIterable, Codable, Sendable {
 
     public var title: String {
         switch self {
-        case .icon: "Nur Symbol"
-        case .iconAndCPU: "Symbol + CPU"
-        case .iconCPUAndMemory: "Symbol + CPU + RAM"
+        case .icon: L("Nur Symbol")
+        case .iconAndCPU: L("Symbol + CPU")
+        case .iconCPUAndMemory: L("Symbol + CPU + RAM")
         }
     }
 }
@@ -80,9 +80,9 @@ public enum OverlayMode: String, CaseIterable, Codable, Sendable {
 
     public var title: String {
         switch self {
-        case .off: "Aus"
-        case .otherScreens: "Wenn ich an einem anderen Bildschirm bin"
-        case .always: "Immer"
+        case .off: L("Aus")
+        case .otherScreens: L("Wenn ich an einem anderen Bildschirm bin")
+        case .always: L("Immer")
         }
     }
 

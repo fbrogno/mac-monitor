@@ -182,7 +182,7 @@ public enum ShortcutRunner {
         case .exited(let status):
             if status == 0 { return .success }
             let text = done.error.trimmingCharacters(in: .whitespacesAndNewlines)
-            return .failed(text.isEmpty ? "Beendet mit Code \(status)." : text)
+            return .failed(text.isEmpty ? L("Beendet mit Code \(status).") : text)
         }
     }
 

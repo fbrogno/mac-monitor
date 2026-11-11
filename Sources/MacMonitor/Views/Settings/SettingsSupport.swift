@@ -3,16 +3,22 @@ import SwiftUI
 
 /// Small secondary line under a setting.
 struct SettingsNote: View {
-    let text: LocalizedStringKey
+    let text: Text
     var tint: Color = .secondary
 
     init(_ text: LocalizedStringKey, tint: Color = .secondary) {
-        self.text = text
+        self.text = Text(text)
+        self.tint = tint
+    }
+
+    /// For text that is already localized (built at run time).
+    init(verbatim text: String, tint: Color = .secondary) {
+        self.text = Text(verbatim: text)
         self.tint = tint
     }
 
     var body: some View {
-        Text(text)
+        text
             .font(.system(size: 11))
             .foregroundStyle(tint)
             .fixedSize(horizontal: false, vertical: true)
@@ -79,9 +85,7 @@ struct DurationPicker: View {
     static func text(_ seconds: TimeInterval) -> String {
         if seconds == 0 { return String(localized: "sofort") }
         if seconds >= 86_400, seconds.truncatingRemainder(dividingBy: 86_400) == 0 { return String(localized: "\(Int(seconds / 86_400)) Tage") }
-        if seconds >= 3600, seconds.truncatingRemainder(dividingBy: 3600) == 0 {
-            return seconds == 3600 ? String(localized: "1 Stunde") : String(localized: "\(Int(seconds / 3600)) Stunden")
-        }
+        if seconds >= 3600, seconds.truncatingRemainder(dividingBy: 3600) == 0 { return String(localized: "\(Int(seconds / 3600)) Stunden") }
         return Format.duration(seconds)
     }
 }

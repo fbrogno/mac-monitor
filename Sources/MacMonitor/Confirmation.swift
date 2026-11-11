@@ -42,7 +42,7 @@ struct ConfirmationStrip: View {
                     }
                 }
                 Spacer()
-                ActionButton(title: "Abbrechen", action: onFinish)
+                ActionButton(title: String(localized: "Abbrechen"), action: onFinish)
             }
         }
         .padding(12)

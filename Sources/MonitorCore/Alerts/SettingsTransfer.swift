@@ -12,9 +12,9 @@ public enum SettingsTransfer {
 
         public var message: String {
             switch self {
-            case .notReadable: "Die Datei ist kein gültiges JSON und konnte nicht gelesen werden."
-            case .wrongFormat: "Die Datei stammt nicht von MacMonitor oder enthält keine Einstellungen."
-            case .newerVersion: "Die Datei stammt aus einer neueren Version von MacMonitor. Aktualisiere die App und versuche es erneut."
+            case .notReadable: L("Die Datei ist kein gültiges JSON und konnte nicht gelesen werden.")
+            case .wrongFormat: L("Die Datei stammt nicht von MacMonitor oder enthält keine Einstellungen.")
+            case .newerVersion: L("Die Datei stammt aus einer neueren Version von MacMonitor. Aktualisiere die App und versuche es erneut.")
             }
         }
     }

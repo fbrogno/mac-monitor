@@ -6,13 +6,13 @@ public enum MenuBarItem: String, CaseIterable, Codable, Sendable, Hashable {
 
     public var title: String {
         switch self {
-        case .cpu: "CPU"
-        case .memory: "Arbeitsspeicher"
-        case .gpu: "GPU"
-        case .temperature: "Temperatur"
-        case .power: "Leistung"
-        case .networkDown: "Netz ↓ (Download)"
-        case .battery: "Akku"
+        case .cpu: L("CPU")
+        case .memory: L("Arbeitsspeicher")
+        case .gpu: L("GPU")
+        case .temperature: L("Temperatur")
+        case .power: L("Leistung")
+        case .networkDown: L("Netz ↓ (Download)")
+        case .battery: L("Akku")
         }
     }
 
@@ -22,7 +22,7 @@ public enum MenuBarItem: String, CaseIterable, Codable, Sendable, Hashable {
         case .cpu: "CPU"
         case .memory: "RAM"
         case .gpu: "GPU"
-        case .battery: "Akku"
+        case .battery: L("Akku")
         case .temperature, .power, .networkDown: nil
         }
     }
