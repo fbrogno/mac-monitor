@@ -18,11 +18,13 @@ public struct Condition: Sendable, Equatable, Identifiable {
     /// How long the condition must hold before it is reported.
     public let sustain: TimeInterval
     public let process: ProcessRef?
+    /// Overrides the engine's reminder interval for this condition (e.g. 7 days for battery health).
+    public let reminderInterval: TimeInterval?
 
     public var id: String { key }
 
     public init(key: String, rule: RuleID, severity: Severity, title: String, body: String,
-                sustain: TimeInterval, process: ProcessRef? = nil) {
+                sustain: TimeInterval, process: ProcessRef? = nil, reminderInterval: TimeInterval? = nil) {
         self.key = key
         self.rule = rule
         self.severity = severity
@@ -30,6 +32,7 @@ public struct Condition: Sendable, Equatable, Identifiable {
         self.body = body
         self.sustain = sustain
         self.process = process
+        self.reminderInterval = reminderInterval
     }
 }
 

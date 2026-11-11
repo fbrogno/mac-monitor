@@ -94,6 +94,58 @@ public enum Remedies {
                 explanation: "Der Prozess hält den Mac wach und leert so im Akkubetrieb den Akku, auch wenn du nicht arbeitest.",
                 steps: ["Brauchst du ihn nicht mehr, beende ihn."],
                 actions: c.process.map { [.quit($0), .mute($0.name), .ignoreForever($0.name)] } ?? [])
+        case .cpuTemperature:
+            return Remedy(
+                explanation: "Die CPU ist ungewöhnlich heiß. Bleibt das so, drosselt macOS bald die Leistung, und der Mac wird laut.",
+                steps: ["Reduziere die Last, die größten Verbraucher stehen unten.",
+                        "Lüftungsschlitze frei halten, nicht auf weicher Unterlage betreiben."],
+                actions: [.openActivityMonitor], suspects: byCPU)
+        case .fanMaxed:
+            return Remedy(
+                explanation: "Der Lüfter dreht seit Minuten fast mit voller Drehzahl. Der Mac schafft es nur mit Mühe, die Wärme loszuwerden.",
+                steps: ["Beende rechenintensive Apps, die größten Verbraucher stehen unten.",
+                        "Prüfe, ob die Lüftungsschlitze frei sind und die Umgebung nicht zu warm ist."],
+                actions: [.openActivityMonitor], suspects: byCPU)
+        case .batteryHealth:
+            return Remedy(
+                explanation: "Der Akku hat durch Alterung Kapazität verloren oder macOS empfiehlt einen Service. Das ist normal, wenn der Mac schon viele Ladezyklen hinter sich hat.",
+                steps: ["Plane bei Bedarf einen Akkutausch über Apple oder einen Servicepartner.",
+                        "Bis dahin hilft es, den Mac nicht dauerhaft heiß oder bei 0 % zu betreiben."],
+                actions: [])
+        case .batteryDrainOnAC:
+            return Remedy(
+                explanation: "Das Netzteil liefert weniger Strom, als der Mac gerade braucht, deshalb leert sich der Akku trotz Kabel.",
+                steps: ["Nutze das Original-Netzteil mit ausreichender Leistung und ein passendes Kabel.",
+                        "Beende Apps mit hohem Verbrauch, die größten stehen unten."],
+                actions: [.openActivityMonitor], suspects: byCPU)
+        case .energyHog:
+            return Remedy(
+                explanation: "Die App verbraucht im Akkubetrieb viel Energie und verkürzt die Laufzeit deutlich.",
+                steps: ["Beende die App, wenn du sie gerade nicht brauchst.",
+                        "Hilft das nicht, schalte die Warnung für diese App stumm."],
+                actions: c.process.map { [.quit($0), .mute($0.name), .ignoreForever($0.name)] } ?? [])
+        case .ssdWear:
+            return Remedy(
+                explanation: "Die SSD meldet, dass ein großer Teil ihrer geplanten Schreibmenge verbraucht ist oder die Reserve schrumpft. Sie läuft meist noch lange, kann aber irgendwann ausfallen.",
+                steps: ["Sichere wichtige Daten regelmäßig mit Time Machine oder einem anderen Backup.",
+                        "Vermeide dauerhaft hohen Swap, indem du Apps mit viel Speicher neu startest."],
+                actions: [.openStorageSettings])
+        case .volumeFull:
+            return Remedy(
+                explanation: "Auf dem Volume ist kaum noch Platz frei. Dateien lassen sich dann nicht mehr speichern, und bei der Systemplatte wird der Mac langsam.",
+                steps: ["Lösche große, nicht mehr benötigte Dateien oder verschiebe sie auf ein anderes Laufwerk.",
+                        "Die Speicherverwaltung zeigt, was am meisten Platz belegt."],
+                actions: [.openStorageSettings])
+        case .gpuHigh:
+            return Remedy(
+                explanation: "Die Grafikeinheit ist dauerhaft stark ausgelastet. Das kostet Akku und erzeugt Wärme.",
+                steps: ["Beende grafikintensive Apps, Spiele oder Videoexporte, die du nicht brauchst."],
+                actions: [.openActivityMonitor])
+        case .custom:
+            return Remedy(
+                explanation: "Diese Meldung stammt aus einer eigenen Regel, die du selbst eingerichtet hast.",
+                steps: ["Passe die Regel in den Einstellungen an, wenn sie zu oft oder zu früh meldet."],
+                actions: c.process.map { [.quit($0), .mute($0.name)] } ?? [])
         }
     }
 }

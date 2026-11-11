@@ -42,7 +42,7 @@ public struct AlertEngine: Sendable {
                     events.append(AlertEvent(date: now, kind: .escalated, condition: condition))
                     track.firedAt = now
                     track.firedSeverity = condition.severity
-                } else if now.timeIntervalSince(firedAt) >= reminderInterval {
+                } else if now.timeIntervalSince(firedAt) >= (condition.reminderInterval ?? reminderInterval) {
                     events.append(AlertEvent(date: now, kind: .reminder, condition: condition))
                     track.firedAt = now
                 }
