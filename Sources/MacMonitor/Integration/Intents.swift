@@ -144,7 +144,7 @@ enum DashboardArea: String, AppEnum {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Bereich")
     static let caseDisplayRepresentations: [DashboardArea: DisplayRepresentation] = [
         .overview: "Überblick", .cpu: "CPU und GPU", .memory: "Speicher", .energy: "Energie und Akku",
-        .sensors: "Sensoren", .network: "Netzwerk und Laufwerke", .apps: "Apps", .events: "Ereignisse",
+        .sensors: "Sensoren", .network: "Netzwerk und Laufwerke", .apps: "Apps & Prozesse", .events: "Ereignisse",
         .report: "Bericht",
     ]
 }
@@ -204,7 +204,7 @@ struct GetAnomaliesIntent: AppIntent {
 
 struct OpenDashboardIntent: AppIntent {
     static let title: LocalizedStringResource = "Dashboard öffnen"
-    static let description = IntentDescription("Öffnet das Dashboard im gewählten Bereich.", categoryName: "Öffnen")
+    static let description = IntentDescription("Öffnet das Hauptfenster im gewählten Bereich.", categoryName: "Öffnen")
     static let openAppWhenRun = true
 
     @Parameter(title: "Bereich", default: .overview)
@@ -224,7 +224,7 @@ struct OpenDashboardIntent: AppIntent {
 
 struct OpenOverviewIntent: AppIntent {
     static let title: LocalizedStringResource = "Übersicht öffnen"
-    static let description = IntentDescription("Öffnet die Übersicht mit den aktuellen Auffälligkeiten.", categoryName: "Öffnen")
+    static let description = IntentDescription("Öffnet das Hauptfenster bei den aktuellen Auffälligkeiten.", categoryName: "Öffnen")
     static let openAppWhenRun = true
 
     @MainActor

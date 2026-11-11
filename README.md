@@ -45,7 +45,7 @@
 
 - [Why MacMonitor](#why-macmonitor)
 - [Features](#features)
-- [Reference](#reference): [rules](#all-17-built-in-rules) · [measurements](#everything-it-measures) · [dashboard](#the-dashboard-nine-areas) · [custom rules](#custom-rules-and-actions) · [settings](#settings-tab-by-tab)
+- [Reference](#reference): [rules](#all-17-built-in-rules) · [measurements](#everything-it-measures) · [main window](#the-main-window) · [custom rules](#custom-rules-and-actions) · [settings](#settings-area-by-area)
 - [How it works](#how-it-works)
 - [Widgets](#widgets)
 - [Shortcuts and automation](#shortcuts-and-automation)
@@ -81,24 +81,28 @@ Short spikes do not count. A rule reports only after the condition has held with
       All live values on one page: CPU, memory, swap, GPU, temperature, power, fans, SSD, network, battery. Processes or apps, sorted by CPU or RAM, and the latest alerts.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/en/overview.png" alt="Overview with fixes" height="250">
-      <br><b>Overview with fixes</b><br>
+      <img src="docs/images/en/window-issues.png" alt="Issues with fixes" height="250">
+      <br><b>Issues with fixes</b><br>
       Every alert with an explanation, concrete steps and the buttons that do it. For memory or CPU problems it lists the likely culprits right away.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/en/dashboard-overview.png" alt="Dashboard" width="270">
-      <br><b>Dashboard with history</b><br>
-      Nine areas, live values and charts from 1 hour to 30 days, a day or week report, CSV and JSON export.
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/images/en/window-overview.png">
+        <source media="(prefers-color-scheme: light)" srcset="docs/images/en/window-overview-light.png">
+        <img src="docs/images/en/window-overview.png" alt="The main window" width="270">
+      </picture>
+      <br><b>One window, with history</b><br>
+      Sidebar with all areas: live values and charts from 1 hour to 30 days, a day or week report, CSV and JSON export.
     </td>
   </tr>
   <tr>
     <td width="33%" valign="top">
-      <img src="docs/images/en/settings-rules.png" alt="Rules in Settings" width="270">
+      <img src="docs/images/en/window-rules.png" alt="Rules in Settings" width="270">
       <br><b>17 built-in rules</b><br>
       Thresholds and durations are yours to change, per group, with "Reset to Defaults". Processes can be ignored for good or muted for an hour.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/en/settings-custom-rule.png" alt="Editor for a custom rule" width="270">
+      <img src="docs/images/en/window-custom-rules.png" alt="Custom rules in Settings" width="270">
       <br><b>Custom rules with actions</b><br>
       Pick a measurement, a limit and a duration. Then show a notification, run a Shortcut, open a URL, quit or throttle a program.
     </td>
@@ -116,11 +120,11 @@ Short spikes do not count. A rule reports only after the condition has held with
     <td width="33%" valign="top">
       <img src="docs/readme/shortcuts-en.svg" alt="The seven Shortcuts actions" width="270">
       <br><b>Shortcuts, Spotlight, Siri</b><br>
-      Seven actions: read the status, the top consumers and the alerts, open the dashboard, mute and unmute.
+      Seven actions: read the status, the top consumers and the alerts, open the main window, mute and unmute.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/en/overview.png" alt="Clean up SSD in the overview" height="250">
-      <br><b>Clean up SSD</b><br>
+      <img src="docs/images/en/window-cleanup.png" alt="Clean Up Storage in the main window" height="250">
+      <br><b>Clean Up Storage</b><br>
       Measures caches that rebuild themselves and empties them after you confirm. Downloads are only opened, never deleted.
     </td>
     <td width="33%" valign="top">
@@ -197,40 +201,51 @@ What differs by Mac is covered in [Known limits](#known-limits).
 
 </details>
 
-### The dashboard: nine areas
+### The main window
 
 <details>
-<summary><b>Dashboard areas, with screenshots</b></summary>
+<summary><b>Sidebar, areas and screenshots</b></summary>
 
 &nbsp;
 
-Open it from the popover, with a [keyboard shortcut](#settings-tab-by-tab) or with `open macmonitor://dashboard`. Each area has a range switch: 1 hour, 24 hours, 7 days, 30 days. Charts show the average with a band from minimum to maximum, and a tooltip on hover.
+One window holds everything: live values, history, tools and settings. While it is open MacMonitor also shows a Dock icon. Open it from the popover, with a [keyboard shortcut](#settings-area-by-area) or with `open macmonitor://open/<area>`. <kbd>⌘</kbd><kbd>,</kbd> jumps to Settings and <kbd>⌘1</kbd> to <kbd>⌘9</kbd> (and <kbd>⌘0</kbd>) to the first ten areas in the sidebar. The search field in the sidebar finds areas and settings by name or keyword.
 
-| Area | Shows |
-|---|---|
-| At a Glance | all key values as tiles with a small chart, current alerts with "Fix" buttons, uptime, load and process count |
-| CPU & GPU | CPU over time with efficiency and performance cores, per-core bars, GPU load and GPU memory, system load |
-| Memory | usage, pressure and swap over time |
-| Energy & Battery | system power split into CPU, GPU, Neural Engine and RAM, charge level, battery condition |
-| Sensors | temperatures, fans and SSD health |
-| Network & Drives | throughput total and per interface, connection, drives, read and write rate |
-| Apps | all apps now with CPU, RAM, energy, threads and disk activity, helpers expandable; the biggest consumers over the chosen range |
-| Events | all alerts in the range, grouped into incidents with duration, and the raw log |
-| Report | a day or week summary with change against the period before, incidents per rule, top programs, export and delete |
+Areas with charts share a range switch: 1 hour, 24 hours, 7 days, 30 days. Charts show the average with a band from minimum to maximum, and a tooltip on hover. The report has its own period, day or week.
+
+| Group | Area | Shows |
+|---|---|---|
+| Monitor | At a Glance | all key values as tiles with a small chart, uptime, load and process count |
+| Monitor | Issues | current alerts with explanation, steps and "Fix" buttons |
+| Monitor | Apps & Processes | all apps now with CPU, RAM, energy, threads and disk activity, helpers expandable; the biggest consumers over the chosen range |
+| History | CPU & GPU | CPU over time with efficiency and performance cores, per-core bars, GPU load and GPU memory, system load |
+| History | Memory | usage, pressure and swap over time |
+| History | Energy & Battery | system power split into CPU, GPU, Neural Engine and RAM, charge level, battery condition |
+| History | Sensors | temperatures, fans and SSD health |
+| History | Network & Disks | throughput total and per interface, connection, drives, read and write rate |
+| History | Events | all alerts in the range, grouped into incidents with duration, and the raw log |
+| History | Report | a day or week summary with change against the period before, incidents per rule, top programs, export and delete |
+| Tools | Clean Up Storage | caches and leftovers that rebuild themselves, measured and emptied after you confirm |
+| Settings | General, Menu Bar, Rules, Custom Rules, Quiet, Ignored, Data, Updates & Info | see [Settings](#settings-area-by-area) |
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/en/dashboard-overview.png" alt="Dashboard: At a Glance"><br><sub>At a Glance</sub></td>
-    <td width="50%"><img src="docs/images/en/dashboard-cpu.png" alt="Dashboard: CPU and GPU"><br><sub>CPU &amp; GPU</sub></td>
+    <td width="50%"><img src="docs/images/en/window-overview.png" alt="At a Glance"><br><sub>At a Glance</sub></td>
+    <td width="50%"><img src="docs/images/en/window-issues.png" alt="Issues"><br><sub>Issues</sub></td>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/images/en/dashboard-energy.png" alt="Dashboard: Energy and battery"><br><sub>Energy &amp; Battery</sub></td>
-    <td width="50%"><img src="docs/images/en/dashboard-apps.png" alt="Dashboard: Apps"><br><sub>Apps</sub></td>
+    <td width="50%"><img src="docs/images/en/window-apps.png" alt="Apps and Processes"><br><sub>Apps &amp; Processes</sub></td>
+    <td width="50%"><img src="docs/images/en/window-cpu.png" alt="CPU and GPU"><br><sub>CPU &amp; GPU</sub></td>
   </tr>
   <tr>
-    <td colspan="2"><img src="docs/images/en/dashboard-report.png" alt="Dashboard: Report"><br><sub>Report</sub></td>
+    <td width="50%"><img src="docs/images/en/window-energy.png" alt="Energy and Battery"><br><sub>Energy &amp; Battery</sub></td>
+    <td width="50%"><img src="docs/images/en/window-report.png" alt="Report"><br><sub>Report</sub></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/images/en/window-cleanup.png" alt="Clean Up Storage"><br><sub>Clean Up Storage</sub></td>
   </tr>
 </table>
+
+Light and dark appearance follow the system.
 
 **History.** It lives in one SQLite file on your Mac. Minute values are kept for 2 days, 15-minute values for 30 days, daily values for 2 years. Alerts are kept for 90 days. The report exports a chosen period as CSV or JSON and can delete the whole history.
 
@@ -252,7 +267,7 @@ Open it from the popover, with a [keyboard shortcut](#settings-tab-by-tab) or wi
 
 Five templates help you start, for example "Chrome is eating RAM" (quit after asking, above 4 GB for 2 min) or "Battery below 20%". Incomplete rules cannot be saved, and the editor says at the field what is missing. Every action that ran, and every failure, is in the event log. A rule that cannot be read is skipped when settings load; the others stay.
 
-<img src="docs/images/en/settings-custom-rule.png" alt="Editor for a custom rule, with a hint at the field that is still empty" width="640">
+<img src="docs/images/en/window-custom-rules.png" alt="Custom rules in Settings, with the editor open" width="640">
 
 **Safety.**
 
@@ -265,14 +280,16 @@ Five templates help you start, for example "Chrome is eating RAM" (quit after as
 
 </details>
 
-### Settings, tab by tab
+### Settings, area by area
 
 <details>
-<summary><b>The eight settings tabs, quiet hours and keyboard shortcuts</b></summary>
+<summary><b>The eight settings areas, quiet hours and keyboard shortcuts</b></summary>
 
 &nbsp;
 
-| Tab | Contents |
+Settings are the last group in the sidebar of the main window, or <kbd>⌘</kbd><kbd>,</kbd> from anywhere.
+
+| Area | Contents |
 |---|---|
 | General | start at login, notice window (off, only when you are on another screen (default), always), reminder interval |
 | Menu bar | up to three values next to the icon: CPU, RAM, GPU, temperature, power, network download, battery. Default: icon only. Three optional keyboard shortcuts |
@@ -281,24 +298,24 @@ Five templates help you start, for example "Chrome is eating RAM" (quit after as
 | Quiet | what is silenced and when |
 | Ignored | programs that never trigger process alerts (default: `kernel_task`, `mds_stores`, `mdworker_shared`, `photoanalysisd`), and programs muted for now |
 | Data | history size and retention, export, delete, export and import of your settings as JSON |
-| Updates & About | automatic update check, check now, version, privacy note |
+| Updates & Info | automatic update check, check now, version, license, privacy note, links. This is what the former About window showed |
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/en/settings-quiet.png" alt="Settings: Quiet"></td>
-    <td width="50%"><img src="docs/images/en/settings-menubar.png" alt="Settings: Menu bar and keyboard shortcuts"></td>
+    <td width="50%"><img src="docs/images/en/window-quiet.png" alt="Settings: Quiet"></td>
+    <td width="50%"><img src="docs/images/en/window-menubar.png" alt="Settings: Menu bar and keyboard shortcuts"></td>
   </tr>
 </table>
 
 **Quiet.** No notice window and no sound while the screen is locked or a display is mirrored (a projector in mirror mode). Optional quiet hours (off by default, 22:00 to 07:00 when switched on, also across midnight). During quiet times info alerts are dropped. Warnings still arrive in Notification Center, without notice window and sound. Critical alerts break through if you leave that switch on (default). Sound plays only for new and escalated warnings and critical alerts, never for reminders or "Resolved" alerts. The "Respect Focus" switch is greyed out, see [Known limits](#known-limits).
 
-**Keyboard shortcuts.** Open the popover, the dashboard, the overview. None is set by default. Pick one in Settings, Menu bar, for example <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>D</kbd> for the dashboard. They work in every app and need no Accessibility permission.
+**Keyboard shortcuts.** Open the popover, the main window, the issues. None is set by default. Pick one in Settings, Menu bar, for example <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>D</kbd> for the main window. Inside the main window <kbd>⌘</kbd><kbd>,</kbd> and <kbd>⌘1</kbd> to <kbd>⌘9</kbd> work without any setup. They work in every app and need no Accessibility permission.
 
 **Menu bar text** changes only when a value changes noticeably and at most every 10 seconds, because every change makes macOS redraw the menu bar on every display.
 
-**First start.** A welcome window explains the app and asks for notifications. Open it again with `open macmonitor://welcome`.
+**First start.** A welcome sheet explains the app and asks for notifications. Open it again with `open macmonitor://welcome`.
 
-<img src="docs/images/en/welcome.png" alt="Welcome window" width="420">
+<img src="docs/images/en/welcome.png" alt="Welcome sheet" width="420">
 
 </details>
 
@@ -324,7 +341,7 @@ flowchart LR
     E --> A["Actions of custom rules<br/>Shortcut, URL, quit, throttle"]
     N --> H[("History<br/>SQLite")]
     E --> H
-    H --> D["Dashboard<br/>and report"]
+    H --> D["Main window<br/>history and report"]
     N --> W["Widget file"]
     W --> WG["Widgets"]
     N --> I["Shortcuts<br/>and Siri"]
@@ -369,7 +386,7 @@ Five widgets for the desktop and Notification Center. They show data the app wri
 | Storage | small, medium | free space of the startup volume |
 | Top Consumers | medium, large | the apps with the highest load |
 
-A click on a widget opens the overview or the matching dashboard area.
+A click on a widget opens the main window at the issues or the matching area.
 
 <details>
 <summary><b>Widget gallery</b></summary>
@@ -442,8 +459,8 @@ MacMonitor adds seven actions to the Shortcuts app. They also work from Spotligh
 | Get System Status | returns CPU, RAM, GPU, temperature, power, battery, free space, the number of alerts and a one-line summary |
 | Get Top Consumers | returns the apps with the highest load, sorted by CPU, memory or energy (1 to 20, default 5) |
 | Get Issues | returns the current alerts with title, severity and description |
-| Open Dashboard | opens the dashboard in an area you choose |
-| Open Overview | opens the overview with the current alerts |
+| Open Dashboard | opens the main window in an area you choose |
+| Open Overview | opens the main window at the current issues |
 | Mute Alerts | silences MacMonitor for a time you choose (default 1 hour) |
 | Unmute Alerts | ends the mute |
 
@@ -470,17 +487,42 @@ For scripts, Shortcuts and the terminal. The app must be installed.
 
 | Command | Opens |
 |---|---|
-| `open macmonitor://overview` | the overview |
-| `open macmonitor://cleanup` | the overview at "Clean up SSD" |
-| `open macmonitor://dashboard` | the dashboard (last area shown) |
-| `open macmonitor://dashboard/<area>` | an area: `overview`, `cpu`, `memory`, `energy`, `sensors`, `network`, `apps`, `events`, `report` |
-| `open macmonitor://settings` | the settings |
-| `open macmonitor://settings/<tab>` | a tab: `general`, `menuBar`, `rules`, `customRules`, `quiet`, `ignored`, `data`, `about` |
-| `open macmonitor://welcome` | the welcome window |
-| `open macmonitor://about` | the about window |
+| `open macmonitor://overview` | the main window at Issues |
+| `open macmonitor://cleanup` | Clean Up Storage |
+| `open macmonitor://dashboard` | the main window (stays in the current Monitor or History area, otherwise At a Glance) |
+| `open macmonitor://dashboard/<area>` | a Monitor, History or Tools area, see the names below |
+| `open macmonitor://settings` | Settings (the area shown last) |
+| `open macmonitor://settings/<area>` | a settings area, see the names below |
+| `open macmonitor://open/<area>` | any area of the main window; without a name the current one |
+| `open macmonitor://welcome` | the welcome sheet |
+| `open macmonitor://about` | Settings, Updates & Info |
 | `open macmonitor://test` | sends a test notification |
 
-German names such as `energie`, `netzwerk` or `eigene-regeln` are accepted as well.
+Names are not case sensitive. Each area has its English name and the German spellings, without umlauts or with them:
+
+| Area | Names |
+|---|---|
+| At a Glance | `overview`, `ueberblick`, `überblick` |
+| Issues | `issues`, `auffaelligkeiten`, `uebersicht`, `meldungen` |
+| Apps & Processes | `apps`, `prozesse`, `apps-prozesse` |
+| CPU & GPU | `cpu` |
+| Memory | `memory`, `speicher`, `ram` |
+| Energy & Battery | `energy`, `energie`, `akku` |
+| Sensors | `sensors` |
+| Network & Disks | `network`, `netzwerk`, `laufwerke` |
+| Events | `events`, `ereignisse` |
+| Report | `report`, `bericht` |
+| Clean Up Storage | `cleanup`, `aufraeumen`, `werkzeuge`, `ssd` |
+| General | `general`, `allgemein` |
+| Menu Bar | `menuBar`, `menuebar`, `menueleiste`, `menüleiste` |
+| Rules | `rules`, `regeln` |
+| Custom Rules | `customRules`, `eigene-regeln`, `eigene` |
+| Quiet | `quiet`, `ruhe` |
+| Ignored | `ignored`, `ignoriert` |
+| Data | `data`, `daten` |
+| Updates & Info | `about`, `info`, `updates`, `ueber` |
+
+`dashboard/<area>` takes the areas outside Settings and `settings/<area>` only settings areas; another name keeps the current area. `open/<area>` takes all of them.
 
 </details>
 
@@ -600,7 +642,7 @@ Yes, Intel Macs are supported (macOS 15 or newer is required). Some measurements
 
 &nbsp;
 
-Open the [False alarm template](https://github.com/fbrogno/mac-monitor/issues/new?template=false_alarm.yml). Say which rule it was, what MacMonitor said, what your Mac was doing, and your Mac model and macOS version. The log under Dashboard, Events has the exact text and time. Meanwhile you can raise the threshold or duration of that rule in Settings, Rules, mute the program for an hour from the notification, or put it on the ignore list.
+Open the [False alarm template](https://github.com/fbrogno/mac-monitor/issues/new?template=false_alarm.yml). Say which rule it was, what MacMonitor said, what your Mac was doing, and your Mac model and macOS version. The log under History, Events has the exact text and time. Meanwhile you can raise the threshold or duration of that rule in Settings, Rules, mute the program for an hour from the notification, or put it on the ignore list.
 
 </details>
 

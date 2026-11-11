@@ -1,7 +1,8 @@
 import MonitorCore
 import SwiftUI
 
-/// The pane of the selected history area with its notices; rendered directly for the README.
+/// The pane of the selected history area with its notices. Title, range and feedback belong to the window;
+/// rendered directly for the README.
 struct DashboardDetail: View {
     let model: AppModel
     /// Apps shown expanded; only the offline renderer sets this.
@@ -16,8 +17,7 @@ struct DashboardDetail: View {
     }
 
     var body: some View {
-        @Bindable var dashboard = model.dashboard
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 16) {
             historyNotice
             pane
         }
@@ -60,7 +60,7 @@ struct NoticeBanner: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: symbol).foregroundStyle(tint)
-            Text(text).font(.system(size: 12)).fixedSize(horizontal: false, vertical: true)
+            Text(text).font(.system(size: 12)).foregroundStyle(.primary).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
         .padding(10)

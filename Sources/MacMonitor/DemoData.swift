@@ -4,7 +4,15 @@ import MonitorCore
 /// An in-memory `HistoryStore` with 30 days of plausible, deterministic data: a workday rhythm,
 /// a Mac that sleeps at night and a few incidents.
 enum DemoHistory {
-    static func make(now: Date = Date()) -> HistoryStore {
+    /// The clock of the images: the last 15:20 that has passed, so the 24 h range shows a working day whatever
+    /// time the images are rendered (at night the demo Mac would be asleep and the charts half empty).
+    static var referenceNow: Date {
+        let calendar = Calendar.current
+        let today = calendar.date(bySettingHour: 15, minute: 20, second: 0, of: Date()) ?? Date()
+        return today <= Date() ? today : today.addingTimeInterval(-86_400)
+    }
+
+    static func make(now: Date = referenceNow) -> HistoryStore {
         // The store is an actor: fill it from a background task and wait here (offline renderer only).
         let semaphore = DispatchSemaphore(value: 0)
         nonisolated(unsafe) var result: HistoryStore?

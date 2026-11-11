@@ -14,6 +14,7 @@ struct AppsPane: View {
     @State private var sort: Sort
     @State private var expanded: Set<String>
     @State private var hovered: String?
+    @State private var tableWidth: CGFloat = 600
 
     init(model: AppModel, data: DashboardData, sort: Sort = .cpu, expanded: Set<String> = []) {
         self.model = model
@@ -22,14 +23,20 @@ struct AppsPane: View {
         _expanded = State(initialValue: expanded)
     }
 
-    private static let nameWidth: CGFloat = 220
+    /// Columns that fit the card: disk and threads go first, then energy.
+    private var showsDisk: Bool { tableWidth >= 560 }
+    private var showsThreads: Bool { tableWidth >= 480 }
+    private var showsEnergy: Bool { tableWidth >= 380 }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             if let s = model.snapshot {
                 table(s)
             } else {
-                Text("Erste Messung läuft …").font(.callout).foregroundStyle(.secondary)
+                HStack(spacing: 8) {
+                    ProgressView().controlSize(.small)
+                    Text("Erste Messung läuft …").font(.callout).foregroundStyle(.secondary)
+                }
             }
             consumers
         }
@@ -38,22 +45,37 @@ struct AppsPane: View {
     // MARK: Table
 
     private func table(_ s: SystemSnapshot) -> some View {
-        let apps = sorted(AppGrouping.aggregate(s.processes))
+        let query = model.searchText
+        let all = AppGrouping.aggregate(s.processes)
+        let apps = sorted(all.filter { SectionSearch.filter($0.name, by: query) })
         let shown = Array(apps.prefix(30))
-        return DashCard(String(localized: "Apps jetzt"), subtitle: String(localized: "\(apps.count) Apps, \(s.processes.count) Prozesse")) {
-            VStack(spacing: 0) {
-                headerRow
-                Divider().opacity(0.5)
-                ForEach(shown) { app in
-                    appRow(app, in: s)
-                    if expanded.contains(app.key) {
-                        ForEach(members(of: app, in: s)) { process in processRow(process) }
+        let subtitle = query.trimmingCharacters(in: .whitespaces).isEmpty
+            ? String(localized: "\(all.count) Apps, \(s.processes.count) Prozesse")
+            : String(localized: "\(apps.count) von \(all.count) Apps")
+        return DashCard(String(localized: "Apps jetzt"), subtitle: subtitle) {
+            if apps.isEmpty {
+                VStack(spacing: 6) {
+                    Image(systemName: "magnifyingglass").font(.system(size: 24)).foregroundStyle(.secondary)
+                    Text("Keine Treffer").font(.system(size: 13, weight: .medium))
+                    Text("Für „\(query)“ läuft keine App.").font(.system(size: 11)).foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity).padding(.vertical, 18)
+            } else {
+                VStack(spacing: 0) {
+                    headerRow
+                    Divider().opacity(0.5)
+                    ForEach(shown) { app in
+                        appRow(app, in: s)
+                        if expanded.contains(app.key) {
+                            ForEach(members(of: app, in: s)) { process in processRow(process) }
+                        }
+                    }
+                    if apps.count > shown.count {
+                        Text("und \(apps.count - shown.count) weitere").font(.system(size: 10)).foregroundStyle(.secondary)
+                            .padding(.top, 8).frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                if apps.count > shown.count {
-                    Text("und \(apps.count - shown.count) weitere").font(.system(size: 10)).foregroundStyle(.secondary)
-                        .padding(.top, 8).frame(maxWidth: .infinity, alignment: .leading)
-                }
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { tableWidth = $0 }
             }
         }
     }
@@ -64,10 +86,9 @@ struct AppsPane: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             sortHeader(String(localized: "CPU"), .cpu, width: 62)
             sortHeader(String(localized: "RAM"), .memory, width: 76)
-            sortHeader(String(localized: "Energie"), .energy, width: 72)
-            sortHeader(String(localized: "Threads"), .threads, width: 58)
-            sortHeader(String(localized: "Platte"), .disk, width: 84)
-            Color.clear.frame(width: 118)
+            if showsEnergy { sortHeader(String(localized: "Energie"), .energy, width: 72) }
+            if showsThreads { sortHeader(String(localized: "Threads"), .threads, width: 58) }
+            if showsDisk { sortHeader(String(localized: "Platte"), .disk, width: 84) }
         }
         .padding(.horizontal, 8).padding(.bottom, 6)
     }
@@ -118,6 +139,11 @@ struct AppsPane: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             metrics(cpu: app.cpuPercent, memory: app.footprintBytes, energy: app.energyMilliwatts, threads: app.threads,
                     read: app.diskReadBytesPerSecond, write: app.diskWriteBytesPerSecond)
+        }
+        .padding(.horizontal, 8).padding(.vertical, 5)
+        .frame(minHeight: 28)
+        .background(Color.primary.opacity(isHovered ? 0.06 : 0), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+        .overlay(alignment: .trailing) {
             actions(visible: isHovered) {
                 if let lead = lead(of: app, in: s) {
                     ActionButton(title: String(localized: "Ignorieren"), compact: true) { model.perform(.ignoreForever(lead.name)) }
@@ -127,9 +153,6 @@ struct AppsPane: View {
                 }
             }
         }
-        .padding(.horizontal, 8).padding(.vertical, 5)
-        .frame(minHeight: 28)
-        .background(Color.primary.opacity(isHovered ? 0.06 : 0), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
         .contentShape(Rectangle())
         .onHover { hovered = $0 ? app.key : (hovered == app.key ? nil : hovered) }
         .onTapGesture {
@@ -150,6 +173,10 @@ struct AppsPane: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             metrics(cpu: p.cpuPercent, memory: p.footprintBytes, energy: p.energyMilliwatts, threads: p.threads,
                     read: p.diskReadBytesPerSecond, write: p.diskWriteBytesPerSecond, secondary: true)
+        }
+        .padding(.horizontal, 8).padding(.vertical, 3)
+        .background(Color.primary.opacity(isHovered ? 0.06 : 0.025), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+        .overlay(alignment: .trailing) {
             actions(visible: isHovered) {
                 ActionButton(title: String(localized: "Ignorieren"), compact: true) { model.perform(.ignoreForever(p.name)) }
                 ActionButton(title: String(localized: "Beenden"), tint: Palette.critical, compact: true) {
@@ -157,8 +184,6 @@ struct AppsPane: View {
                 }
             }
         }
-        .padding(.horizontal, 8).padding(.vertical, 3)
-        .background(Color.primary.opacity(isHovered ? 0.06 : 0.025), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
         .contentShape(Rectangle())
         .onHover { hovered = $0 ? key : (hovered == key ? nil : hovered) }
     }
@@ -169,18 +194,20 @@ struct AppsPane: View {
             Text(Format.percent(cpu)).frame(width: 62, alignment: .trailing)
                 .foregroundStyle(cpu >= 90 ? Palette.critical : secondary ? Color.secondary : Color.primary)
             Text(Format.bytes(memory)).frame(width: 76, alignment: .trailing)
-            Text(energy > 0 ? Format.milliwatts(energy) : "–").frame(width: 72, alignment: .trailing)
-            Text(threads > 0 ? "\(threads)" : "–").frame(width: 58, alignment: .trailing)
-            Text(read + write >= 1024 ? Format.rate(read + write) : "–").frame(width: 84, alignment: .trailing)
+            if showsEnergy { Text(energy > 0 ? Format.milliwatts(energy) : "–").frame(width: 72, alignment: .trailing) }
+            if showsThreads { Text(threads > 0 ? "\(threads)" : "–").frame(width: 58, alignment: .trailing) }
+            if showsDisk { Text(read + write >= 1024 ? Format.rate(read + write) : "–").frame(width: 84, alignment: .trailing) }
         }
-        .font(.system(size: 11, design: .monospaced))
+        .font(.system(size: 11, design: .monospaced)).monospacedDigit()
         .foregroundStyle(secondary ? Color.secondary : Color.primary)
     }
 
     private func actions<Content: View>(visible: Bool, @ViewBuilder content: () -> Content) -> some View {
         HStack(spacing: 4) { content() }
+            .padding(.leading, 10).padding(.trailing, 6).padding(.vertical, 2)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
             .opacity(visible ? 1 : 0)
-            .frame(width: 118, alignment: .trailing)
+            .allowsHitTesting(visible)
     }
 
     /// The process that stands for the app: its regular application process, else the oldest one.
@@ -198,14 +225,19 @@ struct AppsPane: View {
             if top.byCPU.isEmpty && top.byMemory.isEmpty {
                 Text("Noch keine Messwerte in diesem Zeitraum").font(.system(size: 11)).foregroundStyle(.secondary)
             } else {
-                HStack(alignment: .top, spacing: 24) {
-                    consumerList(String(localized: "CPU-Zeit"),
-                                 top.byCPU.map { ($0.group, durationText($0.cpuSeconds), $0.cpuSeconds) })
-                    consumerList(String(localized: "Arbeitsspeicher (Spitze)"),
-                                 top.byMemory.map { ($0.group, Format.bytes($0.peakFootprintBytes), Double($0.peakFootprintBytes)) })
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top, spacing: 24) { lists(top) }
+                    VStack(alignment: .leading, spacing: 16) { lists(top) }
                 }
             }
         }
+    }
+
+    @ViewBuilder private func lists(_ top: TopProcesses) -> some View {
+        consumerList(String(localized: "CPU-Zeit"),
+                     top.byCPU.map { ($0.group, durationText($0.cpuSeconds), $0.cpuSeconds) })
+        consumerList(String(localized: "Arbeitsspeicher (Spitze)"),
+                     top.byMemory.map { ($0.group, Format.bytes($0.peakFootprintBytes), Double($0.peakFootprintBytes)) })
     }
 
     private func consumerList(_ title: String, _ rows: [(name: String, value: String, weight: Double)]) -> some View {

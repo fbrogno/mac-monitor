@@ -28,9 +28,9 @@ struct DataPane: View {
                 }
                 .disabled(model.history == nil)
                 HStack {
-                    SettingsNote("Der Bericht im Dashboard exportiert auch einzelne Zeiträume.")
+                    SettingsNote("Der Bericht unter Verlauf exportiert auch einzelne Zeiträume.")
                     Spacer()
-                    Button("Bericht im Dashboard öffnen") { model.open(.report) }
+                    Button("Bericht öffnen") { model.open(.report) }
                         .controlSize(.small)
                 }
             } header: {

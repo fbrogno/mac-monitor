@@ -9,13 +9,13 @@ struct ReportPane: View {
     let data: DashboardData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 16) {
             if let report = data.report {
                 summary(report)
                 if !report.incidentsByRule.isEmpty { incidentsCard(report) }
                 topCard(report.topProcesses)
             } else if model.historyState == .active {
-                Text("Bericht wird erstellt …").font(.callout).foregroundStyle(.secondary)
+                Text("Bericht wird erstellt …").font(.system(size: 12)).foregroundStyle(.secondary)
             }
             manageCard
         }
@@ -29,9 +29,9 @@ struct ReportPane: View {
                         subtitle: "\(shortStamp(r.interval.start)) – \(shortStamp(r.interval.end))") {
             VStack(alignment: .leading, spacing: 10) {
                 if r.cpu == nil && r.memory == nil {
-                    Text("In diesem Zeitraum liegen keine Messwerte vor.").font(.system(size: 12)).foregroundStyle(.secondary)
+                    UnavailableNote(text: String(localized: "In diesem Zeitraum liegen keine Messwerte vor."))
                 } else {
-                    VStack(spacing: 0) {
+                    Grid(alignment: .trailing, horizontalSpacing: 16, verticalSpacing: 0) {
                         reportRow(String(localized: "CPU Durchschnitt"), r.cpu.map { Format.percent($0.avg) }, delta?.cpuAvg.map(points))
                         reportRow(String(localized: "CPU Spitze"), r.cpu.map { Format.percent($0.peak) }, delta?.cpuPeak.map(points))
                         reportRow(String(localized: "Arbeitsspeicher Durchschnitt"), r.memory.map { Format.percent($0.avg) }, delta?.memoryAvg.map(points))
@@ -48,27 +48,26 @@ struct ReportPane: View {
         }
     }
 
-    private func reportRow(_ label: String, _ value: String?, _ change: String?) -> some View {
-        HStack(spacing: 10) {
+    /// One row of the summary grid: label gives way, value and change keep their natural width.
+    @ViewBuilder private func reportRow(_ label: String, _ value: String?, _ change: String?) -> some View {
+        GridRow {
             Text(label).font(.system(size: 12)).foregroundStyle(.secondary)
-            Spacer(minLength: 8)
+                .frame(maxWidth: .infinity, alignment: .leading).gridColumnAlignment(.leading)
+                .padding(.vertical, 6)
             Text(value ?? "–").font(.system(size: 12, weight: .medium)).monospacedDigit()
-                .frame(width: 110, alignment: .trailing)
-            Text(change ?? "").font(.system(size: 11)).foregroundStyle(.secondary).monospacedDigit()
-                .frame(width: 120, alignment: .trailing)
+            Text(change ?? "").font(.system(size: 12)).foregroundStyle(.secondary).monospacedDigit()
         }
-        .padding(.vertical, 5)
-        .overlay(alignment: .bottom) { Divider().opacity(0.35) }
+        Divider().opacity(0.5).gridCellColumns(3)
     }
 
     @ViewBuilder private func comparisonNote(_ comparison: HistorySummary.Comparison) -> some View {
         switch comparison {
         case .noComparisonData:
             Label("Für die Zeit davor liegen keine Messwerte vor – ein Vergleich ist nicht möglich.", systemImage: "info.circle")
-                .font(.system(size: 11)).foregroundStyle(.secondary)
+                .font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
         case .delta:
             Text("Die Änderung zeigt den Unterschied zur Vorperiode gleicher Länge.")
-                .font(.system(size: 11)).foregroundStyle(.secondary)
+                .font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -90,14 +89,14 @@ struct ReportPane: View {
 
     private func incidentsCard(_ r: HistorySummary) -> some View {
         DashCard(String(localized: "Vorfälle je Regel")) {
-            VStack(spacing: 6) {
+            Grid(alignment: .trailing, horizontalSpacing: 16, verticalSpacing: 6) {
                 ForEach(r.incidentsByRule, id: \.rule) { item in
-                    HStack {
+                    GridRow {
                         Text(EventsPane.ruleTitle(item.rule)).font(.system(size: 12))
-                        Spacer()
+                            .frame(maxWidth: .infinity, alignment: .leading).gridColumnAlignment(.leading)
                         Text("\(item.count)×").font(.system(size: 12, weight: .medium)).monospacedDigit()
-                        Text(durationText(item.totalSeconds)).font(.system(size: 11)).foregroundStyle(.secondary)
-                            .monospacedDigit().frame(width: 90, alignment: .trailing)
+                        Text(durationText(item.totalSeconds)).font(.system(size: 12)).foregroundStyle(.secondary)
+                            .monospacedDigit()
                     }
                 }
             }
@@ -107,9 +106,9 @@ struct ReportPane: View {
     private func topCard(_ top: TopProcesses) -> some View {
         DashCard(String(localized: "Größte Verbraucher")) {
             if top.byCPU.isEmpty && top.byMemory.isEmpty {
-                Text("Keine Prozessdaten in diesem Zeitraum.").font(.system(size: 12)).foregroundStyle(.secondary)
+                UnavailableNote(text: String(localized: "Keine Prozessdaten in diesem Zeitraum."))
             } else {
-                HStack(alignment: .top, spacing: 24) {
+                CardGrid(minimum: 240) {
                     list(String(localized: "CPU-Zeit"), top.byCPU.map { ($0.group, durationText($0.cpuSeconds)) })
                     list(String(localized: "Arbeitsspeicher (Spitze)"),
                          top.byMemory.map { ($0.group, Format.bytes($0.peakFootprintBytes)) })
@@ -119,7 +118,7 @@ struct ReportPane: View {
     }
 
     private func list(_ title: String, _ rows: [(name: String, value: String)]) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(title).font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
             ForEach(rows.prefix(5), id: \.name) { row in
                 FactRow(row.name, row.value)
@@ -133,19 +132,23 @@ struct ReportPane: View {
     private var manageCard: some View {
         DashCard(String(localized: "Verlauf verwalten")) {
             VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 8) {
+                FlowLayout(spacing: 8, lineSpacing: 8) {
                     ActionButton(title: String(localized: "Als CSV exportieren")) { export(.csv) }
                     ActionButton(title: String(localized: "Als JSON exportieren")) { export(.json) }
-                    Spacer(minLength: 8)
                     ActionButton(title: String(localized: "Verlauf löschen …"), tint: Palette.critical, action: confirmDelete)
                 }
                 Text("Der Export enthält alle Messwerte und Ereignisse des gewählten Zeitraums.")
-                    .font(.system(size: 11)).foregroundStyle(.secondary)
-                Divider().opacity(0.4)
+                    .font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                Divider().opacity(0.5)
                 FactRow(String(localized: "Größe der Verlaufsdatei"), data.fileSizeBytes > 0 ? Self.sizeText(data.fileSizeBytes) : "–")
-                FactRow(String(localized: "Aufbewahrung"), String(localized: "Minutenwerte 2 Tage · 15-Minuten-Werte 30 Tage · Tageswerte 2 Jahre"))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Aufbewahrung").font(.system(size: 12)).foregroundStyle(.secondary)
+                    Text("Minutenwerte 2 Tage · 15-Minuten-Werte 30 Tage · Tageswerte 2 Jahre")
+                        .font(.system(size: 12, weight: .medium)).fixedSize(horizontal: false, vertical: true)
+                }
                 if let error = data.writeError {
                     Label(error, systemImage: "exclamationmark.triangle.fill").font(.system(size: 11)).foregroundStyle(Palette.warn)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }

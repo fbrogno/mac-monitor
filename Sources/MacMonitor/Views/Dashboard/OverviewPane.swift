@@ -6,19 +6,22 @@ struct OverviewPane: View {
     let model: AppModel
     let data: DashboardData
 
-    private let columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
+    private let columns = [GridItem(.adaptive(minimum: 168, maximum: 240), spacing: 12, alignment: .top)]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 16) {
+            findings
             if let s = model.snapshot {
-                LazyVGrid(columns: columns, spacing: 12) {
+                LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
                     tiles(s)
                 }
+                if let runtime = s.runtime { runtimeCard(runtime) }
             } else {
-                Text("Erste Messung läuft …").font(.callout).foregroundStyle(.secondary)
+                HStack(spacing: 8) {
+                    ProgressView().controlSize(.small)
+                    Text("Erste Messung läuft …").font(.callout).foregroundStyle(.secondary)
+                }
             }
-            findings
-            if let runtime = model.snapshot?.runtime { runtimeCard(runtime) }
         }
     }
 
@@ -83,24 +86,32 @@ struct OverviewPane: View {
     }
 
     private var findings: some View {
-        DashCard(String(localized: "Auffälligkeiten")) {
+        let shown = Array(model.reported.prefix(3))
+        return DashCard(String(localized: "Auffälligkeiten")) {
             if model.reported.isEmpty {
-                Label("Keine Auffälligkeiten – MacMonitor meldet sich, sobald etwas länger aus dem Rahmen fällt.",
-                      systemImage: "checkmark.seal.fill")
-                    .font(.system(size: 12)).foregroundStyle(Palette.ok)
+                Label {
+                    Text("Alles ruhig").font(.system(size: 12, weight: .medium))
+                } icon: {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(Palette.ok)
+                }
             } else {
-                VStack(spacing: 8) {
-                    ForEach(model.reported) { c in
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(shown) { c in
                         HStack(alignment: .top, spacing: 9) {
-                            Image(systemName: c.severity == .critical ? "exclamationmark.octagon.fill" : "exclamationmark.triangle.fill")
+                            Image(systemName: c.severity == .critical ? "exclamationmark.octagon.fill"
+                                  : c.severity == .info ? "info.circle.fill" : "exclamationmark.triangle.fill")
                                 .foregroundStyle(Palette.severity(c.severity))
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(c.title).font(.system(size: 12, weight: .semibold))
-                                Text(c.body).font(.system(size: 11)).foregroundStyle(.secondary)
+                                Text(c.title).font(.system(size: 12, weight: .semibold)).lineLimit(2)
+                                Text(c.body).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(2)
                             }
                             Spacer(minLength: 8)
                             ActionButton(title: String(localized: "Lösen")) { model.open(.issues) }
                         }
+                    }
+                    if model.reported.count > shown.count {
+                        Text("und \(model.reported.count - shown.count) weitere")
+                            .font(.system(size: 11)).foregroundStyle(.secondary)
                     }
                 }
             }
@@ -109,7 +120,8 @@ struct OverviewPane: View {
 
     private func runtimeCard(_ r: RuntimeStat) -> some View {
         DashCard(String(localized: "Laufzeit und Last")) {
-            HStack(alignment: .top, spacing: 28) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 20, alignment: .topLeading)],
+                      alignment: .leading, spacing: 14) {
                 BigValue(value: Format.uptime(r.uptimeSeconds), caption: String(localized: "Laufzeit seit Start"))
                 if let load = r.loadAverage {
                     BigValue(value: "\(Format.decimal(load.one, digits: 2)) · \(Format.decimal(load.five, digits: 2)) · \(Format.decimal(load.fifteen, digits: 2))",
@@ -117,7 +129,6 @@ struct OverviewPane: View {
                 }
                 BigValue(value: "\(r.processCount)", caption: String(localized: "Prozesse"))
                 if r.threadCount > 0 { BigValue(value: "\(r.threadCount)", caption: String(localized: "Threads")) }
-                Spacer(minLength: 0)
             }
         }
     }

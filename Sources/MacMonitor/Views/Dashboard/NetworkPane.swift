@@ -7,11 +7,15 @@ struct NetworkPane: View {
     let data: DashboardData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            throughputCard
-            interfaceCard
-            volumesCard
-            diskCard
+        VStack(alignment: .leading, spacing: 16) {
+            CardGrid {
+                throughputCard
+                diskCard
+            }
+            CardGrid {
+                interfaceCard
+                volumesCard
+            }
         }
     }
 
@@ -19,8 +23,7 @@ struct NetworkPane: View {
         let d = data
         return DashCard(String(localized: "Netzwerk-Durchsatz"), trailing: {
             if let n = model.snapshot?.network {
-                Text("↓ \(Format.rate(n.downBytesPerSecond))  ↑ \(Format.rate(n.upBytesPerSecond))")
-                    .font(.system(size: 12, weight: .medium)).monospacedDigit()
+                CardValue("↓ \(Format.rate(n.downBytesPerSecond))  ↑ \(Format.rate(n.upBytesPerSecond))", prominent: false)
             }
         }, content: {
             HistoryChart(lines: [d.line(.netDown, String(localized: "Empfangen ↓"), Palette.accent),
@@ -86,8 +89,7 @@ struct NetworkPane: View {
         let d = data
         return DashCard(String(localized: "Lese- und Schreibrate"), trailing: {
             if let io = model.snapshot?.diskThroughput {
-                Text("Lesen \(Format.rate(io.readBytesPerSecond))  Schreiben \(Format.rate(io.writeBytesPerSecond))")
-                    .font(.system(size: 12, weight: .medium)).monospacedDigit()
+                CardValue("Lesen \(Format.rate(io.readBytesPerSecond))  Schreiben \(Format.rate(io.writeBytesPerSecond))", prominent: false)
             }
         }, content: {
             if model.snapshot?.diskThroughput == nil && !d.hasSeries(.diskRead, .diskWrite) {

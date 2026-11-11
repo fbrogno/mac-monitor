@@ -1,7 +1,7 @@
 import MonitorCore
 import SwiftUI
 
-/// Titled card in the dashboard's look (same family as `Card`, a little roomier).
+/// Titled card of the history areas: one title style, secondary subtitle, current value on the right.
 struct DashCard<Content: View, Trailing: View>: View {
     var title: String
     var subtitle: String?
@@ -17,9 +17,9 @@ struct DashCard<Content: View, Trailing: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(title).font(.system(size: 12, weight: .semibold))
+                Text(title).font(.system(size: 13, weight: .semibold)).lineLimit(1)
                 if let subtitle {
                     Text(subtitle).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
                 }
@@ -28,7 +28,7 @@ struct DashCard<Content: View, Trailing: View>: View {
             }
             content
         }
-        .padding(14)
+        .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.primary.opacity(0.06)))
@@ -47,7 +47,69 @@ struct UnavailableNote: View {
 
     var body: some View {
         Label(text, systemImage: "minus.circle")
-            .font(.system(size: 11)).foregroundStyle(.secondary)
+            .font(.system(size: 12)).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+/// The current value in a card's header; `prominent: false` for longer texts such as two rates.
+struct CardValue: View {
+    var text: String
+    var prominent = true
+
+    init(_ text: String, prominent: Bool = true) {
+        self.text = text
+        self.prominent = prominent
+    }
+
+    var body: some View {
+        Text(text)
+            .font(prominent ? .system(size: 15, weight: .semibold, design: .rounded) : .system(size: 12, weight: .medium))
+            .monospacedDigit().lineLimit(1).minimumScaleFactor(0.8)
+    }
+}
+
+/// Cards that sit side by side while there is room and stack below each other when it narrows.
+struct CardGrid<Content: View>: View {
+    var minimum: CGFloat = 380
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimum), spacing: 16, alignment: .top)],
+                  alignment: .leading, spacing: 16) {
+            content
+        }
+    }
+}
+
+/// Left-aligned rows that wrap to the next line when the width runs out (legends, filter chips, buttons).
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+    var lineSpacing: CGFloat = 8
+
+    private func arrange(_ subviews: Subviews, width: CGFloat) -> (positions: [CGPoint], size: CGSize) {
+        var positions: [CGPoint] = []
+        var x: CGFloat = 0, y: CGFloat = 0, rowHeight: CGFloat = 0, maxX: CGFloat = 0
+        for view in subviews {
+            let size = view.sizeThatFits(.unspecified)
+            if x > 0, x + size.width > width { x = 0; y += rowHeight + lineSpacing; rowHeight = 0 }
+            positions.append(CGPoint(x: x, y: y))
+            x += size.width + spacing
+            maxX = max(maxX, x - spacing)
+            rowHeight = max(rowHeight, size.height)
+        }
+        return (positions, CGSize(width: maxX, height: y + rowHeight))
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        arrange(subviews, width: proposal.width ?? .infinity).size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = arrange(subviews, width: bounds.width)
+        for (view, point) in zip(subviews, result.positions) {
+            view.place(at: CGPoint(x: bounds.minX + point.x, y: bounds.minY + point.y), proposal: .unspecified)
+        }
     }
 }
 
@@ -147,37 +209,6 @@ struct MetricTile: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.primary.opacity(0.06)))
-    }
-}
-
-/// Page header of one section: title, subtitle and the time range switch.
-struct DashboardHeader: View {
-    var title: String
-    var subtitle: String
-    var symbol: String
-    var trailing: AnyView
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            Image(systemName: symbol).font(.system(size: 18)).foregroundStyle(Palette.accent).frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 20, weight: .bold))
-                Text(subtitle).font(.system(size: 12)).foregroundStyle(.secondary)
-            }
-            Spacer(minLength: 12)
-            trailing
-        }
-    }
-}
-
-struct RangeSwitch: View {
-    @Binding var range: DashboardRange
-
-    var body: some View {
-        let selection = Binding<Int>(
-            get: { DashboardRange.allCases.firstIndex(of: range) ?? 1 },
-            set: { range = DashboardRange.allCases[$0] })
-        MiniSegment(options: DashboardRange.allCases.map(\.title), selection: selection)
     }
 }
 

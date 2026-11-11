@@ -146,7 +146,7 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
         case .general: ["allgemein"]
         case .menuBar: ["menueleiste", "menuebar"]
         case .rules: ["regeln"]
-        case .customRules: ["eigene-regeln", "eigene"]
+        case .customRules: ["eigene-regeln", "eigene", "custom-rules"]
         case .quiet: ["ruhe"]
         case .ignored: ["ignoriert"]
         case .data: ["daten"]
@@ -239,26 +239,40 @@ public enum AppRoute: Equatable, Sendable {
 public enum SectionSearch {
     /// Areas matching every word of `query`, best first: title before keyword, earlier in the list before later.
     public static func matches(_ query: String, in sections: [AppSection] = AppSection.allCases) -> [AppSection] {
-        let words = normalized(query).split(separator: " ").map(String.init)
-        guard !words.isEmpty else { return [] }
+        // "menueleiste" finds "Menüleiste" as well as "menuleiste" does.
+        let variants = Set([normalized(query), normalized(transliterated(query))]).map { $0.split(separator: " ").map(String.init) }
+            .filter { !$0.isEmpty }
+        guard !variants.isEmpty else { return [] }
         var scored: [(AppSection, Int, Int)] = []
         for (index, section) in sections.enumerated() {
             let title = normalized(section.title)
+            let titleTranslit = normalized(transliterated(section.title))
             let group = normalized(section.group.title)
-            let keywords = section.keywords.map(normalized)
-            var score = 0
-            var all = true
-            for word in words {
-                if title.hasPrefix(word) || title.contains(" \(word)") { score += 0 }
-                else if title.contains(word) { score += 1 }
-                else if keywords.contains(where: { $0.hasPrefix(word) || $0.contains(" \(word)") }) { score += 2 }
-                else if keywords.contains(where: { $0.contains(word) }) { score += 3 }
-                else if group.hasPrefix(word) { score += 4 }
-                else { all = false; break }
+            let keywords = section.keywords.map(normalized) + section.keywords.map { normalized(transliterated($0)) }
+            var best: Int?
+            for words in variants {
+                var score = 0
+                var all = true
+                for word in words {
+                    if [title, titleTranslit].contains(where: { $0.hasPrefix(word) || $0.contains(" \(word)") }) { score += 0 }
+                    else if [title, titleTranslit].contains(where: { $0.contains(word) }) { score += 1 }
+                    else if keywords.contains(where: { $0.hasPrefix(word) || $0.contains(" \(word)") }) { score += 2 }
+                    else if keywords.contains(where: { $0.contains(word) }) { score += 3 }
+                    else if group.hasPrefix(word) { score += 4 }
+                    else { all = false; break }
+                }
+                if all { best = min(best ?? score, score) }
             }
-            if all { scored.append((section, score, index)) }
+            if let best { scored.append((section, best, index)) }
         }
         return scored.sorted { ($0.1, $0.2) < ($1.1, $1.2) }.map(\.0)
+    }
+
+    /// "ü" → "ue" etc., before the accents are dropped.
+    static func transliterated(_ text: String) -> String {
+        var s = text.lowercased()
+        for (from, to) in [("ä", "ae"), ("ö", "oe"), ("ü", "ue"), ("ß", "ss")] { s = s.replacingOccurrences(of: from, with: to) }
+        return s
     }
 
     /// Lower case, without accents, single spaces.

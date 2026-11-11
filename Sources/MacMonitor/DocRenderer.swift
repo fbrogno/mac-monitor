@@ -30,11 +30,8 @@ enum DocRenderer {
         write(Framed(scheme: .dark) { PopoverView(model: .demo(), showApps: true) }, scale: 2,
               to: url.appendingPathComponent("popover-apps.png"))
         write(OverlayPreview(), scale: 2, to: url.appendingPathComponent("overlay.png"))
-        let overview = AppModel.demo()
-        overview.cleanup.useDemoSizes()
-        write(Framed(scheme: .dark) { OverviewContent(model: overview).frame(width: 760) }, scale: 2,
-              to: url.appendingPathComponent("overview.png"))
-        renderDashboard(to: url)
+        renderWindows(to: url)
+        renderWelcome(to: url)
         WidgetRender.render(to: url)
         print("Bilder geschrieben nach \(url.path)")
     }
@@ -62,27 +59,81 @@ enum DocRenderer {
         exit(process.terminationStatus)
     }
 
-    /// Dashboard images from the real panes with demo data and a synthetic 30-day history.
-    /// `MACMONITOR_RENDER_ALL=1` also writes the sections not shown in the README.
-    private static func renderDashboard(to url: URL) {
+    // MARK: Main window
+
+    /// One image per area of the main window, plus light and narrow variants. The window is the real one
+    /// (`MainWindowView` in an off-screen titled window, toolbar and sidebar included), captured with its title bar.
+    /// `MACMONITOR_RENDER_ONLY=<name>[,<name>]` limits the output (for iterating).
+    private static func renderWindows(to url: URL) {
+        NSApplication.shared.setActivationPolicy(.accessory)
         let model = AppModel.demo(history: true)
-        let all = ProcessInfo.processInfo.environment["MACMONITOR_RENDER_ALL"] == "1"
-        let shots: [(DashboardSection, DashboardRange, String, Bool)] = [
-            (.overview, .day, "dashboard-overview", true), (.cpu, .day, "dashboard-cpu", true),
-            (.energy, .day, "dashboard-energy", true), (.apps, .week, "dashboard-apps", true),
-            (.report, .day, "dashboard-report", true),
-            (.memory, .day, "dashboard-memory", false), (.sensors, .day, "dashboard-sensors", false),
-            (.network, .day, "dashboard-network", false), (.events, .week, "dashboard-events", false),
+        model.cleanup.useDemoSizes()
+        model.settings.menuBarItems = [.cpu, .memory, .temperature]
+        model.settings.hotKeys.openDashboard = HotKeyBinding(keyCode: 2, modifiers: HotKeyBinding.control | HotKeyBinding.option)
+        model.settings.customRules = [CustomRule.templates[0].instantiated(), CustomRule.templates[2].instantiated()]
+        model.settings.quiet.quietHoursEnabled = true
+        model.previewExpandedApps = ["app:/Applications/Google Chrome.app"]
+        var broken = CustomRule.templates[0].instantiated()
+        broken.processName = ""
+
+        let names: [AppSection: String] = [
+            .overview: "overview", .issues: "issues", .apps: "apps", .cpu: "cpu", .memory: "memory", .energy: "energy",
+            .sensors: "sensors", .network: "network", .events: "events", .report: "report", .cleanup: "cleanup",
+            .general: "general", .menuBar: "menubar", .rules: "rules", .customRules: "custom-rules", .quiet: "quiet",
+            .ignored: "ignored", .data: "data", .about: "about",
         ]
-        for (section, range, name, readme) in shots where readme || all {
-            model.dashboard.section = section
-            model.dashboard.range = range
+        let only = ProcessInfo.processInfo.environment["MACMONITOR_RENDER_ONLY"]?.split(separator: ",").map(String.init)
+        let standard = CGSize(width: 1100, height: 720)
+        var shots: [(AppSection, String, ColorScheme, CGSize)] = AppSection.allCases.map { ($0, names[$0]!, .dark, standard) }
+        shots += [(.overview, "overview-light", .light, standard), (.issues, "issues-light", .light, standard),
+                  (.rules, "rules-light", .light, standard), (.overview, "overview-narrow", .dark, CGSize(width: 860, height: 640)),
+                  (.apps, "apps-narrow", .dark, CGSize(width: 860, height: 640))]
+        for (section, name, scheme, size) in shots where only == nil || only!.contains(name) {
+            model.section = section
+            model.dashboard.range = section == .apps || section == .events ? .week : .day
             model.dashboard.reportPeriod = .week
             model.dashboard.previewHover = section == .cpu ? Date().addingTimeInterval(-5.4 * 3600) : nil
-            model.dashboard.reloadBlocking()
-            let expanded: Set<String> = section == .apps ? ["app:/Applications/Google Chrome.app"] : []
-            write(DashboardShot(model: model, expanded: expanded), scale: 2, to: url.appendingPathComponent("\(name).png"))
+            model.previewCustomRule = section == .customRules ? broken : nil
+            if section.dashboardSection != nil { model.dashboard.reloadBlocking(now: DemoHistory.referenceNow) }
+            writeWindow(model: model, scheme: scheme, size: size, to: url.appendingPathComponent("window-\(name).png"))
         }
+    }
+
+    /// Hosts the main window off screen, lets SwiftUI settle and writes the window (with title bar) as a 2x PNG
+    /// on a soft backdrop.
+    private static func writeWindow(model: AppModel, scheme: ColorScheme, size: CGSize, to file: URL) {
+        let appearance = NSAppearance(named: scheme == .dark ? .darkAqua : .aqua)
+        let controller = NSHostingController(rootView: MainWindowView(model: model, isPreview: true).toggleStyle(DocSwitchStyle(dark: scheme == .dark)))
+        let window = RenderWindow(contentViewController: controller)
+        window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.appearance = appearance
+        window.setContentSize(size)
+        window.setFrameOrigin(NSPoint(x: -30_000, y: -30_000))
+        window.orderFront(nil)
+        for _ in 0..<5 { RunLoop.current.run(until: Date().addingTimeInterval(0.4)) }
+        defer { window.orderOut(nil) }
+        guard let frameView = window.contentView?.superview else { return }
+        let bounds = frameView.bounds
+        guard let rep = NSBitmapImageRep(
+            bitmapDataPlanes: nil, pixelsWide: Int(bounds.width * 2), pixelsHigh: Int(bounds.height * 2), bitsPerSample: 8,
+            samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0) else {
+            FileHandle.standardError.write(Data("Konnte \(file.lastPathComponent) nicht rendern\n".utf8))
+            return
+        }
+        rep.size = bounds.size
+        frameView.cacheDisplay(in: bounds, to: rep)
+        let image = NSImage(size: bounds.size)
+        image.addRepresentation(rep)
+        write(WindowBackdrop(image: image, scheme: scheme), scale: 2, to: file)
+    }
+
+    // MARK: Welcome
+
+    private static func renderWelcome(to url: URL) {
+        NSApplication.shared.setActivationPolicy(.accessory)
+        writeHosted(WelcomeShot(model: AppModel.demo(alerts: false)), to: url.appendingPathComponent("welcome.png"))
     }
 
     /// Captures a SwiftUI view with real AppKit controls at 2x. Needs a window, which stays hidden.
@@ -206,46 +257,29 @@ private struct OverlayPreview: View {
     }
 }
 
-/// The dashboard window as an image: sidebar and detail drawn in SwiftUI (the AppKit-backed split
-/// view does not render offline), the panes are the real ones.
-private struct DashboardShot: View {
-    let model: AppModel
-    var expanded: Set<String> = []
+/// The captured window on a soft backdrop, with rounded corners and a shadow.
+private struct WindowBackdrop: View {
+    let image: NSImage
+    let scheme: ColorScheme
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 7) {
-                    ForEach([Color.red, .yellow, .green], id: \.self) { Circle().fill($0.opacity(0.85)).frame(width: 12, height: 12) }
-                }
-                .padding(.bottom, 18)
-                ForEach(DashboardSection.allCases) { section in
-                    let selected = section == model.dashboard.section
-                    Label { Text(section.title) } icon: { Image(systemName: section.symbol).frame(width: 20) }
-                        .font(.system(size: 13, weight: selected ? .semibold : .regular))
-                        .padding(.horizontal, 10).padding(.vertical, 6)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(selected ? Color.primary.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
-                }
-                Spacer(minLength: 0)
-            }
-            .padding(.horizontal, 12).padding(.top, 14).padding(.bottom, 14)
-            .frame(width: 236)
-            .background(Color.primary.opacity(0.04))
-            Divider()
-            DashboardDetail(model: model, expandedApps: expanded)
-                .padding(24)
-                .frame(width: 900, alignment: .topLeading)
-        }
-        .frame(width: 1137)
-        .fixedSize(horizontal: false, vertical: true)
-        .background(Color(red: 0.13, green: 0.13, blue: 0.15), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
-        .padding(28)
-        .background(LinearGradient(colors: [Color(red: 0.07, green: 0.09, blue: 0.16), Color(red: 0.03, green: 0.04, blue: 0.08)],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing))
-        .environment(\.colorScheme, .dark)
+        let dark = scheme == .dark
+        Image(nsImage: image)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.primary.opacity(dark ? 0.16 : 0.1)))
+            .shadow(color: .black.opacity(dark ? 0.5 : 0.22), radius: 22, y: 10)
+            .padding(36)
+            .background(LinearGradient(
+                colors: dark
+                    ? [Color(red: 0.07, green: 0.09, blue: 0.16), Color(red: 0.03, green: 0.04, blue: 0.08)]
+                    : [Color(red: 0.88, green: 0.93, blue: 0.97), Color(red: 0.95, green: 0.96, blue: 0.99)],
+                startPoint: .topLeading, endPoint: .bottomTrailing))
     }
+}
+
+/// A titled window that stays where it is put (also far off screen).
+private final class RenderWindow: NSWindow {
+    override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect { frameRect }
 }
 
 private struct WelcomeShot: View {
@@ -265,13 +299,14 @@ private struct WelcomeShot: View {
 /// window that is not frontmost, which is how an off-screen capture sees it; on and off would hardly differ.
 private struct DocSwitchStyle: ToggleStyle {
     @Environment(\.isEnabled) private var enabled
+    var dark = true
 
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.label
             Spacer(minLength: 8)
             ZStack(alignment: configuration.isOn ? .trailing : .leading) {
-                Capsule().fill(configuration.isOn ? Color(red: 0.04, green: 0.52, blue: 1.0) : Color.white.opacity(0.18))
+                Capsule().fill(configuration.isOn ? Color(red: 0.04, green: 0.52, blue: 1.0) : (dark ? Color.white.opacity(0.18) : Color.black.opacity(0.15)))
                 Circle().fill(Color.white).padding(2).shadow(color: .black.opacity(0.25), radius: 1, y: 1)
             }
             .frame(width: 38, height: 22)

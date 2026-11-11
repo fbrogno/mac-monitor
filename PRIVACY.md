@@ -16,7 +16,7 @@ Network throughput is read from the interface counters. MacMonitor does not look
 | History (measurements, alerts, per-app rankings) | `~/Library/Application Support/MacMonitor/history.sqlite` |
 | Current values for the widgets | `widget-snapshot.json` in the app group container `~/Library/Group Containers/<TeamID>.com.fbrogno.macmonitor` |
 
-The history keeps minute values for 2 days, 15-minute values for 30 days and daily values for 2 years. Alerts are kept for 90 days, the per-app rankings for 30 days. You can export the history as CSV or JSON and delete all of it in the app (Dashboard, Report, or Settings, Data). Nothing in these files is sent anywhere.
+The history keeps minute values for 2 days, 15-minute values for 30 days and daily values for 2 years. Alerts are kept for 90 days, the per-app rankings for 30 days. You can export the history as CSV or JSON and delete all of it in the app (History, Report, or Settings, Data). Nothing in these files is sent anywhere.
 
 The history contains process names, because the app ranks programs by their load. If you share an export, check it first.
 

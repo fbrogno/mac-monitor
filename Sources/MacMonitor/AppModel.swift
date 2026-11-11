@@ -111,6 +111,9 @@ final class AppModel {
     @ObservationIgnored let updater = UpdateController()
     /// Set by the SwiftUI scene so non-view code can open the main window.
     @ObservationIgnored var openWindowAction: ((String) -> Void)?
+    /// Image renderer only: apps shown expanded, and a rule shown in the editor.
+    @ObservationIgnored var previewExpandedApps: Set<String> = []
+    @ObservationIgnored var previewCustomRule: CustomRule?
     /// The main window once it exists (set by `WindowAccessor`).
     @ObservationIgnored weak var mainWindow: NSWindow?
     /// Sleep blockers the user just ended, to notice when their launcher starts them again.

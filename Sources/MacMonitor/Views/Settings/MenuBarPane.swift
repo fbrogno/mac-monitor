@@ -83,6 +83,7 @@ struct ShortcutField: View {
     @State private var message: String?
 
     var body: some View {
+        VStack(alignment: .trailing, spacing: 4) {
         HStack(spacing: 6) {
             Button {
                 recording ? stop() : start()
@@ -91,7 +92,7 @@ struct ShortcutField: View {
                     .font(.system(size: 12, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(recording ? Palette.accent : (binding == nil ? Color.secondary : Color.primary))
-                    .frame(minWidth: 130)
+                    .frame(minWidth: 120)
                     .padding(.horizontal, 10).padding(.vertical, 4)
                     .background(Color.primary.opacity(recording ? 0.14 : 0.07), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous)
@@ -104,10 +105,8 @@ struct ShortcutField: View {
                     .help("Kürzel entfernen")
             }
         }
-        .overlay(alignment: .bottomTrailing) {
-            if let message { FieldError(messages: [message]).frame(width: 300, alignment: .trailing).offset(y: 34) }
+        if let message { FieldError(messages: [message]).multilineTextAlignment(.trailing) }
         }
-        .padding(.bottom, message == nil ? 0 : 30)
         .onDisappear { stop() }
     }
 

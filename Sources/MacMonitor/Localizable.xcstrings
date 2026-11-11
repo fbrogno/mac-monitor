@@ -241,22 +241,6 @@
         }
       }
     },
-    "%@ von %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ von %2$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ of %2$@"
-          }
-        }
-      }
-    },
     "%@ von %@ (%lld %%)" : {
       "localizations" : {
         "de" : {
@@ -273,18 +257,18 @@
         }
       }
     },
-    "%@ von %@ frei. Alles hier baut sich bei Bedarf von selbst neu auf – deine Dateien bleiben unberührt." : {
+    "%@ von %@ frei" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ von %2$@ frei. Alles hier baut sich bei Bedarf von selbst neu auf – deine Dateien bleiben unberührt."
+            "value" : "%1$@ von %2$@ frei"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ of %2$@ free. Everything here rebuilds itself when needed – your files stay untouched."
+            "value" : "%1$@ of %2$@ free"
           }
         }
       }
@@ -401,22 +385,6 @@
         }
       }
     },
-    "%lld %%" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld %%"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
-          }
-        }
-      }
-    },
     "%lld %% der ursprünglichen" : {
       "localizations" : {
         "de" : {
@@ -482,46 +450,6 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld issues"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "%lld Auffälligkeiten brauchen deine Aufmerksamkeit" : {
-      "localizations" : {
-        "de" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld Auffälligkeit braucht deine Aufmerksamkeit"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld Auffälligkeiten brauchen deine Aufmerksamkeit"
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld issue needs your attention"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld issues need your attention"
                 }
               }
             }
@@ -901,6 +829,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld in this period"
+          }
+        }
+      }
+    },
+    "%lld von %lld Apps" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld von %2$lld Apps"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld of %2$lld apps"
           }
         }
       }
@@ -1401,22 +1345,6 @@
         }
       }
     },
-    "Aktuelle Werte und Verlauf" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktuelle Werte und Verlauf"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Current values and history"
-          }
-        }
-      }
-    },
     "Alle" : {
       "localizations" : {
         "de" : {
@@ -1465,18 +1393,18 @@
         }
       }
     },
-    "Alles in Ordnung" : {
+    "Alles hier baut sich bei Bedarf von selbst neu auf – deine Dateien bleiben unberührt." : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alles in Ordnung"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All good"
+            "value" : "Everything here rebuilds itself when needed – your files are not touched."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles hier baut sich bei Bedarf von selbst neu auf – deine Dateien bleiben unberührt."
           }
         }
       }
@@ -1669,6 +1597,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apps"
+          }
+        }
+      }
+    },
+    "Apps & Prozesse" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps & Processes"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps & Prozesse"
           }
         }
       }
@@ -1961,38 +1905,6 @@
         }
       }
     },
-    "Auslastung, Kerne und Grafikprozessor" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auslastung, Kerne und Grafikprozessor"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usage, cores and GPU"
-          }
-        }
-      }
-    },
-    "Auswertung, Export und Verlauf verwalten" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auswertung, Export und Verlauf verwalten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Analysis, export and history management"
-          }
-        }
-      }
-    },
     "Automatisch nach Updates suchen" : {
       "localizations" : {
         "de" : {
@@ -2201,22 +2113,6 @@
         }
       }
     },
-    "Belegung, Druck und Swap" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belegung, Druck und Swap"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usage, pressure and swap"
-          }
-        }
-      }
-    },
     "Bereich" : {
       "localizations" : {
         "de" : {
@@ -2249,22 +2145,6 @@
         }
       }
     },
-    "Bericht im Dashboard öffnen" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bericht im Dashboard öffnen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open Report in Dashboard"
-          }
-        }
-      }
-    },
     "Bericht wird erstellt …" : {
       "localizations" : {
         "de" : {
@@ -2277,6 +2157,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Creating report…"
+          }
+        }
+      }
+    },
+    "Bericht öffnen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Report"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bericht öffnen"
           }
         }
       }
@@ -2713,22 +2609,6 @@
         }
       }
     },
-    "Dashboard" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dashboard"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dashboard"
-          }
-        }
-      }
-    },
     "Dashboard öffnen" : {
       "localizations" : {
         "de" : {
@@ -2758,38 +2638,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open dashboard: ${area}"
-          }
-        }
-      }
-    },
-    "Daten" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Data"
-          }
-        }
-      }
-    },
-    "Datendurchsatz und Speicherplatz" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Datendurchsatz und Speicherplatz"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Throughput and storage"
           }
         }
       }
@@ -2906,18 +2754,18 @@
         }
       }
     },
-    "Der Bericht im Dashboard exportiert auch einzelne Zeiträume." : {
+    "Der Bericht unter Verlauf exportiert auch einzelne Zeiträume." : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Bericht im Dashboard exportiert auch einzelne Zeiträume."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The report in the dashboard can also export individual periods."
+            "value" : "The report under History also exports individual periods."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bericht unter Verlauf exportiert auch einzelne Zeiträume."
           }
         }
       }
@@ -4035,6 +3883,22 @@
         }
       }
     },
+    "Fenster schließen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close Window"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster schließen"
+          }
+        }
+      }
+    },
     "Fertig" : {
       "localizations" : {
         "de" : {
@@ -4083,6 +3947,22 @@
         }
       }
     },
+    "Freier Speicher nicht verfügbar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free space not available"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freier Speicher nicht verfügbar"
+          }
+        }
+      }
+    },
     "Freier Speicherplatz (GB)" : {
       "localizations" : {
         "de" : {
@@ -4111,6 +3991,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "There are no measurements for the period before – a comparison isn't possible."
+          }
+        }
+      }
+    },
+    "Für „%@“ läuft keine App." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No running app matches “%@”."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für „%@“ läuft keine App."
           }
         }
       }
@@ -4355,22 +4251,6 @@
         }
       }
     },
-    "GitHub" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
-          }
-        }
-      }
-    },
     "Gradle-Cache" : {
       "localizations" : {
         "de" : {
@@ -4543,22 +4423,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ignore"
-          }
-        }
-      }
-    },
-    "Ignoriert" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ignoriert"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ignored"
           }
         }
       }
@@ -4771,38 +4635,6 @@
         }
       }
     },
-    "Keine Auffälligkeiten" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Auffälligkeiten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No issues"
-          }
-        }
-      }
-    },
-    "Keine Auffälligkeiten – MacMonitor meldet sich, sobald etwas länger aus dem Rahmen fällt." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Auffälligkeiten – MacMonitor meldet sich, sobald etwas länger aus dem Rahmen fällt."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No issues – MacMonitor will let you know as soon as something stays out of the ordinary."
-          }
-        }
-      }
-    },
     "Keine Auffälligkeiten." : {
       "localizations" : {
         "de" : {
@@ -4895,6 +4727,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No process data in this period."
+          }
+        }
+      }
+    },
+    "Keine Treffer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Results"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Treffer"
           }
         }
       }
@@ -5283,22 +5131,6 @@
         }
       }
     },
-    "Leistungsaufnahme und Akku" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leistungsaufnahme und Akku"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Power draw and battery"
-          }
-        }
-      }
-    },
     "Lese- und Schreibrate" : {
       "localizations" : {
         "de" : {
@@ -5327,22 +5159,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Read"
-          }
-        }
-      }
-    },
-    "Lesen %@  Schreiben %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lesen %1$@  Schreiben %2$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Read %1$@  Write %2$@"
           }
         }
       }
@@ -5439,22 +5255,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Line"
-          }
-        }
-      }
-    },
-    "Lizenz" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lizenz"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "License"
           }
         }
       }
@@ -5647,54 +5447,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MacMonitor sends no data; only the update check contacts GitHub."
-          }
-        }
-      }
-    },
-    "MacMonitor – Dashboard" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MacMonitor – Dashboard"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MacMonitor – Dashboard"
-          }
-        }
-      }
-    },
-    "MacMonitor – Einstellungen" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MacMonitor – Einstellungen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MacMonitor – Settings"
-          }
-        }
-      }
-    },
-    "MacMonitor – Übersicht" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MacMonitor – Übersicht"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MacMonitor – Overview"
           }
         }
       }
@@ -6692,22 +6444,6 @@
         }
       }
     },
-    "Nichts hält den Mac wach." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nichts hält den Mac wach."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nothing is keeping your Mac awake."
-          }
-        }
-      }
-    },
     "Nie mehr melden" : {
       "localizations" : {
         "de" : {
@@ -6768,6 +6504,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not asked yet. Without permission, MacMonitor can’t send notifications."
+          }
+        }
+      }
+    },
+    "Noch nicht gemessen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not measured yet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht gemessen"
           }
         }
       }
@@ -7460,22 +7212,6 @@
         }
       }
     },
-    "Regeln" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Regeln"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rules"
-          }
-        }
-      }
-    },
     "Reserve" : {
       "localizations" : {
         "de" : {
@@ -7504,22 +7240,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Raw log"
-          }
-        }
-      }
-    },
-    "Ruhe" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ruhe"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quiet"
           }
         }
       }
@@ -7583,7 +7303,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clean up SSD"
+            "value" : "Clean Up Storage"
           }
         }
       }
@@ -7940,22 +7660,6 @@
         }
       }
     },
-    "Stand %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stand %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As of %@"
-          }
-        }
-      }
-    },
     "Status" : {
       "localizations" : {
         "de" : {
@@ -8016,6 +7720,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unmute Alerts"
+          }
+        }
+      }
+    },
+    "Suchen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suchen"
           }
         }
       }
@@ -8260,22 +7980,6 @@
         }
       }
     },
-    "Temperaturen, Lüfter und SSD-Zustand" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temperaturen, Lüfter und SSD-Zustand"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temperatures, fans and SSD health"
-          }
-        }
-      }
-    },
     "Testmitteilung senden" : {
       "localizations" : {
         "de" : {
@@ -8404,22 +8108,6 @@
         }
       }
     },
-    "Updates & Info" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Updates & Info"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Updates & About"
-          }
-        }
-      }
-    },
     "Veraltete Simulatoren" : {
       "localizations" : {
         "de" : {
@@ -8448,22 +8136,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connection"
-          }
-        }
-      }
-    },
-    "Verbrauch nach App" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbrauch nach App"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usage by app"
           }
         }
       }
@@ -8528,6 +8200,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Export History as CSV…"
+          }
+        }
+      }
+    },
+    "Verlauf exportieren …" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export History …"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf exportieren …"
           }
         }
       }
@@ -8688,22 +8376,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Incidents per rule"
-          }
-        }
-      }
-    },
-    "Vorfälle und Protokoll" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vorfälle und Protokoll"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incidents and log"
           }
         }
       }
@@ -8964,6 +8636,22 @@
         }
       }
     },
+    "Willkommen anzeigen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Welcome"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommen anzeigen"
+          }
+        }
+      }
+    },
     "Willkommen bei MacMonitor" : {
       "localizations" : {
         "de" : {
@@ -8976,22 +8664,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Welcome to MacMonitor"
-          }
-        }
-      }
-    },
-    "Willkommensfenster zeigen" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Willkommensfenster zeigen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Welcome Window"
           }
         }
       }
@@ -9120,6 +8792,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Time under memory pressure"
+          }
+        }
+      }
+    },
+    "Zeitraum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time Range"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitraum"
           }
         }
       }
@@ -9636,34 +9324,34 @@
         }
       }
     },
-    "Öffnet das Dashboard im gewählten Bereich." : {
+    "Öffnet das Hauptfenster bei den aktuellen Auffälligkeiten." : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öffnet das Dashboard im gewählten Bereich."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opens the dashboard at the chosen area."
+            "value" : "Opens the main window at the current issues."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet das Hauptfenster bei den aktuellen Auffälligkeiten."
           }
         }
       }
     },
-    "Öffnet die Übersicht mit den aktuellen Auffälligkeiten." : {
+    "Öffnet das Hauptfenster im gewählten Bereich." : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öffnet die Übersicht mit den aktuellen Auffälligkeiten."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opens the overview with the current issues."
+            "value" : "Opens the main window at the chosen area."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet das Hauptfenster im gewählten Bereich."
           }
         }
       }
@@ -9712,22 +9400,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apply"
-          }
-        }
-      }
-    },
-    "Übersicht" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Übersicht"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Overview"
           }
         }
       }
@@ -9936,22 +9608,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "•"
-          }
-        }
-      }
-    },
-    "↓ %@  ↑ %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "↓ %1$@  ↑ %2$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "↓ %1$@  ↑ %2$@"
           }
         }
       }

@@ -9,7 +9,7 @@ enum AppLinks {
     }
 }
 
-/// "Updates & Info": version, update switch, links and the privacy statement.
+/// "Updates & Info": app identity, version, update switch, links and the privacy statement.
 struct UpdatesPane: View {
     @Bindable var model: AppModel
     @State private var autoUpdate = false
@@ -17,7 +17,21 @@ struct UpdatesPane: View {
     var body: some View {
         PaneForm {
             Section {
-                LabeledContent("MacMonitor", value: UpdateController.versionText)
+                HStack(spacing: 16) {
+                    AppIconView(size: 64, padded: true)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("MacMonitor").font(.system(size: 20, weight: .bold, design: .rounded))
+                        Text(UpdateController.versionText).foregroundStyle(.secondary)
+                        Text(AppLinks.copyright).font(.system(size: 11)).foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 4)
+                Text("Behält deinen Mac im Blick und meldet sich nur, wenn etwas wirklich auffällt.")
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Section {
                 Toggle("Automatisch nach Updates suchen", isOn: $autoUpdate)
                     .disabled(!model.updater.isConfigured)
                     .onChange(of: autoUpdate) { _, on in model.updater.automaticallyChecks = on }
@@ -34,7 +48,7 @@ struct UpdatesPane: View {
                 Link(destination: AppLinks.github) { Label("MacMonitor auf GitHub", systemImage: "arrow.up.right.square") }
                 Link(destination: AppLinks.license) { Label("Lizenz: privat, alle Rechte vorbehalten", systemImage: "doc.text") }
                 HStack {
-                    Button("Willkommensfenster zeigen") { model.handle(.welcome) }
+                    Button("Willkommen anzeigen") { model.handle(.welcome) }
                     Spacer()
                 }
             } header: {

@@ -54,7 +54,7 @@ struct RuleEditor: View {
                             TextField("Schwelle", value: $draft.threshold, format: .number)
                                 .labelsHidden()
                                 .multilineTextAlignment(.trailing)
-                                .frame(width: 90)
+                                .frame(width: 80)
                             Text(draft.metric.unit.symbol).foregroundStyle(.secondary).frame(width: 40, alignment: .leading)
                         }
                     }
@@ -124,7 +124,7 @@ struct RuleEditor: View {
                               prompt: Text("Name des Programms"))
                         .labelsHidden()
                         .multilineTextAlignment(.trailing)
-                        .frame(width: 190)
+                        .frame(minWidth: 120, maxWidth: 220)
                     Menu {
                         ForEach(runningNames, id: \.self) { name in
                             Button(name) { draft.processName = name }
@@ -201,9 +201,11 @@ private struct ActionRow: View {
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Text(action.kind.title).fontWeight(.medium).frame(width: 150, alignment: .leading)
-            detail
-            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(action.kind.title).fontWeight(.medium)
+                detail
+            }
+            Spacer(minLength: 8)
             Button(action: onRemove) { Image(systemName: "minus.circle") }
                 .buttonStyle(.borderless)
                 .help("Aktion entfernen")

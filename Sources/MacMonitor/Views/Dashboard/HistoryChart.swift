@@ -76,8 +76,9 @@ struct HistoryChart: View {
     var body: some View {
         if lines.allSatisfy({ $0.points.measured.isEmpty }) {
             Text("Noch keine Messwerte in diesem Zeitraum")
-                .font(.system(size: 11)).foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, minHeight: height)
+                .font(.system(size: 12)).foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, minHeight: compact ? height : min(height, 90))
         } else {
             VStack(alignment: .leading, spacing: 6) {
                 chart.frame(height: height)
@@ -184,11 +185,11 @@ struct HistoryChart: View {
     }
 
     private var legend: some View {
-        HStack(spacing: 14) {
+        FlowLayout(spacing: 14, lineSpacing: 4) {
             ForEach(lines) { line in
                 HStack(spacing: 5) {
                     Circle().fill(line.color).frame(width: 7, height: 7)
-                    Text(line.name).font(.system(size: 10)).foregroundStyle(.secondary)
+                    Text(line.name).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
                 }
             }
         }

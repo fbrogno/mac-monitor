@@ -7,7 +7,7 @@ struct EnergyPane: View {
     let data: DashboardData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 16) {
             powerCard
             batteryCard
         }
@@ -17,14 +17,12 @@ struct EnergyPane: View {
         let d = data
         let power = model.snapshot?.powerDraw
         return DashCard(String(localized: "Systemleistung"), trailing: {
-            if let watts = power?.systemWatts {
-                Text(Format.watts(watts)).font(.system(size: 15, weight: .semibold, design: .rounded)).monospacedDigit()
-            }
+            if let watts = power?.systemWatts { CardValue(Format.watts(watts)) }
         }, content: {
             if power == nil && !d.hasSeries(.powerSystem, .powerCPU) {
                 UnavailableNote()
             } else {
-                VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 16) {
                     HistoryChart(lines: powerLines, unit: .watts, from: d.from, to: d.to, domain: nil, height: 180,
                                  showsLegend: true)
                     if let power { split(power) }
@@ -51,7 +49,7 @@ struct EnergyPane: View {
         let shown = parts.compactMap { part in part.1.map { (part.0, $0, part.2) } }
         if !shown.isEmpty {
             let top = max(shown.map(\.1).max() ?? 1, 0.1)
-            VStack(alignment: .leading, spacing: 7) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Aufteilung im letzten Messintervall").font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
                 ForEach(shown, id: \.0) { name, watts, tint in
                     MeterBar(label: name, value: Format.watts(watts), fraction: watts / top, tint: tint)
@@ -70,11 +68,9 @@ struct EnergyPane: View {
         if s?.power.batteryPercent == nil && s?.batteryDetail == nil && !data.hasSeries(.batteryPercent) {
             DashCard(String(localized: "Akku")) { UnavailableNote(text: String(localized: "Dieser Mac hat keinen Akku")) }
         } else {
-            VStack(alignment: .leading, spacing: 14) {
+            CardGrid {
                 DashCard(String(localized: "Ladestand"), trailing: {
-                    if let percent = s?.power.batteryPercent {
-                        Text("\(percent) %").font(.system(size: 15, weight: .semibold, design: .rounded)).monospacedDigit()
-                    }
+                    if let percent = s?.power.batteryPercent { CardValue("\(percent) %") }
                 }, content: {
                     HistoryChart(lines: [data.line(.batteryPercent, String(localized: "Akku"), Palette.ok)], unit: .percent,
                                  from: data.from, to: data.to, domain: 0...100, height: 150)
@@ -88,7 +84,7 @@ struct EnergyPane: View {
         let detail = s.batteryDetail
         let health = s.power.health
         return DashCard(String(localized: "Akkuzustand")) {
-            VStack(spacing: 7) {
+            VStack(spacing: 8) {
                 if let detail {
                     let percent = detail.designCapacityMah > 0 ? Int((Double(detail.maxCapacityMah) / Double(detail.designCapacityMah) * 100).rounded()) : 0
                     FactRow(String(localized: "Kapazität"),
@@ -125,10 +121,12 @@ struct SensorsPane: View {
     let data: DashboardData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 16) {
             temperatureCard
-            fanCard
-            ssdCard
+            CardGrid {
+                fanCard
+                ssdCard
+            }
         }
     }
 
@@ -136,14 +134,12 @@ struct SensorsPane: View {
         let d = data
         let thermals = model.snapshot?.thermals
         return DashCard(String(localized: "Temperaturen"), trailing: {
-            if let avg = thermals?.cpuAverageCelsius {
-                Text(Format.celsius(avg)).font(.system(size: 15, weight: .semibold, design: .rounded)).monospacedDigit()
-            }
+            if let avg = thermals?.cpuAverageCelsius { CardValue(Format.celsius(avg)) }
         }, content: {
             if thermals == nil && !d.hasSeries(.cpuTempAvg) {
                 UnavailableNote()
             } else {
-                VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 16) {
                     HistoryChart(lines: tempLines, unit: .celsius, from: d.from, to: d.to, domain: nil, height: 170,
                                  showsLegend: true)
                     if let thermals, !thermals.sensors.isEmpty { sensorList(thermals.sensors) }
@@ -165,14 +161,14 @@ struct SensorsPane: View {
         let shown = Array(sorted.prefix(12))
         return VStack(alignment: .leading, spacing: 6) {
             Text("Einzelne Sensoren, heißeste zuerst").font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
-            LazyVGrid(columns: [GridItem(.flexible(), spacing: 24), GridItem(.flexible(), spacing: 24)], spacing: 5) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 240), spacing: 24)], spacing: 6) {
                 ForEach(shown, id: \.name) { reading in
                     FactRow(reading.name, Format.celsius(reading.celsius),
                             tint: reading.celsius >= 90 ? Palette.critical : reading.celsius >= 75 ? Palette.warn : .primary)
                 }
             }
             if sorted.count > shown.count {
-                Text("und \(sorted.count - shown.count) weitere").font(.system(size: 10)).foregroundStyle(.secondary)
+                Text("und \(sorted.count - shown.count) weitere").font(.system(size: 11)).foregroundStyle(.secondary)
             }
         }
     }
@@ -183,7 +179,7 @@ struct SensorsPane: View {
             if fans.isEmpty && !data.hasSeries(.fanMax) {
                 UnavailableNote(text: String(localized: "Keine Lüfter gemeldet (lüfterlose Macs haben keine)"))
             } else {
-                VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 16) {
                     ForEach(fans, id: \.index) { fan in FanBar(fan: fan) }
                     if data.hasSeries(.fanMax) {
                         HistoryChart(lines: [data.line(.fanMax, String(localized: "Schnellster Lüfter"), Palette.accent)], unit: .rpm,
@@ -197,7 +193,7 @@ struct SensorsPane: View {
     private var ssdCard: some View {
         DashCard(String(localized: "SSD-Zustand"), subtitle: "SMART") {
             if let ssd = model.snapshot?.ssdHealth {
-                VStack(spacing: 7) {
+                VStack(spacing: 8) {
                     FactRow(String(localized: "Zustand"), ssd.isVerified ? String(localized: "In Ordnung") : String(localized: "Warnung"),
                             tint: ssd.isVerified ? Palette.ok : Palette.critical)
                     MeterBar(label: String(localized: "Verschleiß"), value: "\(ssd.percentageUsed) %",
@@ -242,7 +238,7 @@ struct FanBar: View {
             }
             .frame(height: 8)
             Text("Minimum \(Format.rpm(fan.minRpm)) · Maximum \(Format.rpm(fan.maxRpm))")
-                .font(.system(size: 10)).foregroundStyle(.secondary)
+                .font(.system(size: 11)).foregroundStyle(.secondary)
         }
     }
 }

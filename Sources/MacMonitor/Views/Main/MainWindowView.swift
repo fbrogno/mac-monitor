@@ -4,6 +4,8 @@ import SwiftUI
 /// The one window of MacMonitor: sidebar with all areas, detail on the right, one title bar and toolbar.
 struct MainWindowView: View {
     @Bindable var model: AppModel
+    /// Offline image renderer: no stored state, no window bookkeeping, no history reloads.
+    var isPreview = false
 
     @AppStorage("main.section") private var storedSection = ""
     @AppStorage("main.range") private var storedRange = DashboardRange.day.rawValue
@@ -12,6 +14,14 @@ struct MainWindowView: View {
     @State private var columns: NavigationSplitViewVisibility = .all
 
     var body: some View {
+        if isPreview {
+            PreviewWindowBody(model: model)
+        } else {
+            window
+        }
+    }
+
+    private var window: some View {
         NavigationSplitView(columnVisibility: $columns) {
             Sidebar(model: model)
                 .navigationSplitViewColumnWidth(min: 200, ideal: 220, max: 260)
@@ -23,12 +33,12 @@ struct MainWindowView: View {
         }
         .searchable(text: $model.searchText, placement: .toolbar, prompt: Text("Suchen"))
         .frame(minWidth: 860, minHeight: 600)
-        .background(WindowAccessor(model: model))
+        .background { if !isPreview { WindowAccessor(model: model) } }
         .confirmationAlert(model: model, host: .window)
         .sheet(isPresented: $model.showsWelcome, onDismiss: { Welcome.markSeen() }) {
             WelcomeView(model: model) { model.showsWelcome = false }
         }
-        .onAppear(perform: restore)
+        .onAppear { if !isPreview { restore() } }
         .onChange(of: model.section) { _, new in storedSection = new.rawValue }
         .onChange(of: model.dashboard.range) { _, new in storedRange = new.rawValue }
         .onChange(of: model.dashboard.reportPeriod) { _, new in storedPeriod = new.rawValue }
@@ -36,7 +46,7 @@ struct MainWindowView: View {
         // Loads history only while the window is on screen and the area draws it; the task ends with the area.
         .task(id: ReloadID(key: model.section.dashboardSection == nil ? nil : model.dashboard.currentKey,
                            visible: model.isMainWindowVisible)) {
-            guard model.isMainWindowVisible, model.section.dashboardSection != nil else { return }
+            guard !isPreview, model.isMainWindowVisible, model.section.dashboardSection != nil else { return }
             while !Task.isCancelled {
                 await model.dashboard.reload()
                 try? await Task.sleep(for: model.dashboard.range.refreshInterval)
@@ -170,7 +180,7 @@ struct MainDetail: View {
         case .general: GeneralPane(model: model)
         case .menuBar: MenuBarPane(model: model)
         case .rules: RulesPane(model: model)
-        case .customRules: CustomRulesPane(model: model)
+        case .customRules: CustomRulesPane(model: model, previewRule: model.previewCustomRule)
         case .quiet: QuietPane(model: model)
         case .ignored: IgnoredPane(model: model)
         case .data: DataPane(model: model)
@@ -227,6 +237,6 @@ struct HistoryPage: View {
     let model: AppModel
 
     var body: some View {
-        DashboardDetail(model: model)
+        DashboardDetail(model: model, expandedApps: model.previewExpandedApps)
     }
 }
