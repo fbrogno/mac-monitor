@@ -75,9 +75,50 @@ struct CardGrid<Content: View>: View {
     @ViewBuilder var content: Content
 
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimum), spacing: 16, alignment: .top)],
-                  alignment: .leading, spacing: 16) {
-            content
+        ColumnsLayout(minimum: minimum, spacing: 16) { content }
+    }
+}
+
+/// Places its children in as many equal columns as fit (each at least `minimum` wide) and lets the columns
+/// share the whole width, so two cards fill a wide window and stack in a narrow one.
+struct ColumnsLayout: Layout {
+    var minimum: CGFloat
+    var spacing: CGFloat = 16
+
+    private func columnCount(width: CGFloat, items: Int) -> Int {
+        guard items > 0 else { return 1 }
+        return max(1, min(items, Int((width + spacing) / (minimum + spacing))))
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? minimum
+        let columns = columnCount(width: width, items: subviews.count)
+        let columnWidth = (width - spacing * CGFloat(columns - 1)) / CGFloat(columns)
+        var total: CGFloat = 0
+        var index = 0
+        while index < subviews.count {
+            let row = subviews[index..<min(index + columns, subviews.count)]
+            total += row.map { $0.sizeThatFits(ProposedViewSize(width: columnWidth, height: nil)).height }.max() ?? 0
+            index += columns
+            if index < subviews.count { total += spacing }
+        }
+        return CGSize(width: width, height: total)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let columns = columnCount(width: bounds.width, items: subviews.count)
+        let columnWidth = (bounds.width - spacing * CGFloat(columns - 1)) / CGFloat(columns)
+        var y = bounds.minY
+        var index = 0
+        while index < subviews.count {
+            let row = Array(subviews[index..<min(index + columns, subviews.count)])
+            let height = row.map { $0.sizeThatFits(ProposedViewSize(width: columnWidth, height: nil)).height }.max() ?? 0
+            for (i, subview) in row.enumerated() {
+                subview.place(at: CGPoint(x: bounds.minX + CGFloat(i) * (columnWidth + spacing), y: y), anchor: .topLeading,
+                              proposal: ProposedViewSize(width: columnWidth, height: height))
+            }
+            y += height + spacing
+            index += columns
         }
     }
 }
@@ -198,7 +239,7 @@ struct MetricTile: View {
             }
             Text(value).font(.system(size: 20, weight: .semibold, design: .rounded)).monospacedDigit()
                 .lineLimit(1).minimumScaleFactor(0.7)
-            Text(detail ?? " ").font(.system(size: 10)).foregroundStyle(.secondary).lineLimit(1)
+            Text(detail ?? " ").font(.system(size: 10)).foregroundStyle(.secondary).lineLimit(1).minimumScaleFactor(0.75)
             if lines.contains(where: { !$0.points.measured.isEmpty }) {
                 HistoryChart(lines: lines, unit: unit, from: from, to: to, domain: domain, height: 36, compact: true)
             } else {

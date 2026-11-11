@@ -26,8 +26,6 @@ struct GeneralPane: View {
                 LabeledContent("Sprache") {
                     Text("Folgt der Systemsprache").foregroundStyle(.secondary)
                 }
-            } header: {
-                Text("Allgemein")
             }
 
             Section {

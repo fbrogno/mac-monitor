@@ -89,7 +89,7 @@ struct NetworkPane: View {
         let d = data
         return DashCard(String(localized: "Lese- und Schreibrate"), trailing: {
             if let io = model.snapshot?.diskThroughput {
-                CardValue("Lesen \(Format.rate(io.readBytesPerSecond))  Schreiben \(Format.rate(io.writeBytesPerSecond))", prominent: false)
+                CardValue(String(localized: "Lesen \(Format.rate(io.readBytesPerSecond)) · Schreiben \(Format.rate(io.writeBytesPerSecond))"), prominent: false)
             }
         }, content: {
             if model.snapshot?.diskThroughput == nil && !d.hasSeries(.diskRead, .diskWrite) {

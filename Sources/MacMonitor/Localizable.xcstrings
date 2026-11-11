@@ -241,6 +241,22 @@
         }
       }
     },
+    "%@ von %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ von %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ of %2$@"
+          }
+        }
+      }
+    },
     "%@ von %@ (%lld %%)" : {
       "localizations" : {
         "de" : {
@@ -1395,16 +1411,16 @@
     },
     "Alles hier baut sich bei Bedarf von selbst neu auf – deine Dateien bleiben unberührt." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Everything here rebuilds itself when needed – your files are not touched."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alles hier baut sich bei Bedarf von selbst neu auf – deine Dateien bleiben unberührt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Everything here rebuilds itself when needed – your files are not touched."
           }
         }
       }
@@ -1421,22 +1437,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All clear"
-          }
-        }
-      }
-    },
-    "Allgemein" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allgemein"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "General"
           }
         }
       }
@@ -1603,16 +1603,16 @@
     },
     "Apps & Prozesse" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apps & Processes"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apps & Prozesse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps & Processes"
           }
         }
       }
@@ -2163,16 +2163,16 @@
     },
     "Bericht öffnen" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open Report"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bericht öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Report"
           }
         }
       }
@@ -2756,16 +2756,16 @@
     },
     "Der Bericht unter Verlauf exportiert auch einzelne Zeiträume." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The report under History also exports individual periods."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Der Bericht unter Verlauf exportiert auch einzelne Zeiträume."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The report under History also exports individual periods."
           }
         }
       }
@@ -3885,16 +3885,16 @@
     },
     "Fenster schließen" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Close Window"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fenster schließen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close Window"
           }
         }
       }
@@ -3949,16 +3949,16 @@
     },
     "Freier Speicher nicht verfügbar" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Free space not available"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Freier Speicher nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free space not available"
           }
         }
       }
@@ -3997,16 +3997,16 @@
     },
     "Für „%@“ läuft keine App." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No running app matches “%@”."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Für „%@“ läuft keine App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No running app matches “%@”."
           }
         }
       }
@@ -4071,22 +4071,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GPU memory"
-          }
-        }
-      }
-    },
-    "GPU-Speicher (gemeinsamer Arbeitsspeicher)" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GPU-Speicher (gemeinsamer Arbeitsspeicher)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GPU memory (shared memory)"
           }
         }
       }
@@ -4733,16 +4717,16 @@
     },
     "Keine Treffer" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Results"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keine Treffer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Results"
           }
         }
       }
@@ -6510,16 +6494,16 @@
     },
     "Noch nicht gemessen" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Not measured yet"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Noch nicht gemessen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not measured yet"
           }
         }
       }
@@ -7726,16 +7710,16 @@
     },
     "Suchen" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
           }
         }
       }
@@ -8206,16 +8190,16 @@
     },
     "Verlauf exportieren …" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Export History …"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verlauf exportieren …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export History …"
           }
         }
       }
@@ -8638,16 +8622,16 @@
     },
     "Willkommen anzeigen" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Welcome"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Willkommen anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Welcome"
           }
         }
       }
@@ -8798,16 +8782,16 @@
     },
     "Zeitraum" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time Range"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zeitraum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time Range"
           }
         }
       }
@@ -9326,32 +9310,32 @@
     },
     "Öffnet das Hauptfenster bei den aktuellen Auffälligkeiten." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opens the main window at the current issues."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Öffnet das Hauptfenster bei den aktuellen Auffälligkeiten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the main window at the current issues."
           }
         }
       }
     },
     "Öffnet das Hauptfenster im gewählten Bereich." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opens the main window at the chosen area."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Öffnet das Hauptfenster im gewählten Bereich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the main window at the chosen area."
           }
         }
       }

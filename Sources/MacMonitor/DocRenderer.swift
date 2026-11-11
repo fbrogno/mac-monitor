@@ -84,10 +84,17 @@ enum DocRenderer {
         ]
         let only = ProcessInfo.processInfo.environment["MACMONITOR_RENDER_ONLY"]?.split(separator: ",").map(String.init)
         let standard = CGSize(width: 1100, height: 720)
-        var shots: [(AppSection, String, ColorScheme, CGSize)] = AppSection.allCases.map { ($0, names[$0]!, .dark, standard) }
+        // Tall enough that the page shows whole (the real window scrolls).
+        let heights: [AppSection: CGFloat] = [
+            .issues: 840, .apps: 790, .cpu: 1080, .energy: 1040, .sensors: 1000, .network: 780, .events: 880, .report: 1000,
+            .cleanup: 760, .menuBar: 820, .rules: 900, .customRules: 900, .quiet: 820,
+        ]
+        var shots: [(AppSection, String, ColorScheme, CGSize)] = AppSection.allCases.map {
+            ($0, names[$0]!, .dark, CGSize(width: 1100, height: heights[$0] ?? standard.height))
+        }
         shots += [(.overview, "overview-light", .light, standard), (.issues, "issues-light", .light, standard),
-                  (.rules, "rules-light", .light, standard), (.overview, "overview-narrow", .dark, CGSize(width: 860, height: 640)),
-                  (.apps, "apps-narrow", .dark, CGSize(width: 860, height: 640))]
+                  (.rules, "rules-light", .light, standard), (.overview, "overview-narrow", .dark, CGSize(width: 860, height: 800)),
+                  (.apps, "apps-narrow", .dark, CGSize(width: 860, height: 800))]
         for (section, name, scheme, size) in shots where only == nil || only!.contains(name) {
             model.section = section
             model.dashboard.range = section == .apps || section == .events ? .week : .day

@@ -3996,7 +3996,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear caches that rebuild themselves (see “Clean up SSD” below)."
+            "value" : "Clear caches that rebuild themselves (see “Clean Up Storage” below)."
           }
         }
       }

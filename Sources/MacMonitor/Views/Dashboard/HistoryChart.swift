@@ -135,6 +135,7 @@ struct HistoryChart: View {
                 }
             }
         }
+        .chartPlotStyle { compact ? AnyView($0) : AnyView($0.padding(.trailing, 16)) }
         .chartYAxis(compact ? .hidden : .automatic)
         .chartYAxis {
             if !compact {
@@ -174,7 +175,7 @@ struct HistoryChart: View {
     private var xTicks: AxisMarkValues {
         let span = to.timeIntervalSince(from)
         if span <= 2 * 3600 { return .stride(by: .minute, count: 15) }
-        if span <= 36 * 3600 { return .stride(by: .hour, count: 4) }
+        if span <= 36 * 3600 { return .stride(by: .hour, count: 6) }
         return .automatic(desiredCount: 6)
     }
 

@@ -610,7 +610,7 @@ Three common reasons. The process belongs to root or another user: without root 
 </details>
 
 <details>
-<summary><b>What exactly does "Clean up SSD" delete, and what never?</b></summary>
+<summary><b>What exactly does "Clean Up Storage" delete, and what never?</b></summary>
 
 &nbsp;
 

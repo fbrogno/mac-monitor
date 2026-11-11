@@ -37,14 +37,14 @@ struct CPUPane: View {
         DashCard(String(localized: "Kerne"), subtitle: String(localized: "\(cores.perCore.count) Kerne")) {
             let efficiency = Array(cores.efficiencyCores)
             let performance = Array(cores.performanceCores)
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 240), spacing: 24, alignment: .top)],
-                      alignment: .leading, spacing: 16) {
+            let columns = Group {
                 if !efficiency.isEmpty {
-                    coreColumn(String(localized: "Effizienz-Kerne"), efficiency, offset: 0)
+                    coreColumn(String(localized: "Effizienz-Kerne"), efficiency, offset: 0).frame(minWidth: 220)
                 }
                 coreColumn(efficiency.isEmpty ? nil : String(localized: "Performance-Kerne"),
-                           performance, offset: efficiency.count)
+                           performance, offset: efficiency.count).frame(minWidth: 220)
             }
+            ColumnsLayout(minimum: 240, spacing: 32) { columns }
         }
     }
 
@@ -80,7 +80,7 @@ struct CPUPane: View {
         let d = data
         if let gpu = model.snapshot?.gpu, let used = gpu.memoryUsedBytes {
             let total = model.snapshot?.memoryTotalBytes ?? 0
-            MeterBar(label: String(localized: "GPU-Speicher (gemeinsamer Arbeitsspeicher)"),
+            MeterBar(label: String(localized: "GPU-Speicher"),
                      value: gpu.memoryAllocatedBytes.map { String(localized: "\(Format.bytes(used)) benutzt · \(Format.bytes($0)) reserviert") } ?? Format.bytes(used),
                      fraction: total > 0 ? Double(used) / Double(total) : 0, tint: Palette.accent)
             if d.hasSeries(.gpuMemory) {
@@ -111,7 +111,7 @@ struct MemoryPane: View {
         VStack(alignment: .leading, spacing: 16) {
             DashCard(String(localized: "Belegter Speicher"), trailing: {
                 if let s = model.snapshot {
-                    CardValue("\(Format.bytes(s.memoryUsedBytes)) von \(Format.bytes(s.memoryTotalBytes))", prominent: false)
+                    CardValue(String(localized: "\(Format.bytes(s.memoryUsedBytes)) von \(Format.bytes(s.memoryTotalBytes))"), prominent: false)
                 }
             }, content: {
                 HistoryChart(lines: [d.line(.memoryPercent, "RAM", Palette.accent)], unit: .percent,
