@@ -1,5 +1,6 @@
 import AppKit
 import Foundation
+import MonitorCore
 
 /// A place on disk that can be emptied without losing user data: it only holds caches and build
 /// products that tools recreate on demand.
@@ -101,12 +102,9 @@ enum CleanupRunner {
     static func run(_ target: CleanupTarget) {
         switch target.method {
         case .emptyFolders(let folders, let keeping):
-            let fm = FileManager.default
+            // The rules (fixed folder list below the home folder, no symlinks followed) live in `CleanupSafety`.
             for folder in folders {
-                guard let children = try? fm.contentsOfDirectory(atPath: folder) else { continue }
-                for child in children where !keeping.contains(where: child.hasPrefix) {
-                    try? fm.removeItem(atPath: (folder as NSString).appendingPathComponent(child))
-                }
+                CleanupSafety.empty(folder: folder, home: NSHomeDirectory(), keeping: keeping)
             }
         case .command(let executable, let argumentSets):
             for arguments in argumentSets {
