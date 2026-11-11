@@ -8,6 +8,7 @@ let package = Package(
     platforms: [.macOS(.v15)],
     products: [
         .library(name: "MonitorCore", targets: ["MonitorCore"]),
+        .library(name: "WidgetViews", targets: ["WidgetViews"]),
         .executable(name: "MacMonitor", targets: ["MacMonitor"]),
     ],
     dependencies: [
@@ -15,9 +16,12 @@ let package = Package(
     ],
     targets: [
         .target(name: "MonitorCore"),
+        // SwiftUI views of the desktop widgets, shared by the WidgetKit extension (built from
+        // project.yml) and the screenshot renderer in the app target.
+        .target(name: "WidgetViews", dependencies: ["MonitorCore"]),
         .executableTarget(
             name: "MacMonitor",
-            dependencies: ["MonitorCore", .product(name: "Sparkle", package: "Sparkle")]),
+            dependencies: ["MonitorCore", "WidgetViews", .product(name: "Sparkle", package: "Sparkle")]),
         .testTarget(name: "MonitorCoreTests", dependencies: ["MonitorCore"]),
     ],
     swiftLanguageModes: [.v5]

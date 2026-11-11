@@ -29,6 +29,7 @@ enum DocRenderer {
         write(Framed(scheme: .dark) { OverviewContent(model: overview).frame(width: 760) }, scale: 2,
               to: url.appendingPathComponent("overview.png"))
         renderDashboard(to: url)
+        WidgetRender.render(to: url)
         print("Bilder geschrieben nach \(url.path)")
     }
 
@@ -55,7 +56,7 @@ enum DocRenderer {
         }
     }
 
-    private static func write(_ view: some View, scale: CGFloat, to file: URL) {
+    static func write(_ view: some View, scale: CGFloat, to file: URL) {
         let renderer = ImageRenderer(content: view)
         renderer.scale = scale
         guard let image = renderer.cgImage,

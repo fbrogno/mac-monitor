@@ -180,7 +180,7 @@ public struct WidgetStore: Sendable {
 
     public func write(_ snapshot: WidgetSnapshot) throws {
         let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
+        encoder.dateEncodingStrategy = .secondsSince1970
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         try encoder.encode(snapshot).write(to: fileURL, options: .atomic)
     }
@@ -189,7 +189,7 @@ public struct WidgetStore: Sendable {
     public func read() -> WidgetSnapshot? {
         guard let data = try? Data(contentsOf: fileURL) else { return nil }
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        decoder.dateDecodingStrategy = .secondsSince1970
         guard let snapshot = try? decoder.decode(WidgetSnapshot.self, from: data),
               snapshot.version == WidgetSnapshot.currentVersion else { return nil }
         return snapshot

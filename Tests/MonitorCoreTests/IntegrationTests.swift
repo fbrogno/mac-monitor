@@ -26,7 +26,7 @@ struct WidgetSnapshotTests {
     @Test func roundtripKeepsEveryField() throws {
         let condition = Condition(key: "system.memory", rule: .memoryPressure, severity: .warning,
                                   title: "Speicher knapp", body: "", sustain: 0)
-        let full = WidgetSnapshot(snapshot: sample(date: Date(timeIntervalSince1970: 1_800_000_000)), conditions: [condition])
+        let full = WidgetSnapshot(snapshot: sample(date: Date(timeIntervalSince1970: 1_800_000_000.123)), conditions: [condition])
             .appending(to: nil)
         let store = WidgetStore(directory: tempDirectory())
         try store.write(full)

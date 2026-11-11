@@ -67,7 +67,7 @@ extension WidgetSnapshot {
             diskFreeBytes: s.disk?.availableBytes, diskTotalBytes: s.disk?.totalBytes,
             anomalies: conditions.sorted { $0.severity > $1.severity }
                 .map { Anomaly(key: $0.key, title: $0.title, severity: $0.severity.rawValue) },
-            topApps: ConsumerRanking.top(s, by: .cpu, limit: 3).map {
+            topApps: ConsumerRanking.top(s, by: .cpu, limit: 5).map {
                 TopApp(name: $0.name, cpuPercent: $0.cpuPercent, memoryBytes: $0.memoryBytes,
                        energyMilliwatts: $0.energyMilliwatts)
             })
