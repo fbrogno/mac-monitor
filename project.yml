@@ -30,8 +30,13 @@ targets:
     dependencies:
       - package: MacMonitorPackage
         product: MonitorCore
+      - package: MacMonitorPackage
+        product: WidgetViews
       - package: Sparkle
         product: Sparkle
+      # Embedded into Contents/PlugIns; build-app.sh signs it with the sandbox entitlements.
+      - target: MacMonitorWidgets
+        embed: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fbrogno.macmonitor
@@ -43,6 +48,29 @@ targets:
         ENABLE_APP_SANDBOX: NO
         CODE_SIGN_STYLE: Manual
         COMBINE_HIDPI_IMAGES: YES
+  MacMonitorWidgets:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: Sources/MacMonitorWidgets
+    dependencies:
+      - package: MacMonitorPackage
+        product: MonitorCore
+      - package: MacMonitorPackage
+        product: WidgetViews
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fbrogno.macmonitor.widgets
+        PRODUCT_NAME: MacMonitorWidgets
+        INFOPLIST_FILE: Sources/MacMonitorWidgets/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        ENABLE_HARDENED_RUNTIME: YES
+        # The sandbox and the app group come from the entitlements build-app.sh signs with.
+        ENABLE_APP_SANDBOX: YES
+        CODE_SIGN_STYLE: Manual
+        SKIP_INSTALL: YES
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"
+        APPLICATION_EXTENSION_API_ONLY: YES
 schemes:
   MacMonitor:
     build:

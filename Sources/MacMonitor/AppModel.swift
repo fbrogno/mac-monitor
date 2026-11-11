@@ -266,6 +266,7 @@ final class AppModel {
         if !newEvents.isEmpty {
             events = Array((newEvents.reversed() + events).prefix(30))
         }
+        AppIntegration.didIngest(self)
         reschedule()
     }
 
