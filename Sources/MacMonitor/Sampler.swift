@@ -15,13 +15,17 @@ final class Sampler: @unchecked Sendable {
     private let activeInterface = ActiveInterfaceSampler()
 
     /// True while a window or popover shows the detail views; sensors are then refreshed more often.
-    var detailsVisible = false
+    var detailsVisible = false {
+        didSet { processes.detailsVisible = detailsVisible }
+    }
 
     /// Slow-changing values are refreshed less often than the main tick.
     private var disk = Cached<DiskStat?>(every: 300) { DiskSampler.sample() }
     private var battery = Cached<BatteryHealth?>(every: 300) { PowerSampler.batteryHealth() }
     private var blockers = Cached<[SleepBlocker]>(every: 60) { SleepAssertionSampler.sample() }
     private var volumes = Cached<[VolumeStat]>(every: 300) { VolumeSampler.sample() }
+    /// The GPU is read on every sample while details are visible, otherwise every 30 s (enough for the history).
+    private var gpu = Cached<GPUStat?>(every: 30) { GPUSampler.sample() }
     private var ssd = Cached<SSDHealth?>(every: 300) { SSDHealthSampler.sample() }
     // Sensors and power: every 5-10 s while details are visible, every 30-60 s otherwise.
     private var batteryDetail = Cached<BatteryDetail?>(every: 10) { PowerSampler.batteryDetail() }
@@ -36,6 +40,7 @@ final class Sampler: @unchecked Sendable {
         let energy = self.energy
         let activeInterface = self.activeInterface
         self.thermal = thermal
+        processes.detailsVisible = false
         fans = Cached(every: 5) { smc.fans() }
         thermals = Cached(every: 5) { thermal.sample() }
         powerDraw = Cached(every: 5) {
@@ -82,7 +87,7 @@ final class Sampler: @unchecked Sendable {
             sleepBlockers: blockers.value(at: now),
             processes: processList,
             cpuCores: cores.sample(),
-            gpu: GPUSampler.sample(),
+            gpu: gpu.value(at: now, every: detailsVisible ? 0 : 30),
             thermals: thermals.value(at: now, every: sensorEvery).map { sensors in
                 // The smart battery's own reading beats the HID gas-gauge sensor.
                 ThermalSensors(cpuAverageCelsius: sensors.cpuAverageCelsius, cpuMaxCelsius: sensors.cpuMaxCelsius,

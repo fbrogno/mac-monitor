@@ -93,6 +93,13 @@ public final class ProcessSampler {
     public private(set) var systemProcessCount = 0
     /// Threads of the processes that could be inspected at the latest sample.
     public private(set) var visibleThreadCount = 0
+    /// True while a window or the popover shows per-process details. Thread counts are then read on every sample;
+    /// otherwise only every `idleThreadRefresh` seconds (the history needs no more), and in between the last
+    /// values are reused. Each count costs one more system call per process.
+    public var detailsVisible = true
+    public var idleThreadRefresh: TimeInterval = 30
+    private var threadCounts: [Int32: (startTime: UInt64, count: Int)] = [:]
+    private var threadsReadAt: TimeInterval = -.infinity
 
     public init() {
         var info = mach_timebase_info()
@@ -147,6 +154,11 @@ public final class ProcessSampler {
 
         var readings: [ProcessReading] = []
         readings.reserveCapacity(Int(count))
+        let uptime = ProcessInfo.processInfo.systemUptime
+        let refreshThreads = detailsVisible || uptime - threadsReadAt >= idleThreadRefresh
+        if refreshThreads { threadsReadAt = uptime }
+        var counts: [Int32: (startTime: UInt64, count: Int)] = [:]
+        counts.reserveCapacity(Int(count))
         for pid in pids.prefix(Int(count)) where pid > 0 {
             var info = rusage_info_v6()
             let ok = withUnsafeMutablePointer(to: &info) {
@@ -155,17 +167,28 @@ public final class ProcessSampler {
                 }
             }
             guard ok == 0 else { continue }
+            let start = info.ri_proc_start_abstime
+            let threads: Int
+            if refreshThreads {
+                threads = threadCount(pid)
+            } else if let cached = threadCounts[pid], cached.startTime == start {
+                threads = cached.count
+            } else {
+                threads = 0
+            }
+            counts[pid] = (start, threads)
             readings.append(ProcessReading(
                 pid: pid,
-                startTime: info.ri_proc_start_abstime,
+                startTime: start,
                 cpuTimeNs: machToNs(info.ri_user_time &+ info.ri_system_time),
                 footprintBytes: info.ri_phys_footprint,
                 energyNj: info.ri_energy_nj,
                 diskReadBytes: info.ri_diskio_bytesread,
                 diskWriteBytes: info.ri_diskio_byteswritten,
-                threads: threadCount(pid)
+                threads: threads
             ))
         }
+        threadCounts = counts
         return readings
     }
 

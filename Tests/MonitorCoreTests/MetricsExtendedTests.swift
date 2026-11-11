@@ -464,4 +464,22 @@ import Testing
         #expect(!(me?.appKey.isEmpty ?? true))
         #expect(sampler.systemProcessCount >= sampler.sample().count)
     }
+
+    @Test func threadCountsAreReusedWhileNoDetailsAreShown() {
+        let sampler = ProcessSampler()
+        sampler.detailsVisible = false
+        let first = sampler.sample()                       // the first read always counts the threads
+        #expect((first.first { $0.pid == getpid() }?.threads ?? 0) >= 1)
+        let second = sampler.sample()                      // within 30 s: the earlier values are reused
+        let before = Dictionary(first.map { ($0.pid, $0.threads) }, uniquingKeysWith: { a, _ in a })
+        #expect(second.filter { before[$0.pid] != nil }.allSatisfy { $0.threads == before[$0.pid] })
+
+        // With details visible every sample reads them again.
+        sampler.detailsVisible = true
+        #expect((sampler.sample().first { $0.pid == getpid() }?.threads ?? 0) >= 1)
+        // And the refresh interval can be shortened to nothing.
+        sampler.detailsVisible = false
+        sampler.idleThreadRefresh = 0
+        #expect((sampler.sample().first { $0.pid == getpid() }?.threads ?? 0) >= 1)
+    }
 }

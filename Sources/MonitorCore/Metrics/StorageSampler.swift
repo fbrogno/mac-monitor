@@ -42,28 +42,33 @@ struct DiskCounters: Equatable {
 /// images are skipped because their traffic is already counted on the physical drive below them.
 public final class DiskIOSampler {
     private var last: DiskCounters?
+    /// Whether a driver sits on a disk image, by its registry entry ID: that never changes for a driver, and
+    /// finding out walks the whole IORegistry parent chain.
+    private var imageDrivers: [UInt64: Bool] = [:]
 
     public init() {}
 
     public func reset() { last = nil }
 
     public func sample() -> DiskThroughput? {
-        guard let counters = Self.readCounters() else { return nil }
+        guard let counters = readCounters() else { return nil }
         defer { last = counters }
         guard let last else { return nil }
         return DiskCounters.throughput(from: last, to: counters)
     }
 
-    static func readCounters() -> DiskCounters? {
+    func readCounters() -> DiskCounters? {
         var iterator: io_iterator_t = 0
         guard IOServiceGetMatchingServices(kIOMainPortDefault, IOServiceMatching("IOBlockStorageDriver"), &iterator)
                 == KERN_SUCCESS else { return nil }
         defer { IOObjectRelease(iterator) }
         var read: UInt64 = 0, written: UInt64 = 0
         var found = false
+        var seen = Set<UInt64>()
+        defer { imageDrivers = imageDrivers.filter { seen.contains($0.key) } }   // drivers that vanished
         while case let driver = IOIteratorNext(iterator), driver != 0 {
             defer { IOObjectRelease(driver) }
-            guard !isDiskImage(driver),
+            guard !isCachedDiskImage(driver, seen: &seen),
                   let stats = IORegistryEntryCreateCFProperty(driver, "Statistics" as CFString, kCFAllocatorDefault, 0)?
                     .takeRetainedValue() as? [String: Any] else { continue }
             read &+= (stats["Bytes (Read)"] as? NSNumber)?.uint64Value ?? 0
@@ -71,6 +76,16 @@ public final class DiskIOSampler {
             found = true
         }
         return found ? DiskCounters(read: read, written: written, time: ProcessInfo.processInfo.systemUptime) : nil
+    }
+
+    private func isCachedDiskImage(_ driver: io_registry_entry_t, seen: inout Set<UInt64>) -> Bool {
+        var id: UInt64 = 0
+        guard IORegistryEntryGetRegistryEntryID(driver, &id) == KERN_SUCCESS else { return Self.isDiskImage(driver) }
+        seen.insert(id)
+        if let known = imageDrivers[id] { return known }
+        let result = Self.isDiskImage(driver)
+        imageDrivers[id] = result
+        return result
     }
 
     private static func isDiskImage(_ entry: io_registry_entry_t) -> Bool {
