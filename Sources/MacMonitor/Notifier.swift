@@ -29,7 +29,8 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
 
     private var center: UNUserNotificationCenter { .current() }
 
-    func requestAuthorization() {
+    /// Delegate and action buttons; no question to the user yet.
+    func configure() {
         center.delegate = self
         let kill = UNNotificationAction(identifier: Action.kill, title: "Beenden …", options: [.foreground, .destructive])
         let mute = UNNotificationAction(identifier: Action.mute, title: "1 h stumm", options: [])
@@ -38,13 +39,27 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
             UNNotificationCategory(identifier: Category.process, actions: [kill, mute, activity], intentIdentifiers: []),
             UNNotificationCategory(identifier: Category.system, actions: [activity], intentIdentifiers: []),
         ])
+        Task { @MainActor in self.isAuthorized = await self.currentStatus() == .authorized }
+    }
+
+    /// What macOS currently allows this app to do.
+    func currentStatus() async -> UNAuthorizationStatus {
+        // A SwiftPM run (docs renderer, headless proof) has no app bundle, and the system center would crash there.
+        guard Bundle.main.bundleIdentifier != nil else { return .notDetermined }
+        return await center.notificationSettings().authorizationStatus
+    }
+
+    /// Asks macOS for permission (shows the system question the first time).
+    func requestAuthorization() {
         center.requestAuthorization(options: [.alert, .sound]) { granted, error in
             if let error { NSLog("MacMonitor: Mitteilungen nicht erlaubt: \(error.localizedDescription)") }
             Task { @MainActor in self.isAuthorized = granted }
         }
     }
 
-    func deliver(_ event: AlertEvent) {
+    /// `decision` comes from `QuietPolicy`: no banner at all, or a banner with or without sound.
+    func deliver(_ event: AlertEvent, decision: QuietDecision) {
+        guard decision.banner else { return }
         let c = event.condition
         let content = UNMutableNotificationContent()
         switch event.kind {
@@ -62,7 +77,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         }
         content.threadIdentifier = c.rule.rawValue
         if event.kind != .resolved {
-            content.sound = c.severity == .critical ? .defaultCritical : .default
+            if decision.sound { content.sound = c.severity == .critical ? .defaultCritical : .default }
             content.interruptionLevel = c.severity == .critical ? .timeSensitive : .active
         }
         if let process = c.process, event.kind != .resolved {

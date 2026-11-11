@@ -35,12 +35,17 @@ final class AppModel {
     /// Menu bar text, only changed when the shown value moves noticeably (see `updateMenuBarText`).
     private(set) var menuBarText = ""
 
+    /// Tab the settings window shows (also set from `macmonitor://settings/<tab>` and the welcome window).
+    var settingsTab: SettingsTab = .general
+
     var settings: MonitorSettings {
         didSet {
             guard settings != oldValue else { return }
             engine.reminderInterval = settings.reminderInterval
             SettingsStore.save(settings)
-            if settings.menuBarStyle != oldValue.menuBarStyle { updateMenuBarText(force: true) }
+            if settings.menuBarItems != oldValue.menuBarItems { updateMenuBarText(force: true) }
+            if settings.customRules != oldValue.customRules { customEvaluator.prune(keeping: settings.customRules) }
+            if settings.hotKeys != oldValue.hotKeys { hotKeys.apply(settings.hotKeys) }
         }
     }
 
@@ -80,6 +85,15 @@ final class AppModel {
     @ObservationIgnored private var lastIngest: Date?
 
     @ObservationIgnored let notifier = Notifier()
+    @ObservationIgnored let hotKeys = HotKeyManager()
+    @ObservationIgnored let quietState = QuietState()
+    /// State of the custom rules (cool-downs). Pruned when the rules change.
+    @ObservationIgnored private var customEvaluator = CustomRuleEvaluator()
+    /// 5-minute mean power per app for the energy-hog rule.
+    @ObservationIgnored private var energyAverager = EnergyAverager()
+    @ObservationIgnored private var menuBar = MenuBarDisplay()
+    /// Apps a rule slowed down, by rule, until its condition ends (only to note that in the log).
+    @ObservationIgnored var throttledByRule: [UUID: [String]] = [:]
     @ObservationIgnored let cleanup = CleanupModel()
     @ObservationIgnored let updater = UpdateController()
     /// Set by the SwiftUI scene so non-view code can open windows.
@@ -87,9 +101,13 @@ final class AppModel {
     /// Sleep blockers the user just ended, to notice when their launcher starts them again.
     @ObservationIgnored private var endedBlockers: [String: (blocker: SleepBlocker, at: Date)] = [:]
     @ObservationIgnored private var swapHistory: [(date: Date, bytes: UInt64)] = []
-    @ObservationIgnored private let overlay = AlertOverlay()
+    @ObservationIgnored let overlay = AlertOverlay()
     @ObservationIgnored private var engine: AlertEngine
     @ObservationIgnored private var muted: [String: Date] = [:]
+    /// Processes muted for now with the time the mute ends, soonest first.
+    var mutedProcesses: [(name: String, until: Date)] {
+        muted.filter { $0.value > Date() }.map { (name: $0.key, until: $0.value) }.sorted { $0.until < $1.until }
+    }
     @ObservationIgnored private let queue = DispatchQueue(label: "macmonitor.sampling", qos: .utility)
     @ObservationIgnored private let sampler = Sampler()
     @ObservationIgnored private var timer: DispatchSourceTimer?
@@ -99,8 +117,6 @@ final class AppModel {
     /// Written on `queue` by the path monitor, read on `queue` by the sampler.
     @ObservationIgnored nonisolated(unsafe) private var isOnline = true
     @ObservationIgnored private var observers: [NSObjectProtocol] = []
-    @ObservationIgnored private var shownCPU = -100.0
-    @ObservationIgnored private var shownMemory = -100.0
     @ObservationIgnored private let log = Logger(subsystem: "com.fbrogno.macmonitor", category: "sampling")
 
     init(settings: MonitorSettings = SettingsStore.load()) {
@@ -120,7 +136,11 @@ final class AppModel {
         notifier.onOpenUpdate = { [weak self] in self?.updater.checkForUpdates() }
         updater.onScheduledUpdateFound = { [weak self] in self?.notifier.deliverUpdate(version: $0) }
         updater.start()
-        notifier.requestAuthorization()
+        notifier.configure()
+        // A first-time user is asked from the welcome window, where the question makes sense.
+        if !Welcome.isPending { notifier.requestAuthorization() }
+        hotKeys.onAction = { [weak self] in self?.handle(hotKey: $0) }
+        hotKeys.apply(settings.hotKeys)
 
         pathMonitor.pathUpdateHandler = { [weak self] path in
             guard let self else { return }
@@ -157,6 +177,7 @@ final class AppModel {
         openHistory()
         reschedule()
         requestSample()
+        if Welcome.isPending { showWelcomeWhenReady() }
     }
 
     /// Opens the history database; without it the app keeps measuring and the dashboard says so.
@@ -194,6 +215,7 @@ final class AppModel {
 
     private func handleWake() {
         engine.resetPending()
+        energyAverager.reset()
         queue.async { [sampler] in sampler.reset() }
         requestSample()
     }
@@ -245,46 +267,50 @@ final class AppModel {
         swapHistory.append((now, snapshot.swapUsedBytes))
         swapHistory.removeAll { now.timeIntervalSince($0.date) > 600 }
         let swapLow = swapHistory.map(\.bytes).min() ?? snapshot.swapUsedBytes
+        energyAverager.add(snapshot.processes, at: now)
         let context = Rules.Context(
             settings: settings,
             isActive: { [engine] in engine.isActive($0) },
             mutedProcesses: Set(muted.keys),
-            swapGrowthBytes: snapshot.swapUsedBytes > swapLow ? snapshot.swapUsedBytes - swapLow : 0)
-        let conditions = Rules.evaluate(snapshot, context)
-        let newEvents = engine.process(conditions, now: now)
-        let nowReported = engine.reported
+            swapGrowthBytes: snapshot.swapUsedBytes > swapLow ? snapshot.swapUsedBytes - swapLow : 0,
+            averagedAppEnergyMilliwatts: energyAverager.averages)
+        let custom = CustomRuleEvaluator.conditions(for: settings.customRules, in: snapshot, isActive: { [engine] in engine.isActive($0) })
+        let conditions = Rules.evaluate(snapshot, context) + custom
+        let allEvents = engine.process(conditions, now: now)
+        // Custom rules show up only through their actions, never as ordinary alerts.
+        let newEvents = allEvents.filter { $0.condition.rule != .custom }
+        let customEvents = allEvents.filter { $0.condition.rule == .custom }
+        let nowReported = engine.reported.filter { $0.rule != .custom }
         if nowReported != reported { reported = nowReported }
         updateMenuBarText(force: false)
 
+        var overlayEvent: AlertEvent?
+        let quietContext = quietState.context(now: Date())
         for event in newEvents {
-            notifier.deliver(event)
+            let decision = QuietPolicy.decide(severity: event.condition.severity, kind: event.kind,
+                                              settings: settings.quiet, context: quietContext)
+            notifier.deliver(event, decision: decision)
             history?.record(event)
+            if decision.overlay, event.kind != .resolved { overlayEvent = event }
         }
-        if let shown = newEvents.last(where: { $0.kind != .resolved }) {
-            overlay.show(shown, mode: settings.overlayMode)
-        }
+        if let overlayEvent { overlay.show(overlayEvent, mode: settings.overlayMode) }
         if !newEvents.isEmpty {
             events = Array((newEvents.reversed() + events).prefix(30))
+        }
+        if !customEvents.isEmpty {
+            let planned = customEvaluator.plan(events: customEvents, rules: settings.customRules, snapshot: snapshot, now: now)
+            execute(planned, in: snapshot, quiet: quietContext)
+            noteEndedThrottles(customEvents)
         }
         reschedule()
     }
 
-    /// Redraws the menu bar only when CPU or RAM moved by at least 5 points.
+    /// Redraws the menu bar only when the shown text would change noticeably (see `MenuBarDisplay`).
     private func updateMenuBarText(force: Bool) {
         guard let s = snapshot else { return }
-        let style = settings.menuBarStyle
-        guard style != .icon else {
-            if !menuBarText.isEmpty { menuBarText = "" }
-            return
+        if let text = menuBar.update(items: settings.menuBarItems, values: MenuBarValues(s), now: s.date, force: force) {
+            menuBarText = text
         }
-        let cpu = s.cpuPercent
-        let memory = s.memoryFraction * 100
-        let moved = abs(cpu - shownCPU) >= 5 || (style == .iconCPUAndMemory && abs(memory - shownMemory) >= 5)
-        guard force || moved else { return }
-        shownCPU = cpu
-        shownMemory = memory
-        let cpuText = "\(Int(cpu.rounded()))%"
-        menuBarText = style == .iconCPUAndMemory ? "\(cpuText) · \(Int(memory.rounded()))%" : cpuText
     }
 
     // MARK: - Actions
@@ -317,12 +343,30 @@ final class AppModel {
 
     func sendTest() {
         let event = Notifier.testEvent()
-        notifier.deliver(event)
+        notifier.deliver(event, decision: QuietDecision(banner: true, overlay: true, sound: true))
         overlay.show(event, mode: settings.overlayMode)
     }
 
     func mute(_ processName: String, for duration: TimeInterval = 3600) {
         muted[processName] = Date().addingTimeInterval(duration)
+        requestSample()
+    }
+
+    /// Puts what a rule did into the event log and tells the user with a short message.
+    /// The entry is stored as a complete incident (fired and resolved at once) so it never stays "open".
+    func logAction(_ text: String, detail: String = "", isError: Bool = false) {
+        let now = Date()
+        let condition = Condition(key: "action.\(UUID().uuidString)", rule: .custom, severity: isError ? .warning : .info,
+                                  title: text, body: detail, sustain: 0)
+        let fired = AlertEvent(date: now, kind: .fired, condition: condition)
+        history?.record(fired)
+        history?.record(AlertEvent(date: now, kind: .resolved, condition: condition))
+        events = Array(([fired] + events).prefix(30))
+        feedback = Feedback(text: detail.isEmpty ? text : "\(text) \(detail)", isError: isError)
+    }
+
+    func unmute(_ processName: String) {
+        muted[processName] = nil
         requestSample()
     }
 

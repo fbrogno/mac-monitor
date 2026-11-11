@@ -136,7 +136,8 @@ public struct MenuBarDisplay: Sendable {
         return [0.05, 0.1, 0.5, 1, 2, 5, 10, 25, 50, 100].filter { mb >= $0 }.count
     }
 
-    static func build(items: [MenuBarItem], values: MenuBarValues) -> String {
+    /// The text for the given items and values, without any change throttling (for previews).
+    public static func build(items: [MenuBarItem], values: MenuBarValues) -> String {
         let tagged = items.count > 1
         return items.compactMap { item -> String? in
             guard let v = values.value(item) else { return nil }

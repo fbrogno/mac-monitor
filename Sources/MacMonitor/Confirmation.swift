@@ -16,7 +16,7 @@ struct Confirmation: Identifiable {
 }
 
 enum ConfirmationHost {
-    case popover, overview, dashboard
+    case popover, overview, dashboard, settings
 }
 
 /// Inline confirmation for the popover, so answering it does not close the popover.
