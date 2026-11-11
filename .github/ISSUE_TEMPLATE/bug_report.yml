@@ -1,0 +1,72 @@
+name: Bug report
+description: Something in MacMonitor does not work as it should.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. If MacMonitor warned you about something that was not a problem, please use the "False alarm" template instead.
+        For security problems, do not open an issue. See the security policy.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the dashboard
+        2. ...
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: MacMonitor version
+      description: Settings, Updates & Info shows it, for example "Version 1.1.0 (123)".
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: "macOS 15.1"
+    validations:
+      required: true
+  - type: input
+    id: mac
+    attributes:
+      label: Mac model
+      description: Apple menu, About This Mac. For example "MacBook Pro 14-inch, M3 Pro, 2023" or "iMac 27-inch, Intel, 2019".
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where does it happen?
+      options:
+        - Menu bar popover
+        - Overview
+        - Dashboard
+        - Alerts, notifications or alert panel
+        - Custom rules and actions
+        - Widgets
+        - Shortcuts or Siri
+        - Clean up SSD
+        - Settings
+        - Update
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or other details
+      description: Drag images here. Please hide private data such as process names you do not want to share.
+    validations:
+      required: false

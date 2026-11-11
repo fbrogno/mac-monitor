@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="408" viewBox="0 0 640 408" role="img" aria-label="Shortcuts, Spotlight and Siri">
+<style>
+:root{--bg:#f6f8fa;--bd:#d0d7de;--fg:#1f2328;--mu:#59636e;--ac:#0a7d8c}
+@media (prefers-color-scheme:dark){:root{--bg:#161b22;--bd:#30363d;--fg:#e6edf3;--mu:#9198a1;--ac:#3cc8dc}}
+text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.t{font-size:18px;font-weight:600;fill:var(--fg)}.n{font-size:15px;font-weight:600;fill:var(--fg)}.d{font-size:13px;fill:var(--mu)}
+</style>
+<rect x="1" y="1" width="638" height="406" rx="14" fill="var(--bg)" stroke="var(--bd)" stroke-width="2"/>
+<text class="t" x="28" y="42">Shortcuts, Spotlight and Siri</text>
+<line x1="28" x2="612" y1="70" y2="70" stroke="var(--bd)"/>
+<circle cx="38" cy="94" r="5" fill="var(--ac)"/>
+<text class="n" x="56" y="92">Get System Status</text>
+<text class="d" x="56" y="109">CPU, RAM, GPU, temperature, power, battery, free space, anomalies</text>
+<line x1="28" x2="612" y1="116" y2="116" stroke="var(--bd)"/>
+<circle cx="38" cy="140" r="5" fill="var(--ac)"/>
+<text class="n" x="56" y="138">Get Top Consumers</text>
+<text class="d" x="56" y="155">by CPU, memory or energy, 1 to 20 apps</text>
+<line x1="28" x2="612" y1="162" y2="162" stroke="var(--bd)"/>
+<circle cx="38" cy="186" r="5" fill="var(--ac)"/>
+<text class="n" x="56" y="184">Get Anomalies</text>
+<text class="d" x="56" y="201">current alerts with title and severity</text>
+<line x1="28" x2="612" y1="208" y2="208" stroke="var(--bd)"/>
+<circle cx="38" cy="232" r="5" fill="var(--ac)"/>
+<text class="n" x="56" y="230">Open Dashboard</text>
+<text class="d" x="56" y="247">jumps to an area</text>
+<line x1="28" x2="612" y1="254" y2="254" stroke="var(--bd)"/>
+<circle cx="38" cy="278" r="5" fill="var(--ac)"/>
+<text class="n" x="56" y="276">Open Overview</text>
+<text class="d" x="56" y="293">current alerts and fixes</text>
+<line x1="28" x2="612" y1="300" y2="300" stroke="var(--bd)"/>
+<circle cx="38" cy="324" r="5" fill="var(--ac)"/>
+<text class="n" x="56" y="322">Mute Alerts</text>
+<text class="d" x="56" y="339">for a time you choose, default 1 hour</text>
+<line x1="28" x2="612" y1="346" y2="346" stroke="var(--bd)"/>
+<circle cx="38" cy="370" r="5" fill="var(--ac)"/>
+<text class="n" x="56" y="368">Unmute Alerts</text>
+<text class="d" x="56" y="385">back to normal</text>
+</svg>
