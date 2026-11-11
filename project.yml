@@ -12,7 +12,7 @@ packages:
     path: .
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
-    from: 2.10.1
+    exactVersion: 2.10.1 # same as Package.resolved; a release never pulls a newer Sparkle
 settings:
   base:
     SWIFT_VERSION: "5.0"
