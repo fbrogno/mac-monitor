@@ -73,11 +73,11 @@ extension AppModel {
 
     // MARK: Processes
 
-    /// The processes of the action with the names they had in the snapshot the rule looked at;
-    /// the name is what later tells a reused PID from the original process.
+    /// The processes of the action with the name and start time they had in the snapshot the rule looked at;
+    /// both are what later tells a reused PID from the original process.
     private func targets(of item: PlannedAction, in snapshot: SystemSnapshot) -> [ProcessRef] {
-        let names = Dictionary(snapshot.processes.map { ($0.pid, $0.name) }, uniquingKeysWith: { first, _ in first })
-        return item.pids.compactMap { pid in names[pid].map { ProcessRef(pid: pid, name: $0) } }
+        let stats = Dictionary(snapshot.processes.map { ($0.pid, $0) }, uniquingKeysWith: { first, _ in first })
+        return item.pids.compactMap { stats[$0].map { ProcessRef($0) } }
     }
 
     private func quit(_ item: PlannedAction, snapshot: SystemSnapshot) {

@@ -194,7 +194,7 @@ struct OverviewContent: View {
                         Spacer()
                         ActionButton(title: "Ignorieren") { model.perform(.ignoreForever(blocker.name)) }
                         ActionButton(title: "Beenden", tint: Palette.critical) {
-                            model.perform(.quit(ProcessRef(pid: blocker.pid, name: blocker.name)))
+                            model.perform(.quit(model.processRef(pid: blocker.pid, name: blocker.name)))
                         }
                     }
                     .padding(10)
@@ -313,7 +313,7 @@ struct ProcessActionRow: View {
     @State private var hovering = false
 
     var body: some View {
-        let ref = ProcessRef(pid: process.pid, name: process.name)
+        let ref = ProcessRef(process)
         HStack(spacing: 8) {
             Text(process.name).font(.system(size: 12)).lineLimit(1).truncationMode(.middle)
             Spacer(minLength: 6)

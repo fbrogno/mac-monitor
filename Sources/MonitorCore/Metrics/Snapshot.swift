@@ -15,13 +15,22 @@ public struct ProcessStat: Sendable, Hashable, Identifiable {
     /// Identifies the app this process belongs to (see `AppGrouping`); helpers share the key of their app.
     public var appKey: String = ""
     public var appName: String = ""
+    /// Kernel start time of the process (`ri_proc_start_abstime`); with the PID it tells a process from a later one
+    /// that got the same PID. 0 when unknown.
+    public var startTime: UInt64 = 0
+    /// Executable path; empty when the system does not tell.
+    public var path: String = ""
+    /// The app bundle the executable itself lives in (outermost `*.app`), unlike `appKey`, which also follows
+    /// the responsible process. Empty for plain tools.
+    public var bundlePath: String = ""
 
     public var id: Int32 { pid }
 
     public init(pid: Int32, name: String, cpuPercent: Double, footprintBytes: UInt64,
                 energyMilliwatts: Double = 0, threads: Int = 0,
                 diskReadBytesPerSecond: Double = 0, diskWriteBytesPerSecond: Double = 0,
-                appKey: String = "", appName: String = "") {
+                appKey: String = "", appName: String = "",
+                startTime: UInt64 = 0, path: String = "", bundlePath: String = "") {
         self.pid = pid
         self.name = name
         self.cpuPercent = cpuPercent
@@ -32,6 +41,9 @@ public struct ProcessStat: Sendable, Hashable, Identifiable {
         self.diskWriteBytesPerSecond = diskWriteBytesPerSecond
         self.appKey = appKey
         self.appName = appName
+        self.startTime = startTime
+        self.path = path
+        self.bundlePath = bundlePath
     }
 }
 

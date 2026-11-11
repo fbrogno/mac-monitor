@@ -375,12 +375,18 @@ final class AppModel {
         requestSample()
     }
 
-    func confirmKill(_ process: ProcessRef, helpers: Int = 0, host: ConfirmationHost? = nil) {
+    /// The reference to a process the snapshot knows (with its start time), for places that only have PID and name.
+    func processRef(pid: Int32, name: String) -> ProcessRef {
+        snapshot?.processRef(pid: pid, name: name) ?? ProcessRef(pid: pid, name: name)
+    }
+
+    /// `label` is the name shown in the question when it differs from the process name (an app and its main process).
+    func confirmKill(_ process: ProcessRef, label: String? = nil, helpers: Int = 0, host: ConfirmationHost? = nil) {
         let detail = helpers > 0
             ? "PID \(process.pid), dazu \(helpers) Hilfsprozesse, die in der Regel mit enden."
             : "PID \(process.pid)."
         ask(Confirmation(
-            title: "„\(process.name)“ beenden?",
+            title: "„\(label ?? process.name)“ beenden?",
             message: "\(detail) Ungesicherte Daten in diesem Prozess können verloren gehen.",
             confirmTitle: "Beenden",
             alternativeTitle: "Sofort beenden",
@@ -407,21 +413,28 @@ final class AppModel {
         pendingConfirmation = confirmation
     }
 
-    /// Sends a signal, updates the UI at once and reports what happened.
+    /// Sends a signal, updates the UI at once and reports what happened. Right before, `ProcessControl.send` checks
+    /// that the PID still belongs to the process that was meant (name and start time): a late click on an old
+    /// notification or a question left open for a long time must never hit a stranger.
     func signal(_ process: ProcessRef, _ signal: Int32) {
         let blocker = snapshot?.sleepBlockers.first { $0.pid == process.pid }
-        guard kill(process.pid, signal) == 0 else {
-            let error = errno
-            if error == ESRCH {
-                forget(process.pid)
-                feedback = Feedback(text: "„\(process.name)“ läuft schon nicht mehr.")
-            } else {
-                feedback = Feedback(
-                    text: error == EPERM
-                        ? "„\(process.name)“ gehört dem System oder einem anderen Benutzer und kann nicht beendet werden."
-                        : "„\(process.name)“ konnte nicht beendet werden (\(String(cString: strerror(error)))).",
-                    isError: true)
-            }
+        let result = ProcessControl.send(signal, to: process)
+        switch result.outcome {
+        case .done:
+            break
+        case .skipped(.gone), .skipped(.pidReused), .skipped(.allowed):
+            forget(process.pid)
+            feedback = Feedback(text: "„\(process.name)“ läuft schon nicht mehr.")
+            return
+        case .skipped(.protected):
+            feedback = Feedback(text: "„\(process.name)“ ist geschützt und wurde nicht angefasst.", isError: true)
+            return
+        case .failed(let error):
+            feedback = Feedback(
+                text: error == EPERM
+                    ? "„\(process.name)“ gehört dem System oder einem anderen Benutzer und kann nicht beendet werden."
+                    : "„\(process.name)“ konnte nicht beendet werden (\(String(cString: strerror(error)))).",
+                isError: true)
             return
         }
         if let blocker { endedBlockers[blocker.identity] = (blocker, Date()) }
@@ -430,7 +443,7 @@ final class AppModel {
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 1_500_000_000)
             guard let self else { return }
-            if signal == SIGTERM, kill(process.pid, 0) == 0 {
+            if signal == SIGTERM, ProcessControl.isRunning(process) {
                 self.feedback = Feedback(
                     text: "„\(process.name)“ reagiert nicht auf Beenden.", isError: true,
                     actionTitle: "Sofort beenden", action: { [weak self] in self?.signal(process, SIGKILL) })

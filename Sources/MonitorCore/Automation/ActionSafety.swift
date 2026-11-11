@@ -40,20 +40,30 @@ public enum SignalGuard {
         case protected
     }
 
-    /// `currentName` is the name of whatever runs under `pid` now (nil if nothing does).
-    public static func verdict(pid: Int32, expectedName: String, currentName: String?,
-                               ownPid: Int32 = ProcessInfo.processInfo.processIdentifier) -> Verdict {
-        if pid < ProtectedProcesses.systemPidLimit || pid == ownPid { return .protected }
-        guard let currentName, !currentName.isEmpty else { return .gone }
+    /// `currentName` is the name of whatever runs under `pid` now (nil if nothing does). With a known
+    /// `expectedStart`, the process must also have that start time; without one (old notifications) only the name counts.
+    /// `checkProtection: false` is for what the user asks for explicitly (the buttons in the app): then only the
+    /// identity is checked, not the list of system processes.
+    public static func verdict(pid: Int32, expectedName: String, expectedStart: UInt64? = nil,
+                               currentName: String?, currentStart: UInt64? = nil,
+                               ownPid: Int32 = ProcessInfo.processInfo.processIdentifier,
+                               checkProtection: Bool = true) -> Verdict {
+        if checkProtection, pid < ProtectedProcesses.systemPidLimit || pid == ownPid { return .protected }
+        guard pid > 0, let currentName, !currentName.isEmpty else { return .gone }
+        if let expectedStart {
+            // The process the start time belongs to is gone; whatever runs under the PID now is another one.
+            guard let currentStart else { return .gone }
+            guard currentStart == expectedStart else { return .pidReused(nowNamed: currentName) }
+        }
         guard sameName(expectedName, currentName) else { return .pidReused(nowNamed: currentName) }
-        if ProtectedProcesses.isProtected(name: currentName) || ProtectedProcesses.isProtected(name: expectedName) {
+        if checkProtection, ProtectedProcesses.isProtected(name: currentName) || ProtectedProcesses.isProtected(name: expectedName) {
             return .protected
         }
         return .allowed
     }
 
     /// Equal without regard to case; one name may be a cut-off form of the other (the kernel shortens long names).
-    static func sameName(_ a: String, _ b: String) -> Bool {
+    public static func sameName(_ a: String, _ b: String) -> Bool {
         let x = a.lowercased(), y = b.lowercased()
         if x == y { return true }
         let (short, long) = x.count <= y.count ? (x, y) : (y, x)
@@ -81,18 +91,50 @@ public enum ProcessControl {
         return String(cString: buffer)
     }
 
+    /// The kernel start time (`ri_proc_start_abstime`) of a running PID, nil if there is none.
+    public static func currentStartTime(of pid: Int32) -> UInt64? {
+        var info = rusage_info_v6()
+        let ok = withUnsafeMutablePointer(to: &info) {
+            $0.withMemoryRebound(to: rusage_info_t?.self, capacity: 1) { proc_pid_rusage(pid, RUSAGE_INFO_V6, $0) }
+        }
+        return ok == 0 ? info.ri_proc_start_abstime : nil
+    }
+
     /// Sends SIGTERM to each target in the given order (main process first).
     public static func terminate(_ targets: [ProcessRef], ownPid: Int32 = ProcessInfo.processInfo.processIdentifier,
-                                 currentName: (Int32) -> String? = ProcessControl.currentName(of:)) -> [Result] {
-        targets.map { apply($0, ownPid: ownPid, currentName: currentName) { kill($0, SIGTERM) == 0 ? 0 : errno } }
+                                 currentName: (Int32) -> String? = ProcessControl.currentName(of:),
+                                 currentStart: (Int32) -> UInt64? = ProcessControl.currentStartTime(of:)) -> [Result] {
+        targets.map {
+            apply($0, ownPid: ownPid, currentName: currentName, currentStart: currentStart) { kill($0, SIGTERM) == 0 ? 0 : errno }
+        }
+    }
+
+    /// True while the process the reference describes still runs (same name, same start time if known).
+    public static func isRunning(_ ref: ProcessRef,
+                                 currentName: (Int32) -> String? = ProcessControl.currentName(of:),
+                                 currentStart: (Int32) -> UInt64? = ProcessControl.currentStartTime(of:)) -> Bool {
+        SignalGuard.verdict(pid: ref.pid, expectedName: ref.name, expectedStart: ref.startTime,
+                            currentName: currentName(ref.pid), currentStart: ref.startTime == nil ? nil : currentStart(ref.pid),
+                            checkProtection: false) == .allowed
+    }
+
+    /// Sends one signal to one process the user picked (buttons, notification, alert window). Checked right before:
+    /// same name and, if known, same start time; the list of protected system processes does not apply here.
+    public static func send(_ signal: Int32, to ref: ProcessRef,
+                            currentName: (Int32) -> String? = ProcessControl.currentName(of:),
+                            currentStart: (Int32) -> UInt64? = ProcessControl.currentStartTime(of:)) -> Result {
+        apply(ref, ownPid: -1, checkProtection: false, currentName: currentName, currentStart: currentStart) {
+            kill($0, signal) == 0 ? 0 : errno
+        }
     }
 
     /// Lowers the priority ("nice" 10) and, where the system allows it, moves the process to background
     /// priority. Nothing is undone automatically.
     public static func throttle(_ targets: [ProcessRef], ownPid: Int32 = ProcessInfo.processInfo.processIdentifier,
-                                currentName: (Int32) -> String? = ProcessControl.currentName(of:)) -> [Result] {
+                                currentName: (Int32) -> String? = ProcessControl.currentName(of:),
+                                currentStart: (Int32) -> UInt64? = ProcessControl.currentStartTime(of:)) -> [Result] {
         targets.map {
-            apply($0, ownPid: ownPid, currentName: currentName) { pid in
+            apply($0, ownPid: ownPid, currentName: currentName, currentStart: currentStart) { pid in
                 guard setpriority(PRIO_PROCESS, id_t(pid), 10) == 0 else { return errno }
                 _ = setpriority(PRIO_DARWIN_PROCESS, id_t(pid), PRIO_DARWIN_BG)
                 return 0
@@ -100,9 +142,13 @@ public enum ProcessControl {
         }
     }
 
-    private static func apply(_ ref: ProcessRef, ownPid: Int32, currentName: (Int32) -> String?,
+    private static func apply(_ ref: ProcessRef, ownPid: Int32, checkProtection: Bool = true,
+                              currentName: (Int32) -> String?, currentStart: (Int32) -> UInt64?,
                               _ act: (Int32) -> Int32) -> Result {
-        let verdict = SignalGuard.verdict(pid: ref.pid, expectedName: ref.name, currentName: currentName(ref.pid), ownPid: ownPid)
+        let verdict = SignalGuard.verdict(
+            pid: ref.pid, expectedName: ref.name, expectedStart: ref.startTime,
+            currentName: currentName(ref.pid), currentStart: ref.startTime == nil ? nil : currentStart(ref.pid),
+            ownPid: ownPid, checkProtection: checkProtection)
         guard verdict == .allowed else { return Result(process: ref, outcome: .skipped(verdict)) }
         let code = act(ref.pid)
         if code == 0 { return Result(process: ref, outcome: .done) }

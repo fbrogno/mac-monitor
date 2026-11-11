@@ -80,6 +80,11 @@ extension AppModel {
             message: "Die App wird beendet und sofort wieder geöffnet. Sie fragt selbst nach, falls etwas ungespeichert ist.",
             confirmTitle: "Neu starten", isDestructive: false,
             action: { [weak self] in
+                // The question may have been open for a while: is this still the process that was meant?
+                guard ProcessControl.isRunning(ref) else {
+                    self?.feedback = Feedback(text: "„\(ref.name)“ läuft schon nicht mehr.")
+                    return
+                }
                 app.terminate()
                 Task { @MainActor in
                     // Give the app up to 20 s to quit (it may show its own save dialog).

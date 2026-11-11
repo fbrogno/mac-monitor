@@ -52,7 +52,7 @@ public enum Rules {
                     title: "\(p.name) hängt bei \(Format.percent(p.cpuPercent)) CPU",
                     body: "Seit über \(Format.duration(set.processCPUSustain)) ununterbrochen hohe Last (PID \(p.pid)).",
                     sustain: set.processCPUSustain,
-                    process: ProcessRef(pid: p.pid, name: p.name)))
+                    process: ProcessRef(p)))
             }
         }
 
@@ -66,7 +66,7 @@ public enum Rules {
                     title: "\(p.name) belegt \(Format.bytes(p.footprintBytes)) RAM",
                     body: "Das sind \(Format.percent(Double(p.footprintBytes) / Double(s.memoryTotalBytes) * 100)) deines Arbeitsspeichers (PID \(p.pid)).",
                     sustain: set.memoryHogSustain,
-                    process: ProcessRef(pid: p.pid, name: p.name)))
+                    process: ProcessRef(p)))
             }
         }
 
@@ -154,7 +154,7 @@ public enum Rules {
                     title: "\(blocker.name) verhindert den Ruhezustand",
                     body: "Seit über \(Format.duration(set.sleepBlockerSustain)) im Akkubetrieb\(launcher): „\(blocker.reason)“.",
                     sustain: set.sleepBlockerSustain,
-                    process: ProcessRef(pid: blocker.pid, name: blocker.name)))
+                    process: s.processRef(pid: blocker.pid, name: blocker.name)))
             }
         }
 

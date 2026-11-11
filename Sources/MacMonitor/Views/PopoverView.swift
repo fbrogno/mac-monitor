@@ -218,7 +218,7 @@ struct PopoverView: View {
             Text(Format.bytes(p.footprintBytes))
                 .font(.system(size: 11, design: .monospaced)).foregroundStyle(.secondary)
                 .frame(width: 62, alignment: .trailing)
-            Button { model.confirmKill(ProcessRef(pid: p.pid, name: p.name), host: .popover) } label: {
+            Button { model.confirmKill(ProcessRef(p), host: .popover) } label: {
                 Image(systemName: "xmark.circle.fill").font(.system(size: 12))
             }
             .buttonStyle(.plain)

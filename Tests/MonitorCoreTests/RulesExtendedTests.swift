@@ -358,8 +358,11 @@ private func disabled(_ rule: RuleID) -> MonitorSettings {
 
 // MARK: - Custom rules
 
-private func proc(_ pid: Int32, _ name: String, cpu: Double = 5, mem: UInt64 = gb, key: String = "", app: String = "") -> ProcessStat {
-    ProcessStat(pid: pid, name: name, cpuPercent: cpu, footprintBytes: mem, appKey: key, appName: app)
+/// `bundle` is the bundle the executable itself lives in; by default the one the key names (helpers inside their app).
+private func proc(_ pid: Int32, _ name: String, cpu: Double = 5, mem: UInt64 = gb, key: String = "", app: String = "",
+                  bundle: String? = nil, path: String = "", start: UInt64 = 0) -> ProcessStat {
+    ProcessStat(pid: pid, name: name, cpuPercent: cpu, footprintBytes: mem, appKey: key, appName: app,
+                startTime: start, path: path, bundlePath: bundle ?? (key.hasPrefix("app:") ? String(key.dropFirst(4)) : ""))
 }
 
 private func rule(_ metric: CustomMetric, _ comparison: CustomComparison = .above, _ threshold: Double,
@@ -548,6 +551,71 @@ private func rule(_ metric: CustomMetric, _ comparison: CustomComparison = .abov
                                   rules: [tolerant], snapshot: snap(processes: victim), now: t0)
             #expect(planned.isEmpty, "\(name)")
         }
+    }
+
+    // MARK: Processes started by a terminal or editor
+
+    private let terminalKey = "app:/System/Applications/Utilities/Terminal.app"
+    /// A `node` that Terminal started: the system holds Terminal accountable, so it carries Terminal's key and name.
+    private var nodeUnderTerminal: [ProcessStat] {
+        [proc(500, "Terminal", cpu: 2, key: terminalKey, app: "Terminal", bundle: "/System/Applications/Utilities/Terminal.app",
+              path: "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal", start: 10),
+         proc(510, "zsh", cpu: 0, key: terminalKey, app: "Terminal", bundle: "", path: "/bin/zsh", start: 11),
+         proc(511, "vim", cpu: 0, key: terminalKey, app: "Terminal", bundle: "", path: "/usr/bin/vim", start: 12),
+         proc(512, "ssh", cpu: 0, key: terminalKey, app: "Terminal", bundle: "", path: "/usr/bin/ssh", start: 13),
+         proc(520, "node", cpu: 300, mem: 2 * gb, key: terminalKey, app: "Terminal", bundle: "", path: "/opt/homebrew/bin/node", start: 14),
+         proc(521, "node", cpu: 100, mem: 1 * gb, key: terminalKey, app: "Terminal", bundle: "", path: "/opt/homebrew/bin/node", start: 15)]
+    }
+
+    @Test func nodeUnderTerminalIsPlannedAlone() {
+        var r = rule(.processCPU, .above, 100, process: "node", cooldown: 0,
+                     actions: [.quitProcess(askFirst: false), .throttleProcess])
+        r.cooldown = 0
+        var ev = CustomRuleEvaluator()
+        let planned = fire(r, snap(processes: nodeUnderTerminal), now: t0, evaluator: &ev)
+        #expect(planned.map(\.action.kind) == [.quitProcess, .throttleProcess])
+        for item in planned {
+            // Only the two node processes, never Terminal, the shell, vim or ssh.
+            #expect(item.pids == [520, 521])
+            #expect(item.process == ProcessRef(pid: 520, name: "node", startTime: 14))
+        }
+    }
+
+    @Test func ruleOnTerminalLeavesItsChildrenAlone() {
+        let r = rule(.processCPU, .above, 1, process: "Terminal", cooldown: 0, actions: [.quitProcess(askFirst: false)])
+        let found = CustomRuleEvaluator.processes(named: "terminal", in: snap(processes: nodeUnderTerminal))
+        #expect(found.map(\.pid) == [500])
+        var ev = CustomRuleEvaluator()
+        // Terminal itself is a system app (/System/Applications), so the plan stays empty.
+        #expect(fire(r, snap(processes: nodeUnderTerminal), now: t0, evaluator: &ev).isEmpty)
+    }
+
+    @Test func hostAppsAreNeverExpandedToTheirBundle() {
+        let code = "/Applications/Visual Studio Code.app"
+        let procs = [proc(600, "Electron", key: "app:" + code, app: "Visual Studio Code", bundle: code),
+                     proc(601, "Code Helper (Plugin)", key: "app:" + code, app: "Visual Studio Code", bundle: code),
+                     proc(602, "node", key: "app:" + code, app: "Visual Studio Code", bundle: "", path: "/opt/homebrew/bin/node")]
+        // The bundle name matches no process by itself: nothing is ended as a group.
+        #expect(CustomRuleEvaluator.processes(named: "Visual Studio Code", in: snap(processes: procs)).isEmpty)
+        #expect(CustomRuleEvaluator.processes(named: "Code Helper (Plugin)", in: snap(processes: procs)).map(\.pid) == [601])
+        #expect(CustomRuleEvaluator.processes(named: "node", in: snap(processes: procs)).map(\.pid) == [602])
+        // An ordinary app is still taken as a whole, helpers included.
+        let chrome = [proc(700, "Google Chrome", key: "app:/Applications/Google Chrome.app", app: "Google Chrome"),
+                      proc(701, "Google Chrome Helper", key: "app:/Applications/Google Chrome.app", app: "Google Chrome")]
+        #expect(CustomRuleEvaluator.processes(named: "Google Chrome", in: snap(processes: chrome)).map(\.pid) == [700, 701])
+    }
+
+    @Test func protectionByPathInsteadOfNameEnding() {
+        // User-installed daemons are ordinary tools; system folders are protected whatever the name.
+        #expect(!ProtectedProcesses.isProtected(proc(5000, "mongod", path: "/opt/homebrew/opt/mongodb-community/bin/mongod")))
+        #expect(!ProtectedProcesses.isProtected(proc(5000, "node", key: terminalKey, app: "Terminal", bundle: "", path: "/opt/homebrew/bin/node")))
+        #expect(ProtectedProcesses.isProtected(proc(5000, "mediaanalysisd", path: "/System/Library/PrivateFrameworks/X/mediaanalysisd")))
+        #expect(ProtectedProcesses.isProtected(proc(5000, "someagent", path: "/usr/libexec/someagent")))
+        #expect(ProtectedProcesses.isProtected(proc(5000, "Calculator", key: "app:/System/Applications/Calculator.app", app: "Calculator",
+                                                    path: "/System/Applications/Calculator.app/Contents/MacOS/Calculator")))
+        // Without any path the name ending still counts, as the conservative fallback.
+        #expect(ProtectedProcesses.isProtected(proc(5000, "mediaanalysisd")))
+        #expect(!ProtectedProcesses.isProtected(proc(5000, "ffmpeg")))
     }
 
     @Test func protectedList() {

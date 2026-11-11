@@ -91,7 +91,7 @@ extension Rules {
                     title: "\(app.name) verbraucht \(Format.decimal(milliwatts / 1000, digits: 1)) W im Akkubetrieb",
                     body: "Die App zieht seit über \(Format.duration(set.energyHogSustain)) im Durchschnitt mehr als \(Format.decimal(set.energyHogWatts, digits: 0)) W aus dem Akku.",
                     sustain: set.energyHogSustain,
-                    process: main.map { ProcessRef(pid: $0.pid, name: $0.name) }))
+                    process: main.map { ProcessRef($0) }))
             }
         }
 

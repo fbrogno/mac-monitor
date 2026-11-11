@@ -128,7 +128,10 @@ public final class ProcessSampler {
                 diskReadBytesPerSecond: rate?.diskReadBytesPerSecond ?? 0,
                 diskWriteBytesPerSecond: rate?.diskWriteBytesPerSecond ?? 0,
                 appKey: group?.key ?? "",
-                appName: group?.name ?? id.name
+                appName: group?.name ?? id.name,
+                startTime: reading.startTime,
+                path: id.path ?? "",
+                bundlePath: id.bundle ?? ""
             )
         }
         .sorted { $0.cpuPercent > $1.cpuPercent }

@@ -44,24 +44,61 @@ public enum ProtectedProcesses {
     /// Highest PID that is always treated as system.
     public static let systemPidLimit: Int32 = 100
 
+    /// Executables below these folders belong to the system, with or without an app bundle. Left out on purpose:
+    /// `/usr/bin` (tools like `python3` or `ssh`) and `/System/Cryptexes` (Safari lives there).
+    static let systemPathPrefixes = [
+        "/System/Library/", "/System/Applications/", "/System/iOSSupport/", "/usr/libexec/", "/usr/sbin/", "/sbin/",
+        "/Library/Apple/", "/Library/PrivilegedHelperTools/",
+    ]
+
     /// By name only (used when a rule is written, before any process is known).
     public static func isProtected(name: String) -> Bool {
         names.contains(name.trimmingCharacters(in: .whitespaces).lowercased())
+    }
+
+    /// True for an executable path or app key inside a system folder, including `/System/Applications/…`.
+    static func isSystemPath(_ path: String) -> Bool {
+        systemPathPrefixes.contains { path.hasPrefix($0) }
     }
 
     /// Full check on a running process. `ownPid` is MacMonitor itself.
     public static func isProtected(_ p: ProcessStat, ownPid: Int32 = ProcessInfo.processInfo.processIdentifier) -> Bool {
         if p.pid < systemPidLimit || p.pid == ownPid { return true }
         if isProtected(name: p.name) || isProtected(name: p.appName) { return true }
-        if p.appKey.hasPrefix("app:/System/Library/") { return true }
-        // Without an app bundle: system daemons (name ending in "d", e.g. `mediaanalysisd`) and
-        // reverse-DNS service names are left alone; ordinary tools like `node` or `ffmpeg` are fine.
+        // Own bundle, not `appKey`: a `node` that Terminal started carries Terminal's key but is an ordinary tool.
+        if !p.bundlePath.isEmpty && isSystemPath(p.bundlePath) { return true }
+        if p.name.lowercased().hasPrefix("com.apple.") { return true }
+        if !p.path.isEmpty {
+            // The executable's own location decides: a Homebrew `mongod` or `postgres` is an ordinary tool.
+            return isSystemPath(p.path)
+        }
+        // Without a known path and without an app bundle, the old rule of thumb is the only evidence left:
+        // names ending in "d" (`mediaanalysisd`) are daemons. It applies only here, never when the path is known.
         if p.appKey.isEmpty || p.appKey.hasPrefix("proc:") {
             let lower = p.name.lowercased()
             if lower.count > 3, lower.hasSuffix("d") { return true }
-            if lower.hasPrefix("com.apple.") { return true }
         }
         return false
+    }
+}
+
+/// Apps that run other programs (terminals, editors, IDEs): a rule on a program inside them must never reach
+/// the host or its other children, and a rule on the host itself affects only the processes called by that name.
+enum HostApps {
+    static let names: Set<String> = [
+        "terminal", "iterm", "iterm2", "warp", "ghostty", "kitty", "alacritty", "hyper", "wezterm", "tabby",
+        "visual studio code", "visual studio code - insiders", "vscodium", "cursor", "windsurf", "zed", "xcode",
+        "sublime text", "nova", "fleet", "tmux",
+    ]
+    static let prefixes = [
+        "intellij idea", "pycharm", "webstorm", "goland", "clion", "rider", "phpstorm", "rubymine", "datagrip",
+        "android studio", "appcode",
+    ]
+
+    /// `name` is a bundle name without ".app".
+    static func isHost(bundleName name: String) -> Bool {
+        let lower = name.lowercased()
+        return names.contains(lower) || prefixes.contains { lower.hasPrefix($0) }
     }
 }
 
@@ -75,17 +112,20 @@ public struct CustomRuleEvaluator: Sendable {
         self.lastRun = lastRun
     }
 
-    /// All processes that belong to the app(s) a name refers to, matched case-insensitively against
-    /// process and app names; helpers come along through their shared `appKey`.
+    /// The processes a name refers to, matched case-insensitively: processes with exactly that name, and, when
+    /// the name is that of an app, all processes whose own executable lives in that app's bundle (its helpers).
+    /// Not the accountability group: `appKey` also gathers everything an app started (a `node` in Terminal
+    /// belongs to Terminal that way), and a rule on "Terminal" must not end a `node`, nor the other way round.
+    /// Host apps (terminals, editors) are never expanded to their bundle.
     static func processes(named name: String, in s: SystemSnapshot) -> [ProcessStat] {
         let target = name.trimmingCharacters(in: .whitespaces).lowercased()
         guard !target.isEmpty else { return [] }
-        let matching = s.processes.filter { $0.name.lowercased() == target || $0.appName.lowercased() == target }
-        let keys = Set(matching.map(\.appKey).filter { !$0.isEmpty })
-        guard !keys.isEmpty else { return matching }
-        let members = s.processes.filter { keys.contains($0.appKey) }
-        let singles = matching.filter { $0.appKey.isEmpty }
-        return members + singles
+        return s.processes.filter { p in
+            if p.name.lowercased() == target { return true }
+            guard !p.bundlePath.isEmpty else { return false }
+            let bundle = AppGrouping.bundleName(p.bundlePath)
+            return bundle.lowercased() == target && !HostApps.isHost(bundleName: bundle)
+        }
     }
 
     /// Conditions of all enabled, valid rules whose comparison currently holds. `isActive` is the
@@ -107,7 +147,7 @@ public struct CustomRuleEvaluator: Sendable {
             var ref: ProcessRef?
             if rule.metric.needsProcess, let name = rule.processName {
                 let main = processes(named: name, in: s).min { $0.pid < $1.pid }
-                ref = main.map { ProcessRef(pid: $0.pid, name: $0.name) }
+                ref = main.map { ProcessRef($0) }
             }
             out.append(Condition(
                 key: rule.conditionKey, rule: .custom, severity: rule.severity,
@@ -183,7 +223,7 @@ public struct CustomRuleEvaluator: Sendable {
                 members = Self.processes(named: name, in: snapshot).filter { !ProtectedProcesses.isProtected($0) }
                     .sorted { $0.pid < $1.pid }
             }
-            let ref = members.first.map { ProcessRef(pid: $0.pid, name: $0.name) }
+            let ref = members.first.map { ProcessRef($0) }
 
             var produced = false
             for action in rule.actions {

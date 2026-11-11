@@ -222,6 +222,37 @@ private let t0 = Date(timeIntervalSince1970: 1_000_000)
         #expect(SignalGuard.verdict(pid: 4000, expectedName: "x", currentName: "x", ownPid: 4000) == .protected)
     }
 
+    @Test func startTimeDecidesIdentity() {
+        // Same name, same PID, but another start time: a different process that got the PID.
+        #expect(SignalGuard.verdict(pid: 4000, expectedName: "node", expectedStart: 100, currentName: "node",
+                                    currentStart: 100, ownPid: 1) == .allowed)
+        #expect(SignalGuard.verdict(pid: 4000, expectedName: "node", expectedStart: 100, currentName: "node",
+                                    currentStart: 250, ownPid: 1) == .pidReused(nowNamed: "node"))
+        // The start time of the current process could not be read: nothing is signalled blindly.
+        #expect(SignalGuard.verdict(pid: 4000, expectedName: "node", expectedStart: 100, currentName: "node",
+                                    currentStart: nil, ownPid: 1) == .gone)
+        // Old notification without a start time: the name alone decides.
+        #expect(SignalGuard.verdict(pid: 4000, expectedName: "node", expectedStart: nil, currentName: "node",
+                                    currentStart: 250, ownPid: 1) == .allowed)
+        #expect(SignalGuard.verdict(pid: 4000, expectedName: "node", expectedStart: nil, currentName: "Safari",
+                                    currentStart: 250, ownPid: 1) == .pidReused(nowNamed: "Safari"))
+    }
+
+    @Test func userActionsSkipTheProtectedListButNotTheIdentity() {
+        // The user may end Finder on purpose (it restarts); a stranger under the PID is still refused.
+        #expect(SignalGuard.verdict(pid: 4000, expectedName: "Finder", currentName: "Finder", ownPid: 1, checkProtection: false) == .allowed)
+        #expect(SignalGuard.verdict(pid: 4000, expectedName: "Finder", currentName: "Safari", ownPid: 1, checkProtection: false) == .pidReused(nowNamed: "Safari"))
+        // Process groups and PID 0 are never addressed.
+        #expect(SignalGuard.verdict(pid: 0, expectedName: "x", currentName: "x", ownPid: 1, checkProtection: false) == .gone)
+        #expect(SignalGuard.verdict(pid: -1, expectedName: "x", currentName: "x", ownPid: 1, checkProtection: false) == .gone)
+    }
+
+    @Test func refCarriesTheStartTimeOfASample() {
+        let stat = ProcessStat(pid: 9, name: "node", cpuPercent: 0, footprintBytes: 0, startTime: 777)
+        #expect(ProcessRef(stat) == ProcessRef(pid: 9, name: "node", startTime: 777))
+        #expect(ProcessRef(ProcessStat(pid: 9, name: "node", cpuPercent: 0, footprintBytes: 0)).startTime == nil)
+    }
+
     @Test func truncatedNamesStillMatch() {
         let full = "Google Chrome Helper (Renderer)"
         #expect(SignalGuard.verdict(pid: 4000, expectedName: full, currentName: String(full.prefix(16)), ownPid: 1) == .allowed)
@@ -299,6 +330,55 @@ private let t0 = Date(timeIntervalSince1970: 1_000_000)
             let ref = ProcessRef(pid: child.processIdentifier, name: "node")
             #expect(ProcessControl.terminate([ref]).map(\.outcome) == [.skipped(.pidReused(nowNamed: "sleep"))])
             #expect(child.isRunning)
+        }
+    }
+
+    @Test func startTimeIsReadableAndStable() throws {
+        try withChild { child in
+            let first = ProcessControl.currentStartTime(of: child.processIdentifier)
+            #expect(first != nil && first != 0)
+            #expect(ProcessControl.currentStartTime(of: child.processIdentifier) == first)
+        }
+        #expect(ProcessControl.currentStartTime(of: 2_000_000_000) == nil)
+    }
+
+    @Test func sendChecksNameAndStartTimeOnARealChild() throws {
+        try withChild { child in
+            let pid = child.processIdentifier
+            let start = try #require(ProcessControl.currentStartTime(of: pid))
+            // A PID that was reused: right name, wrong start time. Not signalled.
+            let stale = ProcessRef(pid: pid, name: "sleep", startTime: start &+ 1)
+            #expect(ProcessControl.send(SIGTERM, to: stale).outcome == .skipped(.pidReused(nowNamed: "sleep")))
+            #expect(ProcessControl.isRunning(stale) == false)
+            #expect(child.isRunning)
+            // Right start time, wrong name: not signalled either.
+            #expect(ProcessControl.send(SIGTERM, to: ProcessRef(pid: pid, name: "node", startTime: start)).outcome
+                    == .skipped(.pidReused(nowNamed: "sleep")))
+            #expect(child.isRunning)
+            // The real process, with and without start time (old payload).
+            let current = ProcessRef(pid: pid, name: "sleep", startTime: start)
+            #expect(ProcessControl.isRunning(current))
+            #expect(ProcessControl.send(SIGTERM, to: current).outcome == .done)
+            child.waitUntilExit()
+            #expect(child.terminationStatus == SIGTERM)
+        }
+        try withChild { child in
+            let old = ProcessRef(pid: child.processIdentifier, name: "sleep")
+            #expect(ProcessControl.send(SIGKILL, to: old).outcome == .done)
+            child.waitUntilExit()
+            #expect(child.terminationStatus == SIGKILL)
+        }
+    }
+
+    @Test func terminateAndThrottleRefuseAStaleStartTime() throws {
+        try withChild { child in
+            let pid = child.processIdentifier
+            let start = ProcessControl.currentStartTime(of: pid) ?? 0
+            let stale = ProcessRef(pid: pid, name: "sleep", startTime: start &+ 1)
+            #expect(ProcessControl.terminate([stale]).map(\.outcome) == [.skipped(.pidReused(nowNamed: "sleep"))])
+            #expect(ProcessControl.throttle([stale]).map(\.outcome) == [.skipped(.pidReused(nowNamed: "sleep"))])
+            #expect(child.isRunning)
+            #expect(getpriority(PRIO_PROCESS, id_t(pid)) == 0)
         }
     }
 

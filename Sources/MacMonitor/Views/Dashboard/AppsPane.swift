@@ -122,7 +122,7 @@ struct AppsPane: View {
                 if let lead = lead(of: app, in: s) {
                     ActionButton(title: String(localized: "Ignorieren"), compact: true) { model.perform(.ignoreForever(lead.name)) }
                     ActionButton(title: String(localized: "Beenden"), tint: Palette.critical, compact: true) {
-                        model.confirmKill(ProcessRef(pid: lead.pid, name: app.name), helpers: processes - 1, host: .dashboard)
+                        model.confirmKill(ProcessRef(lead), label: app.name, helpers: processes - 1, host: .dashboard)
                     }
                 }
             }
@@ -153,7 +153,7 @@ struct AppsPane: View {
             actions(visible: isHovered) {
                 ActionButton(title: String(localized: "Ignorieren"), compact: true) { model.perform(.ignoreForever(p.name)) }
                 ActionButton(title: String(localized: "Beenden"), tint: Palette.critical, compact: true) {
-                    model.confirmKill(ProcessRef(pid: p.pid, name: p.name), host: .dashboard)
+                    model.confirmKill(ProcessRef(p), host: .dashboard)
                 }
             }
         }

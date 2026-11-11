@@ -82,7 +82,10 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         }
         if let process = c.process, event.kind != .resolved {
             content.categoryIdentifier = Category.process
-            content.userInfo = ["pid": Int(process.pid), "name": process.name]
+            var info: [String: Any] = ["pid": Int(process.pid), "name": process.name]
+            // The start time tells a late click from a stranger that got the PID in the meantime.
+            if let start = process.startTime { info["start"] = String(start) }
+            content.userInfo = info
         } else {
             content.categoryIdentifier = Category.system
         }
@@ -125,11 +128,13 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         let action = response.actionIdentifier
         let pid = (info["pid"] as? Int).map(Int32.init)
         let name = info["name"] as? String
+        // Stored as text: a start time can exceed what a property list number holds. Old notifications have none.
+        let start = (info["start"] as? String).flatMap(UInt64.init)
         let isUpdate = info["update"] as? Bool ?? false
         await MainActor.run {
             switch action {
             case Action.kill:
-                if let pid, let name { onKill?(ProcessRef(pid: pid, name: name)) }
+                if let pid, let name { onKill?(ProcessRef(pid: pid, name: name, startTime: start)) }
             case Action.mute:
                 if let name { onMute?(name) }
             case Action.activity:
