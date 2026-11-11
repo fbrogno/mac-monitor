@@ -36,6 +36,24 @@ Wegwerf-Caches sind, etwa Playwright-Browser und Suchindizes in `~/.cache`.
   <img src="docs/images/overview.png" alt="Übersicht mit Lösungen und SSD-Aufräumen" width="640">
 </p>
 
+## Dashboard und Verlauf
+
+Das **Dashboard** (Knopf im Popover oder `open macmonitor://dashboard`, einzelne Bereiche mit
+`open macmonitor://dashboard/cpu|memory|energy|sensors|network|apps|events|report`) zeigt Live-Werte und
+den Verlauf von 1 Stunde bis 30 Tagen: CPU, GPU, Speicher, Energie und Akku, Sensoren, Netzwerk und
+Laufwerke, Apps nach Verbrauch, Ereignisse und einen Tages- oder Wochenbericht mit CSV-/JSON-Export. Werte,
+die ein Mac nicht meldet, werden ausgeblendet oder als „nicht verfügbar“ gekennzeichnet, nie als 0.
+Der Verlauf liegt lokal in `~/Library/Application Support/MacMonitor/history.sqlite`
+(Minutenwerte 2 Tage, 15-Minuten-Werte 30 Tage, Tageswerte 2 Jahre) und lässt sich im Bericht löschen.
+
+<p align="center">
+  <img src="docs/images/dashboard-overview.png" alt="Dashboard: Überblick" width="760">
+  <img src="docs/images/dashboard-cpu.png" alt="Dashboard: CPU und GPU" width="760">
+  <img src="docs/images/dashboard-energy.png" alt="Dashboard: Energie und Akku" width="760">
+  <img src="docs/images/dashboard-apps.png" alt="Dashboard: Apps" width="760">
+  <img src="docs/images/dashboard-report.png" alt="Dashboard: Bericht" width="760">
+</p>
+
 ## Was die App meldet
 
 | Regel | Standard-Auslöser | In der Mitteilung |

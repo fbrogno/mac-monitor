@@ -21,12 +21,38 @@ enum DocRenderer {
         }
         write(Framed(scheme: .dark) { PopoverView(model: .demo(alerts: false)) }, scale: 2,
               to: url.appendingPathComponent("popover-calm.png"))
+        write(Framed(scheme: .dark) { PopoverView(model: .demo(), showApps: true) }, scale: 2,
+              to: url.appendingPathComponent("popover-apps.png"))
         write(OverlayPreview(), scale: 2, to: url.appendingPathComponent("overlay.png"))
         let overview = AppModel.demo()
         overview.cleanup.useDemoSizes()
         write(Framed(scheme: .dark) { OverviewContent(model: overview).frame(width: 760) }, scale: 2,
               to: url.appendingPathComponent("overview.png"))
+        renderDashboard(to: url)
         print("Bilder geschrieben nach \(url.path)")
+    }
+
+    /// Dashboard images from the real panes with demo data and a synthetic 30-day history.
+    /// `MACMONITOR_RENDER_ALL=1` also writes the sections not shown in the README.
+    private static func renderDashboard(to url: URL) {
+        let model = AppModel.demo(history: true)
+        let all = ProcessInfo.processInfo.environment["MACMONITOR_RENDER_ALL"] == "1"
+        let shots: [(DashboardSection, DashboardRange, String, Bool)] = [
+            (.overview, .day, "dashboard-overview", true), (.cpu, .day, "dashboard-cpu", true),
+            (.energy, .day, "dashboard-energy", true), (.apps, .week, "dashboard-apps", true),
+            (.report, .day, "dashboard-report", true),
+            (.memory, .day, "dashboard-memory", false), (.sensors, .day, "dashboard-sensors", false),
+            (.network, .day, "dashboard-network", false), (.events, .week, "dashboard-events", false),
+        ]
+        for (section, range, name, readme) in shots where readme || all {
+            model.dashboard.section = section
+            model.dashboard.range = range
+            model.dashboard.reportPeriod = .week
+            model.dashboard.previewHover = section == .cpu ? Date().addingTimeInterval(-5.4 * 3600) : nil
+            model.dashboard.reloadBlocking()
+            let expanded: Set<String> = section == .apps ? ["app:/Applications/Google Chrome.app"] : []
+            write(DashboardShot(model: model, expanded: expanded), scale: 2, to: url.appendingPathComponent("\(name).png"))
+        }
     }
 
     private static func write(_ view: some View, scale: CGFloat, to file: URL) {
@@ -116,5 +142,47 @@ private struct OverlayPreview: View {
             .background(LinearGradient(colors: [Color(red: 0.12, green: 0.2, blue: 0.3), Color(red: 0.05, green: 0.08, blue: 0.14)],
                                        startPoint: .topLeading, endPoint: .bottomTrailing))
             .environment(\.colorScheme, .dark)
+    }
+}
+
+/// The dashboard window as an image: sidebar and detail drawn in SwiftUI (the AppKit-backed split
+/// view does not render offline), the panes are the real ones.
+private struct DashboardShot: View {
+    let model: AppModel
+    var expanded: Set<String> = []
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 0) {
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 7) {
+                    ForEach([Color.red, .yellow, .green], id: \.self) { Circle().fill($0.opacity(0.85)).frame(width: 12, height: 12) }
+                }
+                .padding(.bottom, 18)
+                ForEach(DashboardSection.allCases) { section in
+                    let selected = section == model.dashboard.section
+                    Label { Text(section.title) } icon: { Image(systemName: section.symbol).frame(width: 20) }
+                        .font(.system(size: 13, weight: selected ? .semibold : .regular))
+                        .padding(.horizontal, 10).padding(.vertical, 6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(selected ? Color.primary.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 12).padding(.top, 14).padding(.bottom, 14)
+            .frame(width: 236)
+            .background(Color.primary.opacity(0.04))
+            Divider()
+            DashboardDetail(model: model, expandedApps: expanded)
+                .padding(24)
+                .frame(width: 900, alignment: .topLeading)
+        }
+        .frame(width: 1137)
+        .fixedSize(horizontal: false, vertical: true)
+        .background(Color(red: 0.13, green: 0.13, blue: 0.15), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
+        .padding(28)
+        .background(LinearGradient(colors: [Color(red: 0.07, green: 0.09, blue: 0.16), Color(red: 0.03, green: 0.04, blue: 0.08)],
+                                   startPoint: .topLeading, endPoint: .bottomTrailing))
+        .environment(\.colorScheme, .dark)
     }
 }

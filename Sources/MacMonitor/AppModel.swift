@@ -28,6 +28,8 @@ final class AppModel {
         }
     }
     var confirmationHost: ConfirmationHost = .overview
+    /// Whether the long-term history is available; set once at launch.
+    private(set) var historyState: HistoryState = .starting
     /// Section the overview window should scroll to when it opens.
     var overviewFocus: OverviewSection?
     /// Menu bar text, only changed when the shown value moves noticeably (see `updateMenuBarText`).
@@ -45,6 +47,7 @@ final class AppModel {
     var isPopoverOpen = false {
         didSet {
             guard isPopoverOpen != oldValue else { return }
+            updateDetailsVisibility()
             reschedule()
             if isPopoverOpen { requestSample() }
             // An unanswered question in the popover is dropped when it closes.
@@ -55,10 +58,26 @@ final class AppModel {
     var isOverviewOpen = false {
         didSet {
             guard isOverviewOpen != oldValue else { return }
+            updateDetailsVisibility()
             reschedule()
             if isOverviewOpen { requestSample() }
         }
     }
+
+    var isDashboardOpen = false {
+        didSet {
+            guard isDashboardOpen != oldValue else { return }
+            updateDetailsVisibility()
+            reschedule()
+            if isDashboardOpen { requestSample() }
+            if !isDashboardOpen, confirmationHost == .dashboard { pendingConfirmation = nil }
+        }
+    }
+
+    /// Charts and history of the dashboard window.
+    @ObservationIgnored let dashboard = DashboardModel()
+    @ObservationIgnored private(set) var history: HistoryPipeline?
+    @ObservationIgnored private var lastIngest: Date?
 
     @ObservationIgnored let notifier = Notifier()
     @ObservationIgnored let cleanup = CleanupModel()
@@ -131,8 +150,46 @@ final class AppModel {
             MainActor.assumeIsolated { self?.handleWake() }
         })
 
+        observers.append(workspace.addObserver(forName: NSWorkspace.willSleepNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.history?.flush() }
+        })
+
+        openHistory()
         reschedule()
         requestSample()
+    }
+
+    /// Opens the history database; without it the app keeps measuring and the dashboard says so.
+    private func openHistory() {
+        let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("MacMonitor", isDirectory: true)
+        do {
+            let store = try HistoryStore(url: directory.appendingPathComponent("history.sqlite"), now: Date())
+            history = HistoryPipeline(store: store)
+            dashboard.store = store
+            historyState = .active
+        } catch {
+            log.error("Verlauf nicht verfügbar: \(String(describing: error))")
+            historyState = .unavailable("\(error)")
+        }
+    }
+
+    /// Attaches a store without opening the default file (headless proof and tests).
+    func useHistory(_ store: HistoryStore) {
+        history = HistoryPipeline(store: store)
+        dashboard.store = store
+        historyState = .active
+    }
+
+    /// Writes buffered history before the app quits; gives up after `timeout` so quitting never hangs.
+    func prepareForTermination(timeout: TimeInterval = 1.5) {
+        history?.flushAndWait(timeout: timeout)
+    }
+
+    /// Sensors refresh faster while any window or the popover shows them.
+    private func updateDetailsVisibility() {
+        let visible = isPopoverOpen || isOverviewOpen || isDashboardOpen
+        queue.async { [sampler] in sampler.detailsVisible = visible }
     }
 
     private func handleWake() {
@@ -152,7 +209,7 @@ final class AppModel {
     }
 
     private func reschedule() {
-        let interval = SamplingPolicy.interval(popoverOpen: isPopoverOpen || isOverviewOpen, power: snapshot?.power ?? .unknown)
+        let interval = SamplingPolicy.interval(popoverOpen: isPopoverOpen || isOverviewOpen || isDashboardOpen, power: snapshot?.power ?? .unknown)
         guard interval != currentInterval else { return }
         currentInterval = interval
         log.notice("Messintervall \(interval, format: .fixed(precision: 0)) s")
@@ -170,13 +227,20 @@ final class AppModel {
         self.timer = timer
     }
 
-    private func ingest(_ snapshot: SystemSnapshot) {
+    func ingest(_ snapshot: SystemSnapshot) {
         self.snapshot = snapshot
         if !endedBlockers.isEmpty { checkRespawnedBlockers(in: snapshot) }
         cpuHistory.append(snapshot.cpuPercent)
         memoryHistory.append(snapshot.memoryFraction * 100)
 
         let now = snapshot.date
+        if let history {
+            // A gap (sleep) must not count as hours of CPU time: fall back to the nominal interval.
+            let nominal = max(currentInterval, 1)
+            let elapsed = lastIngest.map { now.timeIntervalSince($0) } ?? nominal
+            history.record(snapshot, interval: elapsed >= 1 && elapsed <= 3 * nominal ? elapsed : nominal)
+            lastIngest = now
+        }
         muted = muted.filter { $0.value > now }
         swapHistory.append((now, snapshot.swapUsedBytes))
         swapHistory.removeAll { now.timeIntervalSince($0.date) > 600 }
@@ -194,6 +258,7 @@ final class AppModel {
 
         for event in newEvents {
             notifier.deliver(event)
+            history?.record(event)
         }
         if let shown = newEvents.last(where: { $0.kind != .resolved }) {
             overlay.show(shown, mode: settings.overlayMode)
@@ -229,6 +294,11 @@ final class AppModel {
         showWindow("overview")
     }
 
+    func openDashboard(section: DashboardSection? = nil) {
+        if let section { dashboard.section = section }
+        showWindow("dashboard")
+    }
+
     /// Opens a SwiftUI window and brings it to the front. A menu bar app is not allowed to
     /// activate itself from the background on recent macOS, so the window is ordered front explicitly.
     func showWindow(_ id: String) {
@@ -256,21 +326,31 @@ final class AppModel {
         requestSample()
     }
 
-    func confirmKill(_ process: ProcessRef) {
+    func confirmKill(_ process: ProcessRef, helpers: Int = 0, host: ConfirmationHost? = nil) {
+        let detail = helpers > 0
+            ? "PID \(process.pid), dazu \(helpers) Hilfsprozesse, die in der Regel mit enden."
+            : "PID \(process.pid)."
         ask(Confirmation(
             title: "„\(process.name)“ beenden?",
-            message: "PID \(process.pid). Ungesicherte Daten in diesem Prozess können verloren gehen.",
+            message: "\(detail) Ungesicherte Daten in diesem Prozess können verloren gehen.",
             confirmTitle: "Beenden",
             alternativeTitle: "Sofort beenden",
             alternative: { [weak self] in self?.signal(process, SIGKILL) },
-            action: { [weak self] in self?.signal(process, SIGTERM) }))
+            action: { [weak self] in self?.signal(process, SIGTERM) }), host: host)
     }
 
     /// Shows a confirmation where the user is looking: inline in the open popover, otherwise as
     /// an alert in the overview window (opened if necessary).
-    func ask(_ confirmation: Confirmation) {
-        if isPopoverOpen && !isOverviewOpen {
+    /// `host` names the surface the question came from; without it the most visible one is used.
+    func ask(_ confirmation: Confirmation) { ask(confirmation, host: nil) }
+
+    func ask(_ confirmation: Confirmation, host: ConfirmationHost?) {
+        if let host {
+            confirmationHost = host
+        } else if isPopoverOpen && !isOverviewOpen && !isDashboardOpen {
             confirmationHost = .popover
+        } else if isDashboardOpen && !isOverviewOpen {
+            confirmationHost = .dashboard
         } else {
             confirmationHost = .overview
             if !isOverviewOpen { showWindow("overview") }
@@ -348,16 +428,35 @@ enum OverviewSection: Hashable {
 
 extension AppModel {
     /// A model with plausible, fixed data for screenshots. Does not sample.
-    static func demo(alerts: Bool = true) -> AppModel {
+    /// With `history`, the dashboard also gets an in-memory store with 30 synthetic days.
+    static func demo(alerts: Bool = true, history: Bool = false) -> AppModel {
         let model = AppModel(settings: MonitorSettings())
         let gb: UInt64 = 1_073_741_824
+        let chrome = "app:/Applications/Google Chrome.app", xcode = "app:/Applications/Xcode.app"
         let processes = [
-            ProcessStat(pid: 4182, name: "node", cpuPercent: alerts ? 99.6 : 12.4, footprintBytes: 1_400_000_000),
-            ProcessStat(pid: 812, name: "Xcode", cpuPercent: 38.2, footprintBytes: 3 * gb),
-            ProcessStat(pid: 1290, name: "Google Chrome Helper (Renderer)", cpuPercent: 21.7, footprintBytes: 2_100_000_000),
-            ProcessStat(pid: 640, name: "Docker", cpuPercent: 9.3, footprintBytes: 4 * gb),
-            ProcessStat(pid: 1544, name: "Claude", cpuPercent: 6.1, footprintBytes: 900_000_000),
-            ProcessStat(pid: 377, name: "Finder", cpuPercent: 1.2, footprintBytes: 310_000_000),
+            ProcessStat(pid: 4182, name: "node", cpuPercent: alerts ? 99.6 : 12.4, footprintBytes: 1_400_000_000,
+                        energyMilliwatts: alerts ? 5200 : 640, threads: 14, diskReadBytesPerSecond: 12_000,
+                        diskWriteBytesPerSecond: 380_000, appKey: "proc:4182", appName: "node"),
+            ProcessStat(pid: 812, name: "Xcode", cpuPercent: 38.2, footprintBytes: 3 * gb, energyMilliwatts: 2100,
+                        threads: 86, diskReadBytesPerSecond: 640_000, diskWriteBytesPerSecond: 90_000,
+                        appKey: xcode, appName: "Xcode"),
+            ProcessStat(pid: 833, name: "SourceKitService", cpuPercent: 11.4, footprintBytes: 1_100_000_000, energyMilliwatts: 760,
+                        threads: 22, appKey: xcode, appName: "Xcode"),
+            ProcessStat(pid: 1290, name: "Google Chrome Helper (Renderer)", cpuPercent: 21.7, footprintBytes: 2_100_000_000,
+                        energyMilliwatts: 1450, threads: 31, appKey: chrome, appName: "Google Chrome"),
+            ProcessStat(pid: 1288, name: "Google Chrome", cpuPercent: 4.1, footprintBytes: 780_000_000, energyMilliwatts: 310,
+                        threads: 44, diskWriteBytesPerSecond: 40_000, appKey: chrome, appName: "Google Chrome"),
+            ProcessStat(pid: 1301, name: "Google Chrome Helper (GPU)", cpuPercent: 6.8, footprintBytes: 520_000_000, energyMilliwatts: 880,
+                        threads: 18, appKey: chrome, appName: "Google Chrome"),
+            ProcessStat(pid: 1330, name: "Google Chrome Helper (Renderer)", cpuPercent: 2.4, footprintBytes: 640_000_000, energyMilliwatts: 190,
+                        threads: 20, appKey: chrome, appName: "Google Chrome"),
+            ProcessStat(pid: 640, name: "Docker", cpuPercent: 9.3, footprintBytes: 4 * gb, energyMilliwatts: 940, threads: 52,
+                        diskReadBytesPerSecond: 210_000, diskWriteBytesPerSecond: 1_200_000,
+                        appKey: "app:/Applications/Docker.app", appName: "Docker"),
+            ProcessStat(pid: 1544, name: "Claude", cpuPercent: 6.1, footprintBytes: 900_000_000, energyMilliwatts: 520, threads: 38,
+                        appKey: "app:/Applications/Claude.app", appName: "Claude"),
+            ProcessStat(pid: 377, name: "Finder", cpuPercent: 1.2, footprintBytes: 310_000_000, energyMilliwatts: 60, threads: 9,
+                        appKey: "app:/System/Library/CoreServices/Finder.app", appName: "Finder"),
         ]
         let snapshot = SystemSnapshot(
             date: Date(), cpuPercent: alerts ? 47 : 18, memoryUsedBytes: 15_800_000_000,
@@ -368,7 +467,35 @@ extension AppModel {
             power: PowerState(onBattery: true, batteryPercent: 82, lowPowerMode: false, minutesRemaining: 312,
                               health: BatteryHealth(cycleCount: 143, capacityPercent: 96)),
             sleepBlockers: alerts ? [SleepBlocker(pid: 4182, name: "node", reason: "caffeinate command-line tool")] : [],
-            processes: processes)
+            processes: processes,
+            cpuCores: CPUCoreLoad(perCore: alerts ? [14, 22, 9, 18, 71, 64, 58, 82, 39, 47] : [6, 9, 4, 7, 24, 18, 15, 31, 12, 16],
+                                  efficiencyCoreCount: 4, performanceCoreCount: 6),
+            gpu: GPUStat(utilizationPercent: alerts ? 34 : 9, memoryUsedBytes: 1_900_000_000, memoryAllocatedBytes: 3_200_000_000),
+            thermals: ThermalSensors(
+                cpuAverageCelsius: alerts ? 58 : 44, cpuMaxCelsius: alerts ? 71 : 52, batteryCelsius: 31.4,
+                sensors: [("CPU Performance-Kern 1", 71.0), ("CPU Performance-Kern 2", 68.5), ("CPU Performance-Kern 3", 66.2),
+                          ("CPU Performance-Kern 4", 63.9), ("CPU Effizienz-Kern 1", 52.4), ("CPU Effizienz-Kern 2", 51.8),
+                          ("GPU Cluster 1", 49.6), ("GPU Cluster 2", 48.7), ("SSD", 38.0), ("Akku", 31.4),
+                          ("Gehäuse links", 33.1), ("Gehäuse rechts", 32.6), ("Netzteil-Anschluss", 29.8)]
+                    .map { TemperatureReading(name: $0.0, celsius: $0.1) }),
+            fans: [FanStat(index: 0, rpm: alerts ? 2480 : 1210, minRpm: 1200, maxRpm: 5779),
+                   FanStat(index: 1, rpm: alerts ? 2510 : 1230, minRpm: 1200, maxRpm: 6241)],
+            powerDraw: SystemPowerDraw(systemWatts: alerts ? 24.6 : 11.3, cpuWatts: alerts ? 9.4 : 3.1, gpuWatts: alerts ? 3.8 : 0.9,
+                                       aneWatts: 0.2, dramWatts: 1.6),
+            batteryDetail: BatteryDetail(designCapacityMah: 6249, maxCapacityMah: 5970, currentCapacityMah: 4890,
+                                         temperatureCelsius: 31.4, condition: .normal, minutesToFull: nil,
+                                         voltageMillivolts: 12_380, amperageMilliamps: -1_980, adapterWatts: nil),
+            networkDetail: NetworkDetail(
+                primary: ActiveInterface(name: "en0", kind: .wifi, ipv4: "192.168.1.42"),
+                interfaces: [InterfaceRate(name: "en0", rate: NetworkRate(downBytesPerSecond: 1_840_000, upBytesPerSecond: 91_000)),
+                             InterfaceRate(name: "utun4", rate: NetworkRate(downBytesPerSecond: 9_000, upBytesPerSecond: 5_000))]),
+            volumes: [VolumeStat(name: "Macintosh HD", path: "/", availableBytes: 312 * gb, totalBytes: 994 * gb, isInternal: true),
+                      VolumeStat(name: "Extern 1 TB", path: "/Volumes/Extern", availableBytes: 410 * gb, totalBytes: 931 * gb, isInternal: false)],
+            diskThroughput: DiskThroughput(readBytesPerSecond: 4_400_000, writeBytesPerSecond: 1_150_000),
+            ssdHealth: SSDHealth(isVerified: true, percentageUsed: 3, availableSparePercent: 100, temperatureCelsius: 38,
+                                 powerOnHours: 1_840, bytesWritten: 38_000_000_000_000),
+            runtime: RuntimeStat(uptimeSeconds: 3 * 86_400 + 4 * 3600 + 900,
+                                 loadAverage: LoadAverage(one: 2.41, five: 2.12, fifteen: 1.87), processCount: 612, threadCount: 3450))
         model.snapshot = snapshot
         for i in 0..<90 {
             let x = Double(i)
@@ -384,6 +511,10 @@ extension AppModel {
             } + [AlertEvent(date: Date().addingTimeInterval(-5400), kind: .resolved,
                             condition: Condition(key: "system.network", rule: .network, severity: .warning,
                                                  title: "Keine Internetverbindung", body: "", sustain: 30))]
+        }
+        if history {
+            model.historyState = .active
+            model.dashboard.store = DemoHistory.make()
         }
         return model
     }
