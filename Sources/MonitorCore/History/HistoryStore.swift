@@ -350,6 +350,11 @@ public actor HistoryStore {
                 }
             }
         guard !days.isEmpty else { return }
+        // After a time-zone change the old day rows start at other instants than the new ones and would overlap
+        // them (and count the same samples twice). Days that are recomputed in full replace everything they cover.
+        if let firstRecomputed = days.values.flatMap(\.keys).filter({ $0 >= cutQuarter }).min() {
+            try clearOverlappingDays(from: firstRecomputed)
+        }
         let replace = try db.prepare("INSERT OR REPLACE INTO metric(key, res, ts, vmin, vmax, vsum, n) VALUES(?, ?, ?, ?, ?, ?, ?)")
         let ignore = try db.prepare("INSERT OR IGNORE INTO metric(key, res, ts, vmin, vmax, vsum, n) VALUES(?, ?, ?, ?, ?, ?, ?)")
         for (key, perDay) in days {
@@ -358,6 +363,23 @@ public actor HistoryStore {
                 try statement.run([.text(key), .int(Int64(Resolution.day.rawValue)), .int(day),
                                    .double(b.min), .double(b.max), .double(b.sum), .int(Int64(b.n))])
             }
+        }
+    }
+
+    /// Deletes the day rows from `firstDay` on, and rows of the day before that are not aligned to the start of
+    /// a day in the current time zone (they belong to another zone and reach into `firstDay`).
+    private func clearOverlappingDays(from firstDay: Int64) throws {
+        let dayRes = Int64(Resolution.day.rawValue)
+        var misaligned: [Int64] = []
+        try db.prepare("SELECT DISTINCT ts FROM metric WHERE res = \(dayRes) AND ts > ? AND ts < ?")
+            .forEachRow([.int(firstDay - 86_400), .int(firstDay)]) { row in
+                let ts = row.int(0)
+                let start = calendar.startOfDay(for: Date(timeIntervalSince1970: TimeInterval(ts))).timeIntervalSince1970
+                if Int64(start) != ts { misaligned.append(ts) }
+            }
+        try db.prepare("DELETE FROM metric WHERE res = \(dayRes) AND ts >= ?").run([.int(firstDay)])
+        for ts in misaligned {
+            try db.prepare("DELETE FROM metric WHERE res = \(dayRes) AND ts = ?").run([.int(ts)])
         }
     }
 

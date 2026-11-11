@@ -65,8 +65,7 @@ public struct HistorySummary: Sendable, Equatable, Codable {
     public static func make(interval: DateInterval, cpu: [HistoryPoint], memory: [HistoryPoint],
                             pressure: [HistoryPoint], incidents: [Incident],
                             topProcesses: TopProcesses, now: Date) -> HistorySummary {
-        let pressureSeconds: TimeInterval? = pressure.contains { $0.count > 0 }
-            ? pressure.reduce(0) { $0 + $1.avg * $1.span } : nil
+        let pressureSeconds = Self.pressureSeconds(pressure, in: interval)
 
         var perRule: [String: (count: Int, seconds: TimeInterval)] = [:]
         var totalSeconds: TimeInterval = 0
@@ -89,6 +88,29 @@ public struct HistorySummary: Sendable, Equatable, Codable {
                               pressureSeconds: pressureSeconds, incidentsByRule: rules,
                               incidentCount: count, incidentSeconds: totalSeconds,
                               topProcesses: topProcesses, comparison: .noComparisonData)
+    }
+
+    /// Seconds under memory pressure inside `interval`. Each bucket counts only with the part that lies in the
+    /// interval (edge buckets start before `from` or end after `to`) and only with the time it actually measured:
+    /// samples × the usual measuring interval, at most the bucket width. A minute with two samples before the
+    /// Mac went to sleep is not a full minute. The usual interval is the median of width / samples per tier;
+    /// where it can't be derived the whole bucket width is used. Nil without any measurement.
+    static func pressureSeconds(_ points: [HistoryPoint], in interval: DateInterval) -> TimeInterval? {
+        let measured = points.filter { $0.count > 0 && $0.span > 0 }
+        guard !measured.isEmpty else { return nil }
+        var step: [Resolution: TimeInterval] = [:]
+        for (tier, group) in Dictionary(grouping: measured, by: \.resolution) {
+            let sorted = group.map { $0.span / Double($0.count) }.sorted()
+            step[tier] = sorted[sorted.count / 2]
+        }
+        var total: TimeInterval = 0
+        for p in measured {
+            let overlap = min(p.date.addingTimeInterval(p.span), interval.end).timeIntervalSince(max(p.date, interval.start))
+            guard overlap > 0 else { continue }
+            let measuredSeconds = step[p.resolution].map { min(p.span, Double(p.count) * $0) } ?? p.span
+            total += p.avg * measuredSeconds * min(1, overlap / p.span)
+        }
+        return total
     }
 
     /// Adds the comparison to the previous period (absolute differences, never a ratio).

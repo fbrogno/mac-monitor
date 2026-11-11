@@ -44,12 +44,14 @@ final class SQLiteDatabase {
         guard code == SQLITE_OK else {
             let message = handle.map { String(cString: sqlite3_errmsg($0)) } ?? "open failed"
             sqlite3_close_v2(handle)
+            // The failed init still runs `deinit`: without this it would close the same handle a second time.
+            handle = nil
             throw SQLiteError.failed(code: code, message: message)
         }
         sqlite3_busy_timeout(handle, 2000)
     }
 
-    deinit { sqlite3_close_v2(handle) }
+    deinit { if handle != nil { sqlite3_close_v2(handle) } }
 
     func error(_ code: Int32) -> SQLiteError {
         .failed(code: code, message: String(cString: sqlite3_errmsg(handle)))

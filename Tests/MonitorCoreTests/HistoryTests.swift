@@ -174,6 +174,33 @@ private let gb: UInt64 = 1_073_741_824
         }
     }
 
+    @Test func timeZoneChangeLeavesNoOverlappingDayBuckets() async throws {
+        let now = date(2026, 3, 10, 12, 0, in: berlin)
+        let samples: [(Date, Double)] = [(date(2026, 3, 8, 12, 0), 10), (date(2026, 3, 9, 12, 0), 20),
+                                         (date(2026, 3, 10, 2, 0), 30)]   // UTC times
+        try await withTempStore(timeZone: berlin, now: now) { store, url in
+            for (time, value) in samples { await store.record(cpu(value), at: time) }
+            try await store.compact(now: now)
+            try await store.close()
+
+            // The Mac moves to UTC: day rows are now cut at UTC midnight, the old ones at Berlin midnight.
+            let moved = try HistoryStore(url: url, timeZone: utc, now: now.addingTimeInterval(7200))
+            try await moved.compact(now: now.addingTimeInterval(7200))
+
+            let days = try await moved.series(.cpuTotal, from: date(2026, 3, 1), to: date(2026, 3, 11), maxPoints: 20)
+            #expect(days.allSatisfy { $0.resolution == .day })
+            // Every sample is in exactly one day bucket, and no two buckets overlap.
+            #expect(days.reduce(0) { $0 + $1.count } == 3)
+            let ordered = days.sorted { $0.date < $1.date }
+            for (a, b) in zip(ordered, ordered.dropFirst()) {
+                #expect(a.date.addingTimeInterval(a.span) <= b.date, "\(a.date) und \(b.date) überlappen")
+            }
+            // The recomputed days are cut at UTC midnight.
+            #expect(days.map(\.date).contains(date(2026, 3, 9)))
+            #expect(days.map(\.date).contains(date(2026, 3, 10)))
+        }
+    }
+
     @Test func dayBucketsFollowLocalTimeAcrossFallBack() async throws {
         // Clocks go back on 2026-10-25: 25 hours.
         let now = date(2026, 10, 27, 12, 0, in: berlin)
@@ -243,6 +270,21 @@ private let gb: UInt64 = 1_073_741_824
 
 @Suite struct HistoryStorageTests {
     let t0 = date(2026, 3, 10, 12, 0)
+
+    @Test func openingAnInvalidPathThrowsWithoutDoubleClose() {
+        // The failed init closes the handle itself and `deinit` must not close it again.
+        let missing = tempDirectory().appendingPathComponent("gibt-es-nicht/history.sqlite").path
+        for _ in 0..<50 {
+            #expect(throws: SQLiteError.self) { _ = try SQLiteDatabase(path: missing) }
+        }
+        // A directory is not a database either.
+        let directory = tempDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        #expect(throws: SQLiteError.self) { _ = try SQLiteDatabase(path: directory.path) }
+        // And a valid path still opens.
+        let ok = directory.appendingPathComponent("ok.sqlite").path
+        #expect(throws: Never.self) { _ = try SQLiteDatabase(path: ok) }
+    }
 
     @Test func writesOncePerMinuteAndFlushWritesTheRest() async throws {
         try await withTempStore(now: t0) { store, url in
@@ -644,6 +686,27 @@ extension HistoryAdapterTests {
         let s = summary(cpu: [], pressure: [point(start, avg: 0.5, span: 900), point(start.addingTimeInterval(900), avg: 1, span: 900),
                                             point(start.addingTimeInterval(1800), avg: 0, span: 900)])
         #expect(s.pressureSeconds == 1350)
+    }
+
+    @Test func pressureTimeIsClippedToThePeriod() {
+        // A quarter-hour bucket that starts 10 minutes before the day and one that ends 5 minutes after it:
+        // only the parts inside count.
+        let before = point(start.addingTimeInterval(-600), avg: 1, count: 90, span: 900)       // 300 s inside
+        let inside = point(start.addingTimeInterval(900), avg: 0.5, count: 90, span: 900)      // 450 s
+        let after = point(start.addingTimeInterval(86_400 - 300), avg: 1, count: 90, span: 900) // 300 s inside
+        let s = summary(cpu: [], pressure: [before, inside, after])
+        #expect(abs((s.pressureSeconds ?? -1) - 1050) < 1e-6)
+        // A bucket entirely outside adds nothing, but the series still counts as measured.
+        let outside = point(start.addingTimeInterval(-7200), avg: 1, count: 90, span: 900)
+        #expect(summary(cpu: [], pressure: [outside]).pressureSeconds == 0)
+    }
+
+    @Test func pressureTimeCountsOnlyWhatWasMeasured() {
+        // Usual: 6 samples per minute (10 s). One minute has only 3 samples (the Mac went to sleep): 30 s measured.
+        let full = (0..<9).map { point(start.addingTimeInterval(Double($0) * 60), avg: 1, count: 6, span: 60) }
+        let partial = point(start.addingTimeInterval(9 * 60), avg: 1, count: 3, span: 60)
+        let s = summary(cpu: [], pressure: full + [partial])
+        #expect(abs((s.pressureSeconds ?? -1) - 570) < 1e-6)
     }
 
     @Test func incidentsAreCountedPerRuleAndClippedToThePeriod() {
