@@ -76,9 +76,20 @@ check_signature "$app"
 for nested in "$app"/Contents/Frameworks/*.framework(N) \
               "$app"/Contents/Frameworks/*.framework/Versions/[A-Z]/XPCServices/*.xpc(N) \
               "$app"/Contents/Frameworks/*.framework/Versions/[A-Z]/Updater.app(N) \
-              "$app"/Contents/Frameworks/*.framework/Versions/[A-Z]/Autoupdate(N); do
+              "$app"/Contents/Frameworks/*.framework/Versions/[A-Z]/Autoupdate(N) \
+              "$app"/Contents/PlugIns/*.appex(N); do
   check_signature "$nested"
 done
+# The widget extension must be there, sandboxed, and share the app group with the app.
+appex=$app/Contents/PlugIns/MacMonitorWidgets.appex
+[[ -d $appex ]] || { echo "Widget-Erweiterung fehlt im Bundle: $appex" >&2; exit 1; }
+for target in "$appex" "$app"; do
+  ents=$(codesign -d --entitlements - --xml "$target" 2>/dev/null)
+  print -r -- "$ents" | grep -q 'com.apple.security.application-groups' || { echo "App-Gruppe fehlt: $target" >&2; exit 1; }
+done
+print -r -- "$(codesign -d --entitlements - --xml "$appex" 2>/dev/null)" | grep -q 'com.apple.security.app-sandbox' \
+  || { echo "Sandbox fehlt in der Widget-Erweiterung." >&2; exit 1; }
+[[ -d $app/Contents/Resources/Metadata.appintents ]] || { echo "Metadata.appintents fehlt im Bundle." >&2; exit 1; }
 echo "Signatur geprüft: $app"
 
 # --- dmg ---------------------------------------------------------------------------------

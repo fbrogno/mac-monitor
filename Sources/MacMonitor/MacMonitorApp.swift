@@ -19,6 +19,10 @@ enum Entry {
             MainActor.assumeIsolated { HeadlessProof.run() }
             return
         }
+        if args.contains("--intent-proof") {
+            MainActor.assumeIsolated { IntentProof.run() }
+            return
+        }
         MacMonitorApp.main()
     }
 }

@@ -47,3 +47,13 @@ mehr aktualisieren. Sicherung per `generate_keys -x <Datei>` in einen Passwortma
 Sparkles XPC-Dienste, `Updater.app`, `Autoupdate`, das Framework, zuletzt die App, jeweils mit Hardened
 Runtime und Zeitstempel. `release.sh` prüft das (`codesign --verify --deep --strict`, Developer-ID-Autorität,
 Runtime-Flag, Zeitstempel für jede Komponente), baut die DMG (APFS, lzfse), signiert sie und notarisiert sie.
+
+### Widgets und App-Gruppe
+
+Die Widget-Erweiterung `MacMonitorWidgets.appex` (Sandbox, `Contents/PlugIns`) liest eine JSON-Datei aus der
+App-Gruppe `<TEAM-ID>.com.fbrogno.macmonitor`. Auf macOS braucht eine Gruppe mit Team-ID-Präfix weder Registrierung
+noch Provisioning-Profil (Apple: „Configuring app groups“). Die Team-ID steht nicht im Repo: `build-app.sh` liest sie
+aus dem Zertifikat der Signaturidentität und setzt sie in die Vorlagen `Resources/*.entitlements.template` ein
+(Ausgabe nach `build/entitlements/`). Die Erweiterung wird vor der App signiert, beide mit Hardened Runtime.
+Mit ad-hoc- oder Apple-Development-Signatur (CI) wird die Erweiterung wieder aus dem Bundle entfernt und das gemeldet.
+`release.sh` verlangt die Erweiterung, Sandbox und App-Gruppe in den Entitlements sowie `Metadata.appintents`.

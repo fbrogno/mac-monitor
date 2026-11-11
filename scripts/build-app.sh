@@ -6,6 +6,9 @@
 #
 # SIGN_IDENTITY  "-" = ad-hoc, otherwise a keychain identity (name or SHA-1).
 #                Default: "Developer ID Application", else "Apple Development", else ad-hoc.
+#                Desktop widgets (app group, sandbox) are only kept for "Developer ID" identities: the
+#                group id is <TEAM ID>.com.fbrogno.macmonitor, the team ID is read from the certificate.
+#                With ad-hoc or Apple Development signatures the widget extension is removed again.
 # VERSION        Marketing version comes from the VERSION file, build number from the commit count.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -49,6 +52,32 @@ app=build/MacMonitor.app
 rm -rf "$app"
 ditto build/DerivedData/Build/Products/Release/MacMonitor.app "$app"
 
+# --- widgets: team ID and entitlements ----------------------------------------------------
+# App-group id on macOS: "<team identifier>.<group name>", no provisioning profile needed
+# (Apple: "Configuring app groups"). The team ID is never stored in the repo: it comes from the
+# signing certificate and is put into the entitlement templates here.
+with_widgets=0
+team=""
+if [[ $kind == "Developer ID" ]]; then
+  team=$(security find-certificate -c "$name" -p 2>/dev/null | openssl x509 -noout -subject 2>/dev/null \
+    | sed -n 's/.*OU *= *\([A-Z0-9]\{10\}\).*/\1/p' | head -n 1)
+  [[ -n $team ]] || { echo "Team-ID aus dem Zertifikat \"$name\" nicht lesbar." >&2; exit 1; }
+  with_widgets=1
+fi
+ent_dir=build/entitlements
+rm -rf "$ent_dir"
+if (( with_widgets )); then
+  mkdir -p "$ent_dir"
+  for t in MacMonitor MacMonitorWidgets; do
+    sed "s/__TEAM_ID__/$team/g" "Resources/$t.entitlements.template" > "$ent_dir/$t.entitlements"
+    plutil -lint "$ent_dir/$t.entitlements" >/dev/null
+  done
+else
+  rm -rf "$app"/Contents/PlugIns/MacMonitorWidgets.appex
+  rmdir "$app"/Contents/PlugIns 2>/dev/null || true
+  echo "HINWEIS: Widgets nicht enthalten (Signatur: $kind). Sie brauchen eine Developer-ID-Signatur für die App-Gruppe." >&2
+fi
+
 # --- sign, innermost first ---------------------------------------------------------------
 sign_args=(--force --sign "$identity")
 if [[ $identity == "-" ]]; then
@@ -69,8 +98,17 @@ for fw in "$app"/Contents/Frameworks/*.framework(N); do
   done
   sign "$fw"
 done
-for plugin in "$app"/Contents/PlugIns/*.appex(N); do sign "$plugin"; done
-codesign "${sign_args[@]}" "$app"
+# Extensions: sandbox + app group, signed before the app that contains them.
+for plugin in "$app"/Contents/PlugIns/*.appex(N); do
+  codesign "${sign_args[@]}" --entitlements "$ent_dir/${plugin:t:r}.entitlements" "$plugin"
+done
+if (( with_widgets )); then
+  codesign "${sign_args[@]}" --entitlements "$ent_dir/MacMonitor.entitlements" "$app"
+else
+  codesign "${sign_args[@]}" "$app"
+fi
 
 codesign --verify --deep --strict "$app"
-echo "Gebaut: $app $version ($build), signiert: $kind"
+extra=""
+[[ -d $app/Contents/PlugIns/MacMonitorWidgets.appex ]] && extra=", mit Widgets (Team $team)"
+echo "Gebaut: $app $version ($build), signiert: $kind$extra"

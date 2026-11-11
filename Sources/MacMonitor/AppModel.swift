@@ -286,9 +286,13 @@ final class AppModel {
 
         var overlayEvent: AlertEvent?
         let quietContext = quietState.context(now: Date())
+        // "Meldungen stummschalten" (Shortcuts) silences everything; events are still logged.
+        let paused = PauseState().isPaused(at: now)
         for event in newEvents {
-            let decision = QuietPolicy.decide(severity: event.condition.severity, kind: event.kind,
-                                              settings: settings.quiet, context: quietContext)
+            let decision = paused
+                ? QuietDecision(banner: false, overlay: false, sound: false)
+                : QuietPolicy.decide(severity: event.condition.severity, kind: event.kind,
+                                     settings: settings.quiet, context: quietContext)
             notifier.deliver(event, decision: decision)
             history?.record(event)
             if decision.overlay, event.kind != .resolved { overlayEvent = event }
@@ -302,6 +306,7 @@ final class AppModel {
             execute(planned, in: snapshot, quiet: quietContext)
             noteEndedThrottles(customEvents)
         }
+        AppIntegration.didIngest(self)
         reschedule()
     }
 
