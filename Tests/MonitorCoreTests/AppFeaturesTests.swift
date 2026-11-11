@@ -17,7 +17,7 @@ private let t0 = Date(timeIntervalSince1970: 1_000_000)
 
 // MARK: - Menu bar
 
-@Suite struct MenuBarDisplayTests {
+@Suite(.germanFormatting) struct MenuBarDisplayTests {
     @Test func iconOnlyHasNoText() {
         var d = MenuBarDisplay()
         #expect(d.update(items: [], values: values(), now: t0) == nil)
@@ -285,7 +285,7 @@ private let t0 = Date(timeIntervalSince1970: 1_000_000)
     @Test func throttleLowersPriority() throws {
         try withChild { child in
             let pid = child.processIdentifier
-            #expect(getpriority(PRIO_PROCESS, id_t(pid)) == 0)
+            #expect(getpriority(PRIO_PROCESS, id_t(pid)) == getpriority(PRIO_PROCESS, 0))  // children inherit the runner's priority
             let results = ProcessControl.throttle([ProcessRef(pid: pid, name: "sleep")])
             #expect(results.map(\.outcome) == [.done])
             #expect(getpriority(PRIO_PROCESS, id_t(pid)) == 10)
@@ -311,7 +311,7 @@ private let t0 = Date(timeIntervalSince1970: 1_000_000)
             #expect(ProcessControl.terminate([ref]).map(\.outcome) == [.skipped(.pidReused(nowNamed: "sleep"))])
             #expect(ProcessControl.throttle([ref]).map(\.outcome) == [.skipped(.pidReused(nowNamed: "sleep"))])
             #expect(child.isRunning)
-            #expect(getpriority(PRIO_PROCESS, id_t(child.processIdentifier)) == 0)
+            #expect(getpriority(PRIO_PROCESS, id_t(child.processIdentifier)) == getpriority(PRIO_PROCESS, 0))  // children inherit the runner's priority
         }
     }
 
@@ -378,7 +378,7 @@ private let t0 = Date(timeIntervalSince1970: 1_000_000)
             #expect(ProcessControl.terminate([stale]).map(\.outcome) == [.skipped(.pidReused(nowNamed: "sleep"))])
             #expect(ProcessControl.throttle([stale]).map(\.outcome) == [.skipped(.pidReused(nowNamed: "sleep"))])
             #expect(child.isRunning)
-            #expect(getpriority(PRIO_PROCESS, id_t(pid)) == 0)
+            #expect(getpriority(PRIO_PROCESS, id_t(pid)) == getpriority(PRIO_PROCESS, 0))  // children inherit the runner's priority
         }
     }
 
