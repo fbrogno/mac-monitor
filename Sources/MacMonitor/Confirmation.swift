@@ -15,8 +15,9 @@ struct Confirmation: Identifiable {
     let action: () -> Void
 }
 
+/// Where a question is shown: inline in the popover, or as an alert of the main window.
 enum ConfirmationHost {
-    case popover, overview, dashboard, settings
+    case popover, window
 }
 
 /// Inline confirmation for the popover, so answering it does not close the popover.

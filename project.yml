@@ -17,7 +17,7 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "1.1.0"      # build-app.sh overrides this from VERSION
+    MARKETING_VERSION: "1.2.0"      # build-app.sh overrides this from VERSION
     CURRENT_PROJECT_VERSION: "1"    # build-app.sh overrides this with the commit count
 targets:
   MacMonitor:

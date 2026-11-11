@@ -22,7 +22,7 @@ struct EventsPane: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 16) {
             if !presentRules.isEmpty { filter }
             incidentsCard
             logCard
@@ -32,18 +32,18 @@ struct EventsPane: View {
     static func ruleTitle(_ rule: String) -> String { RuleID(rawValue: rule)?.title ?? rule }
 
     private var filter: some View {
-        HStack(spacing: 6) {
+        FlowLayout(spacing: 6, lineSpacing: 6) {
             chip(String(localized: "Alle"), selected: rule == nil) { model.dashboard.eventRule = nil }
             ForEach(presentRules, id: \.self) { id in
                 chip(Self.ruleTitle(id), selected: rule == id) { model.dashboard.eventRule = id }
             }
-            Spacer(minLength: 0)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func chip(_ title: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Text(title).font(.system(size: 11, weight: .medium))
+            Text(title).font(.system(size: 12, weight: .medium)).lineLimit(1)
                 .padding(.horizontal, 10).padding(.vertical, 4)
                 .foregroundStyle(selected ? Color.white : Color.primary)
                 .background(selected ? Palette.accent.opacity(0.85) : Color.primary.opacity(0.07), in: Capsule())
@@ -73,17 +73,19 @@ struct EventsPane: View {
                 .foregroundStyle(Palette.severity(incident.severity)).frame(width: 16)
             VStack(alignment: .leading, spacing: 2) {
                 Text(incident.title).font(.system(size: 12, weight: .medium)).lineLimit(2)
-                Text(Self.ruleTitle(incident.rule)).font(.system(size: 10)).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(Self.ruleTitle(incident.rule)).font(.system(size: 11)).foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 2) {
-                Text(shortStamp(incident.start)).font(.system(size: 11)).monospacedDigit()
+                Text(shortStamp(incident.start)).font(.system(size: 12)).monospacedDigit()
                 if incident.end == nil {
-                    Text("läuft noch").font(.system(size: 10, weight: .medium)).foregroundStyle(Palette.warn)
+                    Text("läuft noch").font(.system(size: 11, weight: .medium)).foregroundStyle(Palette.warn)
                 } else {
-                    Text(durationText(incident.duration(asOf: data.to))).font(.system(size: 10)).foregroundStyle(.secondary).monospacedDigit()
+                    Text(durationText(incident.duration(asOf: data.to))).font(.system(size: 11)).foregroundStyle(.secondary).monospacedDigit()
                 }
             }
+            .fixedSize()
         }
         .padding(.vertical, 7)
     }
@@ -91,18 +93,18 @@ struct EventsPane: View {
     private var logCard: some View {
         DashCard(String(localized: "Rohprotokoll"), subtitle: String(localized: "\(events.count) Einträge")) {
             if events.isEmpty {
-                Text("Keine Einträge in diesem Zeitraum.").font(.system(size: 12)).foregroundStyle(.secondary)
+                UnavailableNote(text: String(localized: "Keine Einträge in diesem Zeitraum."))
             } else {
-                VStack(spacing: 5) {
+                // A grid keeps the columns aligned at their natural width; only the title gives way.
+                Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 12, verticalSpacing: 6) {
                     ForEach(Array(events.prefix(200).enumerated()), id: \.offset) { _, event in
-                        HStack(alignment: .firstTextBaseline, spacing: 10) {
-                            Text(shortStamp(event.date)).font(.system(size: 11, design: .monospaced)).foregroundStyle(.secondary)
-                                .frame(width: 92, alignment: .leading)
-                            Text(kindName(event.kind)).font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(kindColor(event))
-                                .frame(width: 70, alignment: .leading)
-                            Text(event.title).font(.system(size: 11)).lineLimit(1).truncationMode(.tail)
-                            Spacer(minLength: 0)
+                        GridRow {
+                            Text(shortStamp(event.date)).font(.system(size: 12)).monospacedDigit()
+                                .foregroundStyle(.secondary).fixedSize()
+                            Text(kindName(event.kind)).font(.system(size: 11, weight: .semibold))
+                                .foregroundStyle(kindColor(event)).fixedSize()
+                            Text(event.title).font(.system(size: 12)).lineLimit(1).truncationMode(.tail)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                 }

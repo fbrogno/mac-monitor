@@ -74,7 +74,7 @@ struct CustomRulesPane: View {
             title: String(localized: "Regel „\(rule.name)“ löschen?"),
             message: String(localized: "Die Regel wird entfernt. Das lässt sich nicht rückgängig machen."),
             confirmTitle: String(localized: "Löschen"),
-            action: { [weak model] in model?.settings.customRules.removeAll { $0.id == rule.id } }), host: .settings)
+            action: { [weak model] in model?.settings.customRules.removeAll { $0.id == rule.id } }))
     }
 }
 

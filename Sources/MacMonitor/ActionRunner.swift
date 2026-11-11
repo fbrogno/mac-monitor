@@ -176,8 +176,8 @@ extension AppModel {
     func handle(hotKey action: HotKeyAction) {
         switch action {
         case .openPopover: togglePopover()
-        case .openDashboard: openDashboard()
-        case .openOverview: openOverview()
+        case .openDashboard: open(section.group == .monitor || section.group == .history ? section : .overview)
+        case .openOverview: open(.issues)
         }
     }
 
@@ -190,7 +190,7 @@ extension AppModel {
                 return
             }
         }
-        openOverview()
+        open(.issues)
     }
 
     private static func statusButton(in view: NSView?) -> NSButton? {
@@ -204,7 +204,7 @@ extension AppModel {
         Task { @MainActor [weak self] in
             // The window opener exists once the menu bar item has appeared.
             for _ in 0..<20 {
-                if self?.openWindowAction != nil { self?.showWindow("welcome"); return }
+                if self?.openWindowAction != nil { self?.handle(.welcome); return }
                 try? await Task.sleep(nanoseconds: 500_000_000)
             }
         }

@@ -29,13 +29,12 @@ enum Entry {
 
 struct MacMonitorApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
-    @Environment(\.openWindow) private var openWindow
 
     var body: some Scene {
         MenuBarExtra {
             PopoverView(
                 model: delegate.model,
-                onOpenSettings: { delegate.model.showWindow("settings") },
+                onOpenSettings: { delegate.model.open(delegate.model.lastSettingsSection) },
                 onQuit: { NSApp.terminate(nil) })
             .onAppear { delegate.model.isPopoverOpen = true }
             .onDisappear { delegate.model.isPopoverOpen = false }
@@ -44,35 +43,14 @@ struct MacMonitorApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        Window("MacMonitor – Übersicht", id: "overview") {
-            OverviewView(model: delegate.model)
+        // The one window. It does not open at launch (menu bar app); everything leads here.
+        Window("MacMonitor", id: "main") {
+            MainWindowView(model: delegate.model)
         }
-        .defaultSize(width: 760, height: 820)
-        .defaultLaunchBehavior(.suppressed)
-
-        Window("MacMonitor – Dashboard", id: "dashboard") {
-            DashboardView(model: delegate.model)
-        }
-        .defaultSize(width: 1120, height: 780)
-        .defaultLaunchBehavior(.suppressed)
-
-        Window("MacMonitor – Einstellungen", id: "settings") {
-            SettingsRoot(model: delegate.model)
-        }
+        .defaultSize(width: 1100, height: 720)
         .windowResizability(.contentMinSize)
         .defaultLaunchBehavior(.suppressed)
-
-        Window("Willkommen bei MacMonitor", id: "welcome") {
-            WelcomeView(model: delegate.model) { NSApp.windows.first { $0.identifier?.rawValue.hasPrefix("welcome") == true }?.close() }
-        }
-        .windowResizability(.contentSize)
-        .defaultLaunchBehavior(.suppressed)
-
-        Window("Über MacMonitor", id: "about") {
-            AboutView()
-        }
-        .windowResizability(.contentSize)
-        .defaultLaunchBehavior(.suppressed)
+        .commands { MainCommands(model: delegate.model) }
     }
 }
 
@@ -96,23 +74,56 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model.prepareForTermination()
     }
 
-    /// `open macmonitor://test|overview|cleanup|welcome|about|settings[/<Reiter>]|dashboard[/<Bereich>]` — from scripts and the terminal.
+    /// Clicking the Dock icon, or starting the app again from Finder, brings the window back.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !model.isMainWindowVisible { model.showMainWindow() }
+        return true
+    }
+
+    /// `open macmonitor://test|overview|cleanup|welcome|about|settings[/<Reiter>]|dashboard[/<Bereich>]|open/<Bereich>`
+    /// — from scripts, widgets, shortcuts and the terminal.
     func application(_ application: NSApplication, open urls: [URL]) {
-        for url in urls where url.scheme == "macmonitor" {
-            switch url.host {
-            case "test": model.sendTest()
-            case "overview": model.openOverview()
-            case "cleanup": model.openOverview(section: .cleanup)
-            case "welcome": model.showWindow("welcome")
-            case "about": model.showWindow("about")
-            case "settings":
-                if let slug = url.pathComponents.dropFirst().first, let tab = SettingsTab(slug: slug) { model.settingsTab = tab }
-                model.showWindow("settings")
-            case "dashboard":
-                let slug = url.pathComponents.dropFirst().first
-                model.openDashboard(section: slug.flatMap(DashboardSection.init(slug:)) ?? model.dashboard.section)
-            default: break
+        for url in urls {
+            guard let route = AppRoute.resolve(url, current: model.section, lastSettings: model.lastSettingsSection) else { continue }
+            model.handle(route)
+        }
+    }
+}
+
+/// The menu of the regular app: shown while the main window is open.
+struct MainCommands: Commands {
+    let model: AppModel
+
+    var body: some Commands {
+        SidebarCommands()
+        CommandGroup(replacing: .appInfo) {
+            Button("Über MacMonitor") { model.open(.about) }
+            Button("Nach Updates suchen …") { model.updater.checkForUpdates() }
+                .disabled(!model.updater.isConfigured)
+        }
+        CommandGroup(replacing: .appSettings) {
+            Button("Einstellungen …") { model.open(model.section.isSettings ? model.section : model.lastSettingsSection) }
+                .keyboardShortcut(",", modifiers: .command)
+        }
+        CommandGroup(replacing: .newItem) {
+            Button("Verlauf exportieren …") { model.open(.data) }
+            Button("Fenster schließen") { NSApp.keyWindow?.performClose(nil) }
+                .keyboardShortcut("w", modifiers: .command)
+        }
+        CommandGroup(after: .sidebar) {
+            Divider()
+            ForEach(SidebarGroup.allCases.filter { $0 != .settings }) { group in
+                ForEach(group.sections) { section in
+                    if let key = section.shortcutKey {
+                        Button(section.title) { model.open(section) }.keyboardShortcut(KeyEquivalent(key), modifiers: .command)
+                    } else {
+                        Button(section.title) { model.open(section) }
+                    }
+                }
             }
+        }
+        CommandGroup(replacing: .help) {
+            Link("MacMonitor auf GitHub", destination: AppLinks.github)
         }
     }
 }
@@ -129,7 +140,12 @@ struct MenuBarLabel: View {
             }
         }
         // The label exists for the app's whole lifetime, so it is the place to hand the
-        // window opener to code outside SwiftUI (notifications, alert panel).
-        .onAppear { model.openWindowAction = { openWindow(id: $0) } }
+        // window opener to code outside SwiftUI (notifications, alert panel, links).
+        .onAppear {
+            model.openWindowAction = { id in
+                NSApp.setActivationPolicy(.regular)
+                openWindow(id: id)
+            }
+        }
     }
 }

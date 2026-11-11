@@ -46,7 +46,7 @@ final class UpdateController: NSObject, SPUUpdaterDelegate, SPUStandardUserDrive
         controller.checkForUpdates(nil)
     }
 
-    /// "Version 1.1.0 (123)", or a note for builds without a bundle (SwiftPM debug runs).
+    /// "Version 1.2.0 (123)", or a note for builds without a bundle (SwiftPM debug runs).
     static var versionText: String {
         let info = Bundle.main.infoDictionary
         guard let short = info?["CFBundleShortVersionString"] as? String else { return String(localized: "Entwicklungsbuild") }

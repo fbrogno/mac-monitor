@@ -11,7 +11,7 @@ Thanks for looking at MacMonitor. Bug reports, false alarms and small, focused p
 |---|---|
 | `Sources/MonitorCore` | The library without UI. `Metrics` (samplers for Mach, sysctl, libproc, IOKit, SMC), `Alerts` (built-in rules as pure functions, alert engine, settings), `Automation` (custom rules, actions, protected processes, quiet policy), `History` (SQLite store, retention, export), `Integration` (widget snapshot, mute state, status summary), `MenuBar`, `Support` |
 | `Sources/WidgetViews` | SwiftUI views of the desktop widgets, shared by the widget extension and the screenshot renderer |
-| `Sources/MacMonitor` | The app: schedule and event sources (`AppModel`), notifications, alert panel, SwiftUI popover, overview, dashboard and settings, Sparkle updater, Shortcuts (`Integration/Intents.swift`) |
+| `Sources/MacMonitor` | The app: schedule and event sources (`AppModel`), notifications, alert panel, SwiftUI popover, main window (monitor, history, tools, settings), Sparkle updater, Shortcuts (`Integration/Intents.swift`) |
 | `Sources/MacMonitorWidgets` | The WidgetKit extension |
 | `Tests/MonitorCoreTests` | Tests for `MonitorCore` (Swift Testing) |
 | `project.yml`, `Config` | XcodeGen project of the app, public Sparkle key |

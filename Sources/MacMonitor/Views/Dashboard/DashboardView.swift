@@ -1,43 +1,8 @@
-import AppKit
 import MonitorCore
 import SwiftUI
 
-/// The dashboard window: sidebar with the sections, details on the right.
-struct DashboardView: View {
-    let model: AppModel
-
-    var body: some View {
-        @Bindable var dashboard = model.dashboard
-        NavigationSplitView {
-            List(DashboardSection.allCases, selection: $dashboard.section) { section in
-                Label(section.title, systemImage: section.symbol).tag(section)
-            }
-            .navigationSplitViewColumnWidth(min: 210, ideal: 230, max: 260)
-        } detail: {
-            ScrollView { DashboardDetail(model: model).padding(24) }
-        }
-        .frame(minWidth: 900, minHeight: 600)
-        .confirmationAlert(model: model, host: .dashboard)
-        .onAppear { model.isDashboardOpen = true }
-        .onDisappear { model.isDashboardOpen = false }
-        // Reloads while the window is on screen only; the task ends when the view goes away.
-        .task(id: dashboard.currentKey) {
-            var first = true
-            while !Task.isCancelled {
-                if first || Self.isWindowVisible { await model.dashboard.reload() }
-                first = false
-                try? await Task.sleep(for: model.dashboard.range.refreshInterval)
-            }
-        }
-    }
-
-    private static var isWindowVisible: Bool {
-        guard let window = NSApp.windows.first(where: { $0.identifier?.rawValue.hasPrefix("dashboard") == true }) else { return false }
-        return window.isVisible && !window.isMiniaturized && window.occlusionState.contains(.visible)
-    }
-}
-
-/// Header plus the pane of the selected section; rendered directly for the README.
+/// The pane of the selected history area with its notices. Title, range and feedback belong to the window;
+/// rendered directly for the README.
 struct DashboardDetail: View {
     let model: AppModel
     /// Apps shown expanded; only the offline renderer sets this.
@@ -52,46 +17,11 @@ struct DashboardDetail: View {
     }
 
     var body: some View {
-        @Bindable var dashboard = model.dashboard
-        VStack(alignment: .leading, spacing: 18) {
-            DashboardHeader(title: dashboard.section.title, subtitle: subtitle, symbol: dashboard.section.symbol,
-                            trailing: AnyView(headerControl))
-            if let feedback = model.feedback {
-                FeedbackBanner(feedback: feedback) { model.feedback = nil }
-            }
+        VStack(alignment: .leading, spacing: 16) {
             historyNotice
             pane
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    @ViewBuilder private var headerControl: some View {
-        @Bindable var dashboard = model.dashboard
-        switch dashboard.section {
-        case .report:
-            let selection = Binding<Int>(
-                get: { ReportPeriod.allCases.firstIndex(of: dashboard.reportPeriod) ?? 0 },
-                set: { dashboard.reportPeriod = ReportPeriod.allCases[$0] })
-            MiniSegment(options: ReportPeriod.allCases.map(\.title), selection: selection)
-        case .events, .apps:
-            RangeSwitch(range: $dashboard.range)
-        default:
-            RangeSwitch(range: $dashboard.range)
-        }
-    }
-
-    private var subtitle: String {
-        switch dashboard.section {
-        case .overview: String(localized: "Aktuelle Werte und Verlauf")
-        case .cpu: String(localized: "Auslastung, Kerne und Grafikprozessor")
-        case .memory: String(localized: "Belegung, Druck und Swap")
-        case .energy: String(localized: "Leistungsaufnahme und Akku")
-        case .sensors: String(localized: "Temperaturen, Lüfter und SSD-Zustand")
-        case .network: String(localized: "Datendurchsatz und Speicherplatz")
-        case .apps: String(localized: "Verbrauch nach App")
-        case .events: String(localized: "Vorfälle und Protokoll")
-        case .report: String(localized: "Auswertung, Export und Verlauf verwalten")
-        }
     }
 
     @ViewBuilder private var historyNotice: some View {
@@ -130,7 +60,7 @@ struct NoticeBanner: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: symbol).foregroundStyle(tint)
-            Text(text).font(.system(size: 12)).fixedSize(horizontal: false, vertical: true)
+            Text(text).font(.system(size: 12)).foregroundStyle(.primary).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
         .padding(10)

@@ -28,9 +28,9 @@ struct DataPane: View {
                 }
                 .disabled(model.history == nil)
                 HStack {
-                    SettingsNote("Der Bericht im Dashboard exportiert auch einzelne Zeiträume.")
+                    SettingsNote("Der Bericht unter Verlauf exportiert auch einzelne Zeiträume.")
                     Spacer()
-                    Button("Bericht im Dashboard öffnen") { model.openDashboard(section: .report) }
+                    Button("Bericht öffnen") { model.open(.report) }
                         .controlSize(.small)
                 }
             } header: {
@@ -101,7 +101,7 @@ struct DataPane: View {
                         model?.feedback = Feedback(text: String(localized: "Der Verlauf konnte nicht gelöscht werden: \(error.localizedDescription)"), isError: true)
                     }
                 }
-            }), host: .settings)
+            })) 
     }
 
     // MARK: Settings file
@@ -137,7 +137,7 @@ struct DataPane: View {
                         title: String(localized: "Einstellungen aus „\(url.lastPathComponent)“ übernehmen?"),
                         message: String(localized: "Deine jetzigen Einstellungen, auch die eigenen Regeln, werden dadurch ersetzt."),
                         confirmTitle: String(localized: "Übernehmen"), isDestructive: false,
-                        action: { apply(imported, to: model) }), host: .settings)
+                        action: { apply(imported, to: model) })) 
                 } catch let error as SettingsTransfer.ImportError {
                     model.feedback = Feedback(text: error.message, isError: true)
                 } catch {

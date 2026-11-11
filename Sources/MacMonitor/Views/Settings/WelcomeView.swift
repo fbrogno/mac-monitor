@@ -73,7 +73,7 @@ struct WelcomeView: View {
             }
 
             HStack {
-                Button("Einstellungen …") { model.settingsTab = .general; model.showWindow("settings") }
+                Button("Einstellungen …") { onDone(); model.open(.general) }
                 Spacer()
                 Button("Fertig") {
                     Welcome.markSeen()
@@ -84,7 +84,7 @@ struct WelcomeView: View {
                 .keyboardShortcut(.defaultAction)
             }
         }
-        .padding(24)
+        .padding(28)
         .frame(width: 520)
         .task { await refresh() }
     }

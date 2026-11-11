@@ -45,7 +45,7 @@
 
 - [Warum MacMonitor](#warum-macmonitor)
 - [Funktionen](#funktionen)
-- [Nachschlagen](#nachschlagen): [Regeln](#alle-17-eingebauten-regeln) · [Messwerte](#alles-was-sie-misst) · [Dashboard](#das-dashboard-neun-bereiche) · [eigene Regeln](#eigene-regeln-und-aktionen) · [Einstellungen](#einstellungen-reiter-für-reiter)
+- [Nachschlagen](#nachschlagen): [Regeln](#alle-17-eingebauten-regeln) · [Messwerte](#alles-was-sie-misst) · [Hauptfenster](#das-hauptfenster) · [eigene Regeln](#eigene-regeln-und-aktionen) · [Einstellungen](#einstellungen-bereich-für-bereich)
 - [So funktioniert es](#so-funktioniert-es)
 - [Widgets](#widgets)
 - [Kurzbefehle und Automatisierung](#kurzbefehle-und-automatisierung)
@@ -81,24 +81,28 @@ Kurze Spitzen zählen nicht. Eine Regel meldet sich erst, wenn der Zustand ohne 
       Alle Live-Werte auf einer Seite: CPU, Speicher, Swap, GPU, Temperatur, Leistung, Lüfter, SSD, Netzwerk, Akku. Dazu Prozesse oder Apps nach CPU oder RAM und die letzten Meldungen.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/overview.png" alt="Übersicht mit Lösungen" height="250">
-      <br><b>Übersicht mit Lösungen</b><br>
+      <img src="docs/images/window-issues.png" alt="Auffälligkeiten mit Lösungen" height="250">
+      <br><b>Auffälligkeiten mit Lösungen</b><br>
       Jede Meldung mit Erklärung, konkreten Schritten und den Knöpfen, die sie ausführen. Bei Speicher- oder CPU-Problemen stehen die wahrscheinlichen Verursacher gleich dabei.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/dashboard-overview.png" alt="Dashboard" width="270">
-      <br><b>Dashboard mit Verlauf</b><br>
-      Neun Bereiche, Live-Werte und Diagramme von 1 Stunde bis 30 Tage, Tages- oder Wochenbericht, Export als CSV und JSON.
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/images/window-overview.png">
+        <source media="(prefers-color-scheme: light)" srcset="docs/images/window-overview-light.png">
+        <img src="docs/images/window-overview.png" alt="Das Hauptfenster" width="270">
+      </picture>
+      <br><b>Ein Fenster mit Verlauf</b><br>
+      Seitenleiste mit allen Bereichen: Live-Werte und Diagramme von 1 Stunde bis 30 Tage, Tages- oder Wochenbericht, Export als CSV und JSON.
     </td>
   </tr>
   <tr>
     <td width="33%" valign="top">
-      <img src="docs/images/settings-rules.png" alt="Regeln in den Einstellungen" width="270">
+      <img src="docs/images/window-rules.png" alt="Regeln in den Einstellungen" width="270">
       <br><b>17 eingebaute Regeln</b><br>
       Schwellen und Dauern änderst du selbst, je Gruppe mit „Auf Standard zurücksetzen“. Prozesse lassen sich dauerhaft ignorieren oder für eine Stunde stummschalten.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/settings-custom-rule.png" alt="Editor für eine eigene Regel" width="270">
+      <img src="docs/images/window-custom-rules.png" alt="Eigene Regeln in den Einstellungen" width="270">
       <br><b>Eigene Regeln mit Aktionen</b><br>
       Messgröße, Grenze und Dauer wählen. Dann Mitteilung zeigen, Kurzbefehl ausführen, URL öffnen, ein Programm beenden oder drosseln.
     </td>
@@ -116,10 +120,10 @@ Kurze Spitzen zählen nicht. Eine Regel meldet sich erst, wenn der Zustand ohne 
     <td width="33%" valign="top">
       <img src="docs/readme/shortcuts-de.svg" alt="Die sieben Aktionen für Kurzbefehle" width="270">
       <br><b>Kurzbefehle, Spotlight, Siri</b><br>
-      Sieben Aktionen: Status, größte Verbraucher und Auffälligkeiten abrufen, Dashboard öffnen, stummschalten und wieder aufheben.
+      Sieben Aktionen: Status, größte Verbraucher und Auffälligkeiten abrufen, Hauptfenster öffnen, stummschalten und wieder aufheben.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/overview.png" alt="SSD aufräumen in der Übersicht" height="250">
+      <img src="docs/images/window-cleanup.png" alt="SSD aufräumen im Hauptfenster" height="250">
       <br><b>SSD aufräumen</b><br>
       Misst Caches, die sich von selbst neu aufbauen, und leert sie nach Rückfrage. Downloads werden nur geöffnet, nie gelöscht.
     </td>
@@ -197,40 +201,51 @@ Was je nach Mac abweicht, steht unter [Grenzen](#grenzen).
 
 </details>
 
-### Das Dashboard: neun Bereiche
+### Das Hauptfenster
 
 <details>
-<summary><b>Dashboard-Bereiche mit Bildern</b></summary>
+<summary><b>Seitenleiste, Bereiche und Bilder</b></summary>
 
 &nbsp;
 
-Öffnen über das Menüleisten-Fenster, über ein [Tastenkürzel](#einstellungen-reiter-für-reiter) oder mit `open macmonitor://dashboard`. Jeder Bereich hat einen Zeitraum-Schalter: 1 Stunde, 24 Stunden, 7 Tage, 30 Tage. Die Diagramme zeigen den Durchschnitt mit einem Band von Minimum bis Maximum und beim Darüberfahren die genauen Werte.
+Ein Fenster enthält alles: Live-Werte, Verlauf, Werkzeuge und Einstellungen. Solange es offen ist, zeigt MacMonitor auch ein Dock-Symbol. Öffnen über das Menüleisten-Fenster, über ein [Tastenkürzel](#einstellungen-bereich-für-bereich) oder mit `open macmonitor://open/<bereich>`. <kbd>⌘</kbd><kbd>,</kbd> springt zu den Einstellungen, <kbd>⌘1</kbd> bis <kbd>⌘9</kbd> (und <kbd>⌘0</kbd>) zu den ersten zehn Bereichen der Seitenleiste. Das Suchfeld in der Seitenleiste findet Bereiche und Einstellungen über Namen und Stichwörter.
 
-| Bereich | Zeigt |
-|---|---|
-| Überblick | alle wichtigen Werte als Kacheln mit kleinem Diagramm, aktuelle Meldungen mit „Lösen“-Knöpfen, Laufzeit, Last und Prozessanzahl |
-| CPU & GPU | CPU im Verlauf mit Effizienz- und Performance-Kernen, Balken je Kern, GPU-Last und GPU-Speicher, Systemlast |
-| Speicher | Belegung, Druck und Swap im Verlauf |
-| Energie & Akku | Systemleistung aufgeteilt in CPU, GPU, Neural Engine und Arbeitsspeicher, Ladestand, Akkuzustand |
-| Sensoren | Temperaturen, Lüfter und SSD-Zustand |
-| Netzwerk & Laufwerke | Durchsatz gesamt und je Schnittstelle, Verbindung, Laufwerke, Lese- und Schreibrate |
-| Apps | alle Apps jetzt mit CPU, RAM, Energie, Threads und Plattenzugriffen, Hilfsprozesse aufklappbar; die größten Verbraucher im gewählten Zeitraum |
-| Ereignisse | alle Meldungen im Zeitraum, zu Vorfällen mit Dauer zusammengefasst, und das Rohprotokoll |
-| Bericht | Zusammenfassung für Tag oder Woche mit Änderung zur Vorperiode, Vorfälle je Regel, größte Programme, Export und Löschen |
+Bereiche mit Diagrammen teilen sich einen Zeitraum-Schalter: 1 Stunde, 24 Stunden, 7 Tage, 30 Tage. Die Diagramme zeigen den Durchschnitt mit einem Band von Minimum bis Maximum und beim Darüberfahren die genauen Werte. Der Bericht hat einen eigenen Zeitraum, Tag oder Woche.
+
+| Gruppe | Bereich | Zeigt |
+|---|---|---|
+| Monitor | Überblick | alle wichtigen Werte als Kacheln mit kleinem Diagramm, Laufzeit, Last und Prozessanzahl |
+| Monitor | Auffälligkeiten | aktuelle Meldungen mit Erklärung, Schritten und „Lösen“-Knöpfen |
+| Monitor | Apps & Prozesse | alle Apps jetzt mit CPU, RAM, Energie, Threads und Plattenzugriffen, Hilfsprozesse aufklappbar; die größten Verbraucher im gewählten Zeitraum |
+| Verlauf | CPU & GPU | CPU im Verlauf mit Effizienz- und Performance-Kernen, Balken je Kern, GPU-Last und GPU-Speicher, Systemlast |
+| Verlauf | Speicher | Belegung, Druck und Swap im Verlauf |
+| Verlauf | Energie & Akku | Systemleistung aufgeteilt in CPU, GPU, Neural Engine und Arbeitsspeicher, Ladestand, Akkuzustand |
+| Verlauf | Sensoren | Temperaturen, Lüfter und SSD-Zustand |
+| Verlauf | Netzwerk & Laufwerke | Durchsatz gesamt und je Schnittstelle, Verbindung, Laufwerke, Lese- und Schreibrate |
+| Verlauf | Ereignisse | alle Meldungen im Zeitraum, zu Vorfällen mit Dauer zusammengefasst, und das Rohprotokoll |
+| Verlauf | Bericht | Zusammenfassung für Tag oder Woche mit Änderung zur Vorperiode, Vorfälle je Regel, größte Programme, Export und Löschen |
+| Werkzeuge | SSD aufräumen | Caches und Reste, die sich von selbst neu aufbauen, gemessen und nach Rückfrage geleert |
+| Einstellungen | Allgemein, Menüleiste, Regeln, Eigene Regeln, Ruhe, Ignoriert, Daten, Updates & Info | siehe [Einstellungen](#einstellungen-bereich-für-bereich) |
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/dashboard-overview.png" alt="Dashboard: Überblick"><br><sub>Überblick</sub></td>
-    <td width="50%"><img src="docs/images/dashboard-cpu.png" alt="Dashboard: CPU und GPU"><br><sub>CPU &amp; GPU</sub></td>
+    <td width="50%"><img src="docs/images/window-overview.png" alt="Überblick"><br><sub>Überblick</sub></td>
+    <td width="50%"><img src="docs/images/window-issues.png" alt="Auffälligkeiten"><br><sub>Auffälligkeiten</sub></td>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/images/dashboard-energy.png" alt="Dashboard: Energie und Akku"><br><sub>Energie &amp; Akku</sub></td>
-    <td width="50%"><img src="docs/images/dashboard-apps.png" alt="Dashboard: Apps"><br><sub>Apps</sub></td>
+    <td width="50%"><img src="docs/images/window-apps.png" alt="Apps und Prozesse"><br><sub>Apps &amp; Prozesse</sub></td>
+    <td width="50%"><img src="docs/images/window-cpu.png" alt="CPU und GPU"><br><sub>CPU &amp; GPU</sub></td>
   </tr>
   <tr>
-    <td colspan="2"><img src="docs/images/dashboard-report.png" alt="Dashboard: Bericht"><br><sub>Bericht</sub></td>
+    <td width="50%"><img src="docs/images/window-energy.png" alt="Energie und Akku"><br><sub>Energie &amp; Akku</sub></td>
+    <td width="50%"><img src="docs/images/window-report.png" alt="Bericht"><br><sub>Bericht</sub></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/images/window-cleanup.png" alt="SSD aufräumen"><br><sub>SSD aufräumen</sub></td>
   </tr>
 </table>
+
+Helle und dunkle Darstellung folgen dem System.
 
 **Verlauf.** Er liegt in einer SQLite-Datei auf deinem Mac. Minutenwerte werden 2 Tage aufbewahrt, 15-Minuten-Werte 30 Tage, Tageswerte 2 Jahre. Meldungen bleiben 90 Tage. Der Bericht exportiert einen gewählten Zeitraum als CSV oder JSON und kann den ganzen Verlauf löschen.
 
@@ -252,7 +267,7 @@ Unter **Einstellungen → Eigene Regeln** legst du fest, worauf MacMonitor achte
 
 Fünf Vorlagen helfen beim Start, zum Beispiel „Chrome frisst RAM“ (nach Rückfrage beenden, über 4 GB für 2 min) oder „Akku unter 20 %“. Unvollständige Regeln lassen sich nicht speichern, der Editor sagt am Feld, was fehlt. Jede ausgeführte Aktion und jeder Fehler steht im Ereignisprotokoll. Eine Regel, die sich nicht lesen lässt, wird beim Laden übersprungen, die übrigen bleiben.
 
-<img src="docs/images/settings-custom-rule.png" alt="Editor für eine eigene Regel mit Hinweis am noch leeren Feld" width="640">
+<img src="docs/images/window-custom-rules.png" alt="Eigene Regeln in den Einstellungen mit geöffnetem Editor" width="640">
 
 **Sicherheit.**
 
@@ -265,14 +280,16 @@ Fünf Vorlagen helfen beim Start, zum Beispiel „Chrome frisst RAM“ (nach Rü
 
 </details>
 
-### Einstellungen, Reiter für Reiter
+### Einstellungen, Bereich für Bereich
 
 <details>
-<summary><b>Die acht Reiter, Ruhezeiten und Tastenkürzel</b></summary>
+<summary><b>Die acht Bereiche, Ruhezeiten und Tastenkürzel</b></summary>
 
 &nbsp;
 
-| Reiter | Inhalt |
+Die Einstellungen sind die letzte Gruppe in der Seitenleiste des Hauptfensters, oder <kbd>⌘</kbd><kbd>,</kbd> von überall.
+
+| Bereich | Inhalt |
 |---|---|
 | Allgemein | Beim Anmelden starten, Hinweisfenster (aus, wenn ich an einem anderen Bildschirm bin (Standard), immer), Erinnerungsabstand |
 | Menüleiste | bis zu drei Werte neben dem Symbol: CPU, RAM, GPU, Temperatur, Leistung, Netz ↓, Akku. Standard: nur Symbol. Drei optionale Tastenkürzel |
@@ -281,24 +298,24 @@ Fünf Vorlagen helfen beim Start, zum Beispiel „Chrome frisst RAM“ (nach Rü
 | Ruhe | was wann stummgeschaltet wird |
 | Ignoriert | Programme, die nie Prozess-Meldungen auslösen (Standard: `kernel_task`, `mds_stores`, `mdworker_shared`, `photoanalysisd`), und gerade stummgeschaltete Programme |
 | Daten | Größe und Aufbewahrung des Verlaufs, Export, Löschen, Export und Import deiner Einstellungen als JSON |
-| Updates & Info | automatische Update-Prüfung, jetzt prüfen, Version, Hinweis zum Datenschutz |
+| Updates & Info | automatische Update-Prüfung, jetzt prüfen, Version, Lizenz, Hinweis zum Datenschutz, Links. Das zeigte früher das Info-Fenster |
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/settings-quiet.png" alt="Einstellungen: Ruhe"></td>
-    <td width="50%"><img src="docs/images/settings-menubar.png" alt="Einstellungen: Menüleiste und Tastenkürzel"></td>
+    <td width="50%"><img src="docs/images/window-quiet.png" alt="Einstellungen: Ruhe"></td>
+    <td width="50%"><img src="docs/images/window-menubar.png" alt="Einstellungen: Menüleiste und Tastenkürzel"></td>
   </tr>
 </table>
 
 **Ruhe.** Kein Hinweisfenster und kein Ton bei gesperrtem Bildschirm und bei gespiegeltem Bildschirm (Beamer im Spiegelmodus). Dazu optionale Ruhezeiten (standardmäßig aus, eingeschaltet 22:00 bis 07:00, auch über Mitternacht). In ruhigen Zeiten entfallen Hinweise der Stufe „Hinweis“ ganz. Warnungen landen weiter still in der Mitteilungszentrale, ohne Fenster und Ton. Kritische Meldungen kommen durch, solange du den Schalter angelassen hast (Standard). Ein Ton kommt nur bei neuen und verschärften Warnungen und kritischen Meldungen, nie bei Erinnerungen oder „Behoben“. Der Schalter „Fokus beachten“ ist ausgegraut, siehe [Grenzen](#grenzen).
 
-**Tastenkürzel.** Menüleisten-Fenster, Dashboard und Übersicht öffnen. Standardmäßig ist keines belegt. Wähle eines unter Einstellungen → Menüleiste, zum Beispiel <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>D</kbd> für das Dashboard. Sie gelten in jedem Programm und brauchen keine Bedienungshilfen-Berechtigung.
+**Tastenkürzel.** Menüleisten-Fenster, Hauptfenster und Auffälligkeiten öffnen. Standardmäßig ist keines belegt. Wähle eines unter Einstellungen → Menüleiste, zum Beispiel <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>D</kbd> für das Hauptfenster. Im Hauptfenster selbst gehen <kbd>⌘</kbd><kbd>,</kbd> und <kbd>⌘1</kbd> bis <kbd>⌘9</kbd> ohne Einrichtung. Sie gelten in jedem Programm und brauchen keine Bedienungshilfen-Berechtigung.
 
 **Der Text in der Menüleiste** ändert sich nur bei spürbaren Änderungen und höchstens alle 10 Sekunden, weil jede Änderung macOS die Menüleiste auf jedem Bildschirm neu zeichnen lässt.
 
-**Erster Start.** Ein Willkommensfenster erklärt die App und fragt nach Mitteilungen. Erneut öffnen mit `open macmonitor://welcome`.
+**Erster Start.** Ein Willkommensblatt erklärt die App und fragt nach Mitteilungen. Erneut öffnen mit `open macmonitor://welcome`.
 
-<img src="docs/images/welcome.png" alt="Willkommensfenster" width="420">
+<img src="docs/images/welcome.png" alt="Willkommensblatt" width="420">
 
 </details>
 
@@ -324,7 +341,7 @@ flowchart LR
     E --> A["Aktionen eigener Regeln<br/>Kurzbefehl, URL, beenden, drosseln"]
     N --> H[("Verlauf<br/>SQLite")]
     E --> H
-    H --> D["Dashboard<br/>und Bericht"]
+    H --> D["Hauptfenster<br/>Verlauf und Bericht"]
     N --> W["Widget-Datei"]
     W --> WG["Widgets"]
     N --> I["Kurzbefehle<br/>und Siri"]
@@ -369,7 +386,7 @@ Fünf Widgets für den Schreibtisch und die Mitteilungszentrale. Sie zeigen Date
 | Speicherplatz | klein, mittel | freier Platz auf dem Startvolume |
 | Größte Verbraucher | mittel, groß | die Apps mit der höchsten Last |
 
-Ein Klick auf ein Widget öffnet die Übersicht oder den passenden Dashboard-Bereich.
+Ein Klick auf ein Widget öffnet das Hauptfenster bei den Auffälligkeiten oder im passenden Bereich.
 
 <details>
 <summary><b>Widget-Galerie</b></summary>
@@ -442,8 +459,8 @@ MacMonitor bringt sieben Aktionen in die Kurzbefehle-App. Sie funktionieren auch
 | Systemstatus abrufen | liefert CPU, RAM, GPU, Temperatur, Leistung, Akku, freien Platz, die Anzahl der Auffälligkeiten und eine Zusammenfassung in einer Zeile |
 | Größte Verbraucher abrufen | liefert die Apps mit der höchsten Last, nach CPU, Arbeitsspeicher oder Energie sortiert (1 bis 20, Standard 5) |
 | Auffälligkeiten abrufen | liefert die aktuellen Auffälligkeiten mit Titel, Schweregrad und Beschreibung |
-| Dashboard öffnen | öffnet das Dashboard in einem Bereich deiner Wahl |
-| Übersicht öffnen | öffnet die Übersicht mit den aktuellen Auffälligkeiten |
+| Dashboard öffnen | öffnet das Hauptfenster in einem Bereich deiner Wahl |
+| Übersicht öffnen | öffnet das Hauptfenster bei den aktuellen Auffälligkeiten |
 | Meldungen stummschalten | schaltet MacMonitor für eine wählbare Zeit stumm (Standard 1 Stunde) |
 | Stummschaltung aufheben | beendet die Stummschaltung |
 
@@ -470,17 +487,42 @@ Für Skripte, Kurzbefehle und das Terminal. Die App muss installiert sein.
 
 | Befehl | Öffnet |
 |---|---|
-| `open macmonitor://overview` | die Übersicht |
-| `open macmonitor://cleanup` | die Übersicht bei „SSD aufräumen“ |
-| `open macmonitor://dashboard` | das Dashboard (zuletzt gezeigter Bereich) |
-| `open macmonitor://dashboard/<bereich>` | einen Bereich: `overview`, `cpu`, `memory`, `energy`, `sensors`, `network`, `apps`, `events`, `report` |
-| `open macmonitor://settings` | die Einstellungen |
-| `open macmonitor://settings/<reiter>` | einen Reiter: `general`, `menuBar`, `rules`, `customRules`, `quiet`, `ignored`, `data`, `about` |
-| `open macmonitor://welcome` | das Willkommensfenster |
-| `open macmonitor://about` | das Info-Fenster |
+| `open macmonitor://overview` | das Hauptfenster bei den Auffälligkeiten |
+| `open macmonitor://cleanup` | SSD aufräumen |
+| `open macmonitor://dashboard` | das Hauptfenster (bleibt im aktuellen Monitor- oder Verlaufs-Bereich, sonst Überblick) |
+| `open macmonitor://dashboard/<bereich>` | einen Bereich aus Monitor, Verlauf oder Werkzeuge, Namen siehe unten |
+| `open macmonitor://settings` | die Einstellungen (zuletzt gezeigter Bereich) |
+| `open macmonitor://settings/<bereich>` | einen Einstellungsbereich, Namen siehe unten |
+| `open macmonitor://open/<bereich>` | jeden Bereich des Hauptfensters; ohne Namen den aktuellen |
+| `open macmonitor://welcome` | das Willkommensblatt |
+| `open macmonitor://about` | Einstellungen, Updates & Info |
 | `open macmonitor://test` | sendet eine Testmitteilung |
 
-Deutsche Namen wie `energie`, `netzwerk` oder `eigene-regeln` werden ebenfalls angenommen.
+Groß- und Kleinschreibung spielt keine Rolle. Jeder Bereich hat seinen englischen und seinen deutschen Namen, mit oder ohne Umlaute:
+
+| Bereich | Namen |
+|---|---|
+| Überblick | `overview`, `ueberblick`, `überblick` |
+| Auffälligkeiten | `issues`, `auffaelligkeiten`, `uebersicht`, `meldungen` |
+| Apps & Prozesse | `apps`, `prozesse`, `apps-prozesse` |
+| CPU & GPU | `cpu` |
+| Speicher | `memory`, `speicher`, `ram` |
+| Energie & Akku | `energy`, `energie`, `akku` |
+| Sensoren | `sensors` |
+| Netzwerk & Laufwerke | `network`, `netzwerk`, `laufwerke` |
+| Ereignisse | `events`, `ereignisse` |
+| Bericht | `report`, `bericht` |
+| SSD aufräumen | `cleanup`, `aufraeumen`, `werkzeuge`, `ssd` |
+| Allgemein | `general`, `allgemein` |
+| Menüleiste | `menuBar`, `menuebar`, `menueleiste`, `menüleiste` |
+| Regeln | `rules`, `regeln` |
+| Eigene Regeln | `customRules`, `eigene-regeln`, `eigene` |
+| Ruhe | `quiet`, `ruhe` |
+| Ignoriert | `ignored`, `ignoriert` |
+| Daten | `data`, `daten` |
+| Updates & Info | `about`, `info`, `updates`, `ueber` |
+
+`dashboard/<bereich>` nimmt die Bereiche außerhalb der Einstellungen, `settings/<bereich>` nur Einstellungsbereiche; bei einem anderen Namen bleibt der aktuelle Bereich. `open/<bereich>` nimmt alle.
 
 </details>
 
@@ -600,7 +642,7 @@ Ja, Intel-Macs werden unterstützt (vorausgesetzt wird macOS 15 oder neuer). Man
 
 &nbsp;
 
-Öffne die [Vorlage „False alarm“](https://github.com/fbrogno/mac-monitor/issues/new?template=false_alarm.yml). Sag, welche Regel es war, was MacMonitor gemeldet hat, was dein Mac gerade tat, und nenne dein Mac-Modell und die macOS-Version. Das Protokoll unter Dashboard → Ereignisse hat den genauen Text und die Uhrzeit. Bis dahin kannst du Schwelle oder Dauer der Regel unter Einstellungen → Regeln erhöhen, das Programm in der Mitteilung für eine Stunde stummschalten oder auf die Ignorierliste setzen.
+Öffne die [Vorlage „False alarm“](https://github.com/fbrogno/mac-monitor/issues/new?template=false_alarm.yml). Sag, welche Regel es war, was MacMonitor gemeldet hat, was dein Mac gerade tat, und nenne dein Mac-Modell und die macOS-Version. Das Protokoll unter Verlauf → Ereignisse hat den genauen Text und die Uhrzeit. Bis dahin kannst du Schwelle oder Dauer der Regel unter Einstellungen → Regeln erhöhen, das Programm in der Mitteilung für eine Stunde stummschalten oder auf die Ignorierliste setzen.
 
 </details>
 
