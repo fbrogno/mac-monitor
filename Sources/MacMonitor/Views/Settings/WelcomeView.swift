@@ -73,7 +73,7 @@ struct WelcomeView: View {
             }
 
             HStack {
-                Button("Einstellungen …") { model.settingsTab = .general; model.showWindow("settings") }
+                Button("Einstellungen …") { model.open(.general); onDone() }
                 Spacer()
                 Button("Fertig") {
                     Welcome.markSeen()

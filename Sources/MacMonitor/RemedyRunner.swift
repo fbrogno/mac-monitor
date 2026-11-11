@@ -45,7 +45,7 @@ extension AppModel {
             if !settings.ignoredProcesses.contains(name) { settings.ignoredProcesses.append(name) }
             requestSample()
         case .showCleanup:
-            openOverview(section: .cleanup)
+            open(.cleanup)
         case .openStorageSettings:
             NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.settings.Storage")!)
         case .openActivityMonitor:

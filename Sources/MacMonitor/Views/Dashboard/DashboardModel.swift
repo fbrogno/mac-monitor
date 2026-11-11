@@ -239,3 +239,21 @@ final class DashboardModel {
         await reload()
     }
 }
+
+extension AppSection {
+    /// The history area that draws this section; nil for areas without history queries.
+    var dashboardSection: DashboardSection? {
+        switch self {
+        case .overview: .overview
+        case .apps: .apps
+        case .cpu: .cpu
+        case .memory: .memory
+        case .energy: .energy
+        case .sensors: .sensors
+        case .network: .network
+        case .events: .events
+        case .report: .report
+        default: nil
+        }
+    }
+}

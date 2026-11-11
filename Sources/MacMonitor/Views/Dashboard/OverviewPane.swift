@@ -99,7 +99,7 @@ struct OverviewPane: View {
                                 Text(c.body).font(.system(size: 11)).foregroundStyle(.secondary)
                             }
                             Spacer(minLength: 8)
-                            ActionButton(title: String(localized: "Lösen")) { model.openOverview() }
+                            ActionButton(title: String(localized: "Lösen")) { model.open(.issues) }
                         }
                     }
                 }

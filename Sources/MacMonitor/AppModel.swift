@@ -37,16 +37,27 @@ final class AppModel {
             }
         }
     }
-    var confirmationHost: ConfirmationHost = .overview
+    var confirmationHost: ConfirmationHost = .window
     /// Whether the long-term history is available; set once at launch.
     private(set) var historyState: HistoryState = .starting
-    /// Section the overview window should scroll to when it opens.
-    var overviewFocus: OverviewSection?
     /// Menu bar text, only changed when the shown value moves noticeably (see `updateMenuBarText`).
     private(set) var menuBarText = ""
 
-    /// Tab the settings window shows (also set from `macmonitor://settings/<tab>` and the welcome window).
-    var settingsTab: SettingsTab = .general
+    /// Area the main window shows. Set by the sidebar, links, the popover, notifications and shortcuts; the window
+    /// stores it between launches (see `MainWindowView`).
+    var section: AppSection = .overview {
+        didSet {
+            guard section != oldValue else { return }
+            if section.isSettings { lastSettingsSection = section }
+            if let history = section.dashboardSection { dashboard.section = history }
+        }
+    }
+    /// The settings area ⌘, returns to.
+    var lastSettingsSection: AppSection = .general
+    /// The welcome sheet of the main window (first start, `macmonitor://welcome`).
+    var showsWelcome = false
+    /// Search text of the main window's toolbar field.
+    var searchText = ""
 
     var settings: MonitorSettings {
         didSet {
@@ -70,26 +81,18 @@ final class AppModel {
         }
     }
 
-    var isOverviewOpen = false {
+    /// Whether the main window is on screen (open, not minimized, not covered). The one signal for faster
+    /// sampling and for loading history: with the window closed the app stays as quiet as before.
+    var isMainWindowVisible = false {
         didSet {
-            guard isOverviewOpen != oldValue else { return }
+            guard isMainWindowVisible != oldValue else { return }
             updateDetailsVisibility()
             reschedule()
-            if isOverviewOpen { requestSample() }
+            if isMainWindowVisible { requestSample() }
         }
     }
 
-    var isDashboardOpen = false {
-        didSet {
-            guard isDashboardOpen != oldValue else { return }
-            updateDetailsVisibility()
-            reschedule()
-            if isDashboardOpen { requestSample() }
-            if !isDashboardOpen, confirmationHost == .dashboard { pendingConfirmation = nil }
-        }
-    }
-
-    /// Charts and history of the dashboard window.
+    /// Charts and history of the main window.
     @ObservationIgnored let dashboard = DashboardModel()
     @ObservationIgnored private(set) var history: HistoryPipeline?
     @ObservationIgnored private var lastIngest: Date?
@@ -106,8 +109,10 @@ final class AppModel {
     @ObservationIgnored var throttledByRule: [UUID: [String]] = [:]
     @ObservationIgnored let cleanup = CleanupModel()
     @ObservationIgnored let updater = UpdateController()
-    /// Set by the SwiftUI scene so non-view code can open windows.
+    /// Set by the SwiftUI scene so non-view code can open the main window.
     @ObservationIgnored var openWindowAction: ((String) -> Void)?
+    /// The main window once it exists (set by `WindowAccessor`).
+    @ObservationIgnored weak var mainWindow: NSWindow?
     /// Sleep blockers the user just ended, to notice when their launcher starts them again.
     @ObservationIgnored private var endedBlockers: [String: (blocker: SleepBlocker, at: Date)] = [:]
     @ObservationIgnored private var swapHistory: [(date: Date, bytes: UInt64)] = []
@@ -146,8 +151,8 @@ final class AppModel {
         notifier.onMute = { [weak self] name in self?.mute(name) }
         overlay.onKill = { [weak self] ref in self?.confirmKill(ref) }
         overlay.onMute = { [weak self] name in self?.mute(name) }
-        overlay.onOpen = { [weak self] in self?.openOverview() }
-        notifier.onOpen = { [weak self] in self?.openOverview() }
+        overlay.onOpen = { [weak self] in self?.open(.issues) }
+        notifier.onOpen = { [weak self] in self?.open(.issues) }
         notifier.onOpenUpdate = { [weak self] in self?.updater.checkForUpdates() }
         updater.onScheduledUpdateFound = { [weak self] in self?.notifier.deliverUpdate(version: $0) }
         updater.start()
@@ -224,7 +229,7 @@ final class AppModel {
 
     /// Sensors refresh faster while any window or the popover shows them.
     private func updateDetailsVisibility() {
-        let visible = isPopoverOpen || isOverviewOpen || isDashboardOpen
+        let visible = isPopoverOpen || isMainWindowVisible
         queue.async { [sampler] in sampler.detailsVisible = visible }
     }
 
@@ -246,7 +251,7 @@ final class AppModel {
     }
 
     private func reschedule() {
-        let interval = SamplingPolicy.interval(popoverOpen: isPopoverOpen || isOverviewOpen || isDashboardOpen, power: snapshot?.power ?? .unknown)
+        let interval = SamplingPolicy.interval(popoverOpen: isPopoverOpen || isMainWindowVisible, power: snapshot?.power ?? .unknown)
         guard interval != currentInterval else { return }
         currentInterval = interval
         log.notice("Messintervall \(interval, format: .fixed(precision: 0)) s")
@@ -342,25 +347,38 @@ final class AppModel {
 
     // MARK: - Actions
 
-    func openOverview(section: OverviewSection = .issues) {
-        overviewFocus = section
-        showWindow("overview")
+    /// Shows the main window on `section`.
+    func open(_ section: AppSection) {
+        self.section = section
+        searchText = ""
+        showMainWindow()
     }
 
-    func openDashboard(section: DashboardSection? = nil) {
-        if let section { dashboard.section = section }
-        showWindow("dashboard")
-    }
-
-    /// Opens a SwiftUI window and brings it to the front. A menu bar app is not allowed to
-    /// activate itself from the background on recent macOS, so the window is ordered front explicitly.
-    func showWindow(_ id: String) {
-        openWindowAction?(id)
+    /// Opens the main window and brings it to the front. While it is open the app is a regular app (Dock icon,
+    /// menu); the window's observer switches the policy (see `WindowAccessor`). After the switch the app can
+    /// activate itself, so the window is ordered front explicitly on the next run loop turns as well.
+    func showMainWindow() {
+        openWindowAction?("main")
         NSApp.activate()
-        DispatchQueue.main.async {
-            guard let window = NSApp.windows.first(where: { $0.identifier?.rawValue.hasPrefix(id) == true }) else { return }
-            window.makeKeyAndOrderFront(nil)
-            window.orderFrontRegardless()
+        for delay in [0.0, 0.15] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                guard let window = self?.mainWindow
+                    ?? NSApp.windows.first(where: { $0.identifier?.rawValue.hasPrefix("main") == true }) else { return }
+                NSApp.activate()
+                window.makeKeyAndOrderFront(nil)
+                window.orderFrontRegardless()
+            }
+        }
+    }
+
+    /// `macmonitor://…` and the shortcuts: where the link leads, and what else it does.
+    func handle(_ route: AppRoute) {
+        switch route {
+        case .section(let target): open(target)
+        case .welcome:
+            showsWelcome = true
+            showMainWindow()
+        case .test: sendTest()
         }
     }
 
@@ -417,20 +435,18 @@ final class AppModel {
     }
 
     /// Shows a confirmation where the user is looking: inline in the open popover, otherwise as
-    /// an alert in the overview window (opened if necessary).
+    /// an alert in the main window (opened if necessary).
     /// `host` names the surface the question came from; without it the most visible one is used.
     func ask(_ confirmation: Confirmation) { ask(confirmation, host: nil) }
 
     func ask(_ confirmation: Confirmation, host: ConfirmationHost?) {
         if let host {
             confirmationHost = host
-        } else if isPopoverOpen && !isOverviewOpen && !isDashboardOpen {
+        } else if isPopoverOpen && !isMainWindowVisible {
             confirmationHost = .popover
-        } else if isDashboardOpen && !isOverviewOpen {
-            confirmationHost = .dashboard
         } else {
-            confirmationHost = .overview
-            if !isOverviewOpen { showWindow("overview") }
+            confirmationHost = .window
+            if !isMainWindowVisible { showMainWindow() }
         }
         pendingConfirmation = confirmation
     }
@@ -502,10 +518,6 @@ final class AppModel {
             at: URL(fileURLWithPath: "/System/Applications/Utilities/Activity Monitor.app"),
             configuration: NSWorkspace.OpenConfiguration())
     }
-}
-
-enum OverviewSection: Hashable {
-    case issues, cleanup
 }
 
 // MARK: - Previews and rendered docs

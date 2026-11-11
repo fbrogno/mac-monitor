@@ -20,7 +20,7 @@ struct GeneralPane: View {
                 LabeledContent("Menüleiste") {
                     HStack(spacing: 10) {
                         Text(menuBarSummary).foregroundStyle(.secondary)
-                        Button("Ändern …") { model.settingsTab = .menuBar }
+                        Button("Ändern …") { model.section = .menuBar }
                     }
                 }
                 LabeledContent("Sprache") {

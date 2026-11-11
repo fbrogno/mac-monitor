@@ -83,7 +83,7 @@ struct PopoverView: View {
                         Text(c.body).font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(2)
                     }
                     Spacer(minLength: 0)
-                    Button("Lösen") { model.openOverview() }
+                    Button("Lösen") { model.open(.issues) }
                         .buttonStyle(.plain)
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(Palette.severity(c.severity))
@@ -257,8 +257,7 @@ struct PopoverView: View {
 
     private var footer: some View {
         HStack(spacing: 2) {
-            FooterButton(title: "Übersicht", symbol: "square.grid.2x2", action: { model.openOverview() })
-            FooterButton(title: "Dashboard", symbol: "chart.xyaxis.line", action: { model.openDashboard() })
+            FooterButton(title: "Öffnen", symbol: "macwindow", action: { model.open(model.section.isSettings ? .overview : model.section) })
             FooterButton(title: "Einstellungen", symbol: "gearshape", iconOnly: true, action: onOpenSettings)
             if let version = model.updater.availableVersion {
                 FooterButton(title: "Update \(version)", symbol: "arrow.down.circle", action: { model.updater.checkForUpdates() })

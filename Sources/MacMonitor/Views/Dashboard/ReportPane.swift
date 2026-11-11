@@ -170,7 +170,7 @@ struct ReportPane: View {
                         model?.feedback = Feedback(text: String(localized: "Der Verlauf konnte nicht gelöscht werden: \(error.localizedDescription)"), isError: true)
                     }
                 }
-            }), host: .dashboard)
+            }))
     }
 
     private func export(_ format: DashboardModel.ExportFormat) {

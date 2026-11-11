@@ -35,7 +35,6 @@ enum DocRenderer {
         write(Framed(scheme: .dark) { OverviewContent(model: overview).frame(width: 760) }, scale: 2,
               to: url.appendingPathComponent("overview.png"))
         renderDashboard(to: url)
-        renderSettings(to: url)
         WidgetRender.render(to: url)
         print("Bilder geschrieben nach \(url.path)")
     }
@@ -84,32 +83,6 @@ enum DocRenderer {
             let expanded: Set<String> = section == .apps ? ["app:/Applications/Google Chrome.app"] : []
             write(DashboardShot(model: model, expanded: expanded), scale: 2, to: url.appendingPathComponent("\(name).png"))
         }
-    }
-
-    // MARK: Settings and welcome
-
-    /// Settings panes and the welcome window. They use the real system controls (toggles, pickers, text
-    /// fields), which `ImageRenderer` cannot draw, so they are put into an off-screen window and captured.
-    private static func renderSettings(to url: URL) {
-        NSApplication.shared.setActivationPolicy(.accessory)
-        let model = AppModel.demo()
-        model.settings.menuBarItems = [.cpu, .memory, .temperature]
-        model.settings.hotKeys.openDashboard = HotKeyBinding(keyCode: 2, modifiers: HotKeyBinding.control | HotKeyBinding.option)
-        model.settings.customRules = [CustomRule.templates[0].instantiated(), CustomRule.templates[2].instantiated()]
-        model.settings.quiet.quietHoursEnabled = true
-
-        var broken = CustomRule.templates[0].instantiated()
-        broken.processName = ""
-
-        let shots: [(String, SettingsTab, CustomRule?, CGFloat)] = [
-            ("settings-rules", .rules, nil, 735), ("settings-custom-rule", .customRules, broken, 800),
-            ("settings-quiet", .quiet, nil, 730), ("settings-menubar", .menuBar, nil, 740),
-        ]
-        for (name, tab, preview, height) in shots {
-            model.settingsTab = tab
-            writeHosted(SettingsShot(model: model, previewRule: preview, height: height), to: url.appendingPathComponent("\(name).png"))
-        }
-        writeHosted(WelcomeShot(model: AppModel.demo(alerts: false)), to: url.appendingPathComponent("welcome.png"))
     }
 
     /// Captures a SwiftUI view with real AppKit controls at 2x. Needs a window, which stays hidden.
@@ -272,35 +245,6 @@ private struct DashboardShot: View {
         .background(LinearGradient(colors: [Color(red: 0.07, green: 0.09, blue: 0.16), Color(red: 0.03, green: 0.04, blue: 0.08)],
                                    startPoint: .topLeading, endPoint: .bottomTrailing))
         .environment(\.colorScheme, .dark)
-    }
-}
-
-/// A settings pane inside a window-like frame with a title bar.
-private struct SettingsShot: View {
-    let model: AppModel
-    var previewRule: CustomRule?
-    var height: CGFloat
-
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 7) {
-                ForEach([Color.red, .yellow, .green], id: \.self) { Circle().fill($0.opacity(0.85)).frame(width: 12, height: 12) }
-                Spacer()
-                Text("MacMonitor – Einstellungen").font(.system(size: 13, weight: .semibold)).foregroundStyle(.secondary)
-                Spacer()
-            }
-            .padding(.horizontal, 14).padding(.vertical, 10)
-            .background(Color.primary.opacity(0.05))
-            Divider()
-            SettingsRoot(model: model, previewRule: previewRule)
-                .frame(width: 860, height: height)
-        }
-        .background(Color(red: 0.13, green: 0.13, blue: 0.15), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
-        .padding(28)
-        .background(LinearGradient(colors: [Color(red: 0.07, green: 0.09, blue: 0.16), Color(red: 0.03, green: 0.04, blue: 0.08)],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing))
     }
 }
 

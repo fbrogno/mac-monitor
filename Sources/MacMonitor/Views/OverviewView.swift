@@ -1,34 +1,6 @@
 import MonitorCore
 import SwiftUI
 
-/// The place to understand and fix things: every reported condition with an explanation and
-/// buttons that solve it, disk cleanup, the biggest consumers, sleep blockers and the history.
-struct OverviewView: View {
-    let model: AppModel
-
-    var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                OverviewContent(model: model)
-            }
-            .onChange(of: model.overviewFocus) { _, focus in scroll(proxy, to: focus) }
-            .onAppear {
-                model.isOverviewOpen = true
-                scroll(proxy, to: model.overviewFocus)
-            }
-            .onDisappear { model.isOverviewOpen = false }
-        }
-        .frame(minWidth: 640, minHeight: 560)
-        .confirmationAlert(model: model, host: .overview)
-    }
-
-    private func scroll(_ proxy: ScrollViewProxy, to section: OverviewSection?) {
-        guard let section else { return }
-        withAnimation { proxy.scrollTo(section, anchor: .top) }
-        model.overviewFocus = nil
-    }
-}
-
 /// Everything inside the overview's scroll view; rendered directly for the README.
 struct OverviewContent: View {
     let model: AppModel
@@ -41,8 +13,8 @@ struct OverviewContent: View {
             }
             if let s = model.snapshot {
                 quickStats(s)
-                issuesSection(s).id(OverviewSection.issues)
-                CleanupSection(model: model, disk: s.disk).id(OverviewSection.cleanup)
+                issuesSection(s)
+                CleanupSection(model: model, disk: s.disk)
                 consumersSection(s)
                 sleepSection(s)
             }
@@ -356,7 +328,7 @@ struct ActionButton: View {
     }
 }
 
-private struct CleanupSection: View {
+struct CleanupSection: View {
     let model: AppModel
     let disk: DiskStat?
 
