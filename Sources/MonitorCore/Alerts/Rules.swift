@@ -15,9 +15,14 @@ public enum Rules {
         public var mutedProcesses: Set<String>
         /// How much swap grew over the last ten minutes (0 if it shrank or is unknown).
         public var swapGrowthBytes: UInt64
+        /// Mean power per app (`appKey` to milliwatts) over the energy-hog window, if the caller keeps
+        /// a history. Apps missing here are judged by their current power.
+        public var averagedAppEnergyMilliwatts: [String: Double]
 
         public init(settings: MonitorSettings, isActive: @escaping (String) -> Bool = { _ in false },
-                    mutedProcesses: Set<String> = [], swapGrowthBytes: UInt64 = 0) {
+                    mutedProcesses: Set<String> = [], swapGrowthBytes: UInt64 = 0,
+                    averagedAppEnergyMilliwatts: [String: Double] = [:]) {
+            self.averagedAppEnergyMilliwatts = averagedAppEnergyMilliwatts
             self.settings = settings
             self.isActive = isActive
             self.mutedProcesses = mutedProcesses
@@ -153,6 +158,7 @@ public enum Rules {
             }
         }
 
+        out += extended(s, ctx, ignored: ignored)
         return out
     }
 }
