@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/macOS-15%2B-0b1020?logo=apple&logoColor=white" alt="macOS 15+">
   <img src="https://img.shields.io/badge/Swift-6.2%20Toolchain-F05138?logo=swift&logoColor=white" alt="Swift">
   <img src="https://img.shields.io/badge/UI-SwiftUI-3cc8dc" alt="SwiftUI">
-  <img src="https://img.shields.io/badge/Abh%C3%A4ngigkeiten-keine-34c759" alt="Keine Abhängigkeiten">
+  <img src="https://img.shields.io/badge/Abh%C3%A4ngigkeiten-nur%20Sparkle-34c759" alt="Einzige Abhängigkeit: Sparkle">
 </p>
 
 **MacMonitor** ist eine native Menüleisten-App für macOS. Sie misst CPU, Speicher, Swap, Temperatur,
@@ -100,28 +100,39 @@ geschlossen: **0,12 s CPU-Zeit in 162 s (≈ 0,07 % CPU)** bei konstant ~79 MB S
 
 ## Installation
 
-Voraussetzung: macOS 15 oder neuer und Xcode (bzw. die Swift-6-Toolchain).
+Voraussetzung: macOS 15 oder neuer.
+
+1. Die aktuelle `MacMonitor-<Version>.dmg` von der [Releases-Seite](https://github.com/fbrogno/mac-monitor/releases/latest) laden.
+2. DMG öffnen und MacMonitor in den Ordner „Programme“ ziehen.
+3. Starten. macOS fragt beim ersten Start, ob MacMonitor Mitteilungen senden darf. Gleichzeitig trägt sich
+   die App als Anmeldeobjekt ein (abschaltbar in den Einstellungen).
+
+Die App ist mit Developer ID signiert und von Apple notarisiert. Neue Versionen lädt sie selbst über
+[Sparkle](https://sparkle-project.org): automatisch im Hintergrund (abschaltbar) oder per
+„Nach Updates suchen …“ in den Einstellungen. Ein gefundenes Update meldet sie ruhig per Mitteilung und
+mit einem Knopf im Popover, ohne ungefragt ein Fenster zu öffnen.
+
+## Bauen und Release
+
+Voraussetzung: Xcode 26 und [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`).
+Das Xcode-Projekt entsteht aus `project.yml` und wird nicht eingecheckt.
 
 ```bash
-git clone https://github.com/fbrogno/mac-monitor.git
-cd mac-monitor
-./scripts/install.sh
-```
-
-Das Skript baut die App im Release-Modus, signiert sie, kopiert sie nach `/Applications` und startet sie.
-Signiert wird mit der ersten „Apple Development“-Identität im Schlüsselbund, ohne eine solche ad hoc.
-Beim ersten Start fragt macOS, ob MacMonitor Mitteilungen senden darf. Gleichzeitig trägt sich die
-App als Anmeldeobjekt ein (abschaltbar in den Einstellungen).
-
-## Entwicklung
-
-```bash
-swift build                 # Debug-Build
+swift build                 # Debug-Build der Bibliothek und der UI (ohne Sparkle-Updater)
 swift test                  # Tests für MonitorCore (Swift Testing)
-./scripts/build-app.sh      # build/MacMonitor.app
+./scripts/build-app.sh      # build/MacMonitor.app (Release, über Xcode)
+./scripts/install.sh        # bauen, nach /Applications kopieren, starten
+./scripts/release.sh        # signieren, DMG, notarisieren, Appcast (siehe docs/RELEASING.md)
 ./scripts/make-icon.sh      # Resources/AppIcon.icns aus AppIconView rendern
 ./scripts/render-docs.sh    # README-Bilder in docs/images neu rendern
 ```
+
+`build-app.sh` signiert mit der Identität aus `SIGN_IDENTITY`. Ohne Angabe nimmt es „Developer ID
+Application“, sonst „Apple Development“, sonst ad hoc (`SIGN_IDENTITY=-`). Die Version steht in der Datei
+`VERSION`, die Build-Nummer ist die Anzahl der Commits. Ein Release entsteht, indem ein Tag `vX.Y.Z` gesetzt
+wird, siehe [docs/RELEASING.md](docs/RELEASING.md).
+
+## Entwicklung
 
 Icon und Screenshots werden **aus Code gerendert** (`MacMonitor --render-docs <ordner>`): aus derselben
 `AppIconView` und `PopoverView` wie in der App, mit festen Demodaten. Bilder und App können so nicht
@@ -150,7 +161,9 @@ flowchart LR
 |---|---|
 | `Sources/MonitorCore/Metrics` | Messung über Mach, sysctl, libproc, IOKit |
 | `Sources/MonitorCore/Alerts` | Regeln (reine Funktionen), AlertEngine, Einstellungen |
-| `Sources/MacMonitor` | App, Zeitplan, Mitteilungen, SwiftUI-Oberfläche, Doc-Renderer |
+| `Sources/MacMonitor` | App, Zeitplan, Mitteilungen, SwiftUI-Oberfläche, Sparkle-Updater, Doc-Renderer |
+| `project.yml`, `Config` | XcodeGen-Projekt der App, öffentlicher Sparkle-Schlüssel |
+| `scripts`, `.github/workflows` | Bauen, Release, CI |
 | `Tests/MonitorCoreTests` | Engine, Regeln, CPU-Deltas inkl. PID-Wiederverwendung |
 | `docs/specs` | Design-Dokument |
 
