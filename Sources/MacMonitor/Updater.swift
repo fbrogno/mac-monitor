@@ -49,9 +49,9 @@ final class UpdateController: NSObject, SPUUpdaterDelegate, SPUStandardUserDrive
     /// "Version 1.1.0 (123)", or a note for builds without a bundle (SwiftPM debug runs).
     static var versionText: String {
         let info = Bundle.main.infoDictionary
-        guard let short = info?["CFBundleShortVersionString"] as? String else { return "Entwicklungsbuild" }
+        guard let short = info?["CFBundleShortVersionString"] as? String else { return String(localized: "Entwicklungsbuild") }
         let build = info?["CFBundleVersion"] as? String
-        return "Version \(short)" + (build.map { " (\($0))" } ?? "")
+        return String(localized: "Version \(short)") + (build.map { " (\($0))" } ?? "")
     }
 
     // MARK: SPUStandardUserDriverDelegate

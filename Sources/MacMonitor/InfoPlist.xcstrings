@@ -1,0 +1,54 @@
+{
+  "sourceLanguage" : "de",
+  "strings" : {
+    "CFBundleName" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor"
+          }
+        }
+      }
+    },
+    "CFBundleDisplayName" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacMonitor"
+          }
+        }
+      }
+    },
+    "NSHumanReadableCopyright" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "© 2026 Fabio Brogno"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "© 2026 Fabio Brogno"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

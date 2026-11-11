@@ -3,6 +3,8 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleDevelopmentRegion</key><string>de</string>
+    <key>CFBundleLocalizations</key>
+    <array><string>de</string><string>en</string></array>
     <key>CFBundleExecutable</key><string>MacMonitor</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundleIdentifier</key><string>com.fbrogno.macmonitor</string>

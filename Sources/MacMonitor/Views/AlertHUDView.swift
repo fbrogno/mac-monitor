@@ -18,7 +18,7 @@ struct AlertHUDView: View {
             AppIconView(size: 38)
             VStack(alignment: .leading, spacing: 3) {
                 HStack(alignment: .firstTextBaseline) {
-                    Text(event.kind == .reminder ? "Immer noch: \(condition.title)" : condition.title)
+                    Text(event.kind == .reminder ? String(localized: "Immer noch: \(condition.title)") : condition.title)
                         .font(.system(size: 13, weight: .semibold))
                         .lineLimit(2)
                     Spacer(minLength: 8)
@@ -56,7 +56,7 @@ struct AlertHUDView: View {
         .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.primary.opacity(0.1)))
     }
 
-    private func action(_ title: String, tint: Color = .primary, _ perform: @escaping () -> Void) -> some View {
+    private func action(_ title: LocalizedStringKey, tint: Color = .primary, _ perform: @escaping () -> Void) -> some View {
         Button(action: perform) {
             Text(title)
                 .font(.system(size: 11, weight: .medium))

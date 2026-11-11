@@ -110,8 +110,16 @@ public struct SystemPowerDraw: Sendable, Equatable {
 }
 
 public enum BatteryCondition: String, Sendable, Equatable {
-    case normal = "Normal"
-    case serviceRecommended = "Service empfohlen"
+    case normal
+    case serviceRecommended
+
+    /// Shown to the user; the raw value stays language-neutral.
+    public var title: String {
+        switch self {
+        case .normal: L("Normal")
+        case .serviceRecommended: L("Service empfohlen")
+        }
+    }
 }
 
 public struct BatteryDetail: Sendable, Equatable {

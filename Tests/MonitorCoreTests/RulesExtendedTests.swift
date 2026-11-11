@@ -63,7 +63,7 @@ private func disabled(_ rule: RuleID) -> MonitorSettings {
 
 // MARK: - Built-in rules
 
-@Suite struct ExtendedRuleTests {
+@Suite(.germanFormatting) struct ExtendedRuleTests {
     @Test func cpuTemperature() {
         let hot = only(.cpuTemperature, evaluate(snap(thermals: sensors(96))))
         #expect(hot.count == 1)
@@ -369,7 +369,7 @@ private func rule(_ metric: CustomMetric, _ comparison: CustomComparison = .abov
                minDuration: 30, powerCondition: power, cooldown: cooldown, actions: actions)
 }
 
-@Suite struct CustomRuleTests {
+@Suite(.germanFormatting) struct CustomRuleTests {
     let t0 = Date(timeIntervalSince1970: 4_000_000)
 
     private func conditions(_ r: CustomRule, _ s: SystemSnapshot, active: Bool = false) -> [Condition] {

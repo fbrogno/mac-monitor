@@ -17,8 +17,8 @@ extension Rules {
             if hottest >= ctx.limit(set.cpuTempThreshold, key: key) {
                 out.append(Condition(
                     key: key, rule: .cpuTemperature, severity: .warning,
-                    title: "CPU bei \(Format.decimal(hottest, digits: 0)) °C",
-                    body: "Die CPU ist seit über \(Format.duration(set.cpuTempSustain)) heißer als \(Format.decimal(set.cpuTempThreshold, digits: 0)) °C. Reduziere die Last, bevor macOS drosselt.",
+                    title: L("CPU bei \(Format.decimal(hottest, digits: 0)) °C"),
+                    body: L("Die CPU ist seit über \(Format.duration(set.cpuTempSustain)) heißer als \(Format.decimal(set.cpuTempThreshold, digits: 0)) °C. Reduziere die Last, bevor macOS drosselt."),
                     sustain: set.cpuTempSustain))
             }
         }
@@ -30,8 +30,8 @@ extension Rules {
                 guard percent >= ctx.limit(set.fanMaxPercent, key: key) else { continue }
                 out.append(Condition(
                     key: key, rule: .fanMaxed, severity: .warning,
-                    title: "Lüfter \(fan.index + 1) läuft mit \(Format.percent(percent)) seiner Drehzahl",
-                    body: "Der Lüfter dreht seit über \(Format.duration(set.fanMaxSustain)) mit \(Int(fan.rpm.rounded())) von höchstens \(Int(fan.maxRpm.rounded())) U/min. Der Mac kämpft gegen die Wärme.",
+                    title: L("Lüfter \(fan.index + 1) läuft mit \(Format.percent(percent)) seiner Drehzahl"),
+                    body: L("Der Lüfter dreht seit über \(Format.duration(set.fanMaxSustain)) mit \(String(Int(fan.rpm.rounded()))) von höchstens \(String(Int(fan.maxRpm.rounded()))) U/min. Der Mac kämpft gegen die Wärme."),
                     sustain: set.fanMaxSustain))
             }
         }
@@ -46,16 +46,16 @@ extension Rules {
                 let title: String
                 let body: String
                 if service {
-                    title = "macOS empfiehlt einen Akku-Service"
+                    title = L("macOS empfiehlt einen Akku-Service")
                     body = capacity == nil
-                        ? "macOS meldet für den Akku den Zustand „Service empfohlen“."
-                        : "Der Akku fasst nur noch \(pct) % seiner ursprünglichen Kapazität, macOS meldet „Service empfohlen“."
+                        ? L("macOS meldet für den Akku den Zustand „Service empfohlen“.")
+                        : L("Der Akku fasst nur noch \(pct) % seiner ursprünglichen Kapazität, macOS meldet „Service empfohlen“.")
                 } else if let cycles {
-                    title = "Akku hat nur noch \(pct) % Kapazität"
-                    body = "Der Akku fasst nach \(cycles) Ladezyklen nur noch \(pct) % seiner ursprünglichen Kapazität. Die Laufzeit ist entsprechend kürzer."
+                    title = L("Akku hat nur noch \(pct) % Kapazität")
+                    body = L("Der Akku fasst nach \(cycles) Ladezyklen nur noch \(pct) % seiner ursprünglichen Kapazität. Die Laufzeit ist entsprechend kürzer.")
                 } else {
-                    title = "Akku hat nur noch \(pct) % Kapazität"
-                    body = "Der Akku fasst nur noch \(pct) % seiner ursprünglichen Kapazität. Die Laufzeit ist entsprechend kürzer."
+                    title = L("Akku hat nur noch \(pct) % Kapazität")
+                    body = L("Der Akku fasst nur noch \(pct) % seiner ursprünglichen Kapazität. Die Laufzeit ist entsprechend kürzer.")
                 }
                 out.append(Condition(
                     key: "battery.health", rule: .batteryHealth, severity: .info, title: title, body: body,
@@ -71,8 +71,8 @@ extension Rules {
             if drain >= limit {
                 out.append(Condition(
                     key: key, rule: .batteryDrainOnAC, severity: .warning,
-                    title: "Akku entlädt sich trotz Netzteil",
-                    body: "Der Mac hängt am Netzteil, der Akku verliert seit über \(Format.duration(set.batteryDrainSustain)) aber Ladung (\(Format.decimal(drain, digits: 1)) W). Das Netzteil ist vermutlich zu schwach für die aktuelle Last.",
+                    title: L("Akku entlädt sich trotz Netzteil"),
+                    body: L("Der Mac hängt am Netzteil, der Akku verliert seit über \(Format.duration(set.batteryDrainSustain)) aber Ladung (\(Format.decimal(drain, digits: 1)) W). Das Netzteil ist vermutlich zu schwach für die aktuelle Last."),
                     sustain: set.batteryDrainSustain))
             }
         }
@@ -88,8 +88,8 @@ extension Rules {
                     .max { $0.energyMilliwatts < $1.energyMilliwatts }
                 out.append(Condition(
                     key: key, rule: .energyHog, severity: .warning,
-                    title: "\(app.name) verbraucht \(Format.decimal(milliwatts / 1000, digits: 1)) W im Akkubetrieb",
-                    body: "Die App zieht seit über \(Format.duration(set.energyHogSustain)) im Durchschnitt mehr als \(Format.decimal(set.energyHogWatts, digits: 0)) W aus dem Akku.",
+                    title: L("\(app.name) verbraucht \(Format.decimal(milliwatts / 1000, digits: 1)) W im Akkubetrieb"),
+                    body: L("Die App zieht seit über \(Format.duration(set.energyHogSustain)) im Durchschnitt mehr als \(Format.decimal(set.energyHogWatts, digits: 0)) W aus dem Akku."),
                     sustain: set.energyHogSustain,
                     process: main.map { ProcessRef(pid: $0.pid, name: $0.name) }))
             }
@@ -104,10 +104,10 @@ extension Rules {
                 let severe = ssd.percentageUsed >= 90 || ssd.availableSparePercent < 10
                 out.append(Condition(
                     key: key, rule: .ssdWear, severity: severe ? .warning : .info,
-                    title: worn ? "SSD zu \(ssd.percentageUsed) % abgenutzt" : "SSD-Reserve nur noch \(ssd.availableSparePercent) %",
+                    title: worn ? L("SSD zu \(ssd.percentageUsed) % abgenutzt") : L("SSD-Reserve nur noch \(ssd.availableSparePercent) %"),
                     body: worn
-                        ? "Die SSD hat laut Selbstdiagnose \(ssd.percentageUsed) % ihrer geplanten Lebensdauer verbraucht, die Reserve liegt bei \(ssd.availableSparePercent) %. Sichere wichtige Daten regelmäßig."
-                        : "Die Reserve der SSD ist auf \(ssd.availableSparePercent) % gesunken, die Abnutzung liegt bei \(ssd.percentageUsed) %. Sichere wichtige Daten regelmäßig.",
+                        ? L("Die SSD hat laut Selbstdiagnose \(ssd.percentageUsed) % ihrer geplanten Lebensdauer verbraucht, die Reserve liegt bei \(ssd.availableSparePercent) %. Sichere wichtige Daten regelmäßig.")
+                        : L("Die Reserve der SSD ist auf \(ssd.availableSparePercent) % gesunken, die Abnutzung liegt bei \(ssd.percentageUsed) %. Sichere wichtige Daten regelmäßig."),
                     sustain: 0, reminderInterval: set.longReminderInterval))
             }
         }
@@ -125,8 +125,8 @@ extension Rules {
                 out.append(Condition(
                     key: key, rule: .volumeFull,
                     severity: Double(volume.availableBytes) < 5 * gigabyte ? .critical : .warning,
-                    title: "Auf „\(volume.name)“ sind nur noch \(Format.bytes(volume.availableBytes)) frei",
-                    body: "Das Volume „\(volume.name)“ (\(volume.path)) ist zu \(Format.percent((1 - volume.freeFraction) * 100)) voll.",
+                    title: L("Auf „\(volume.name)“ sind nur noch \(Format.bytes(volume.availableBytes)) frei"),
+                    body: L("Das Volume „\(volume.name)“ (\(volume.path)) ist zu \(Format.percent((1 - volume.freeFraction) * 100)) voll."),
                     sustain: 0))
             }
         }
@@ -136,8 +136,8 @@ extension Rules {
             if gpu.utilizationPercent >= ctx.limit(set.gpuHighThreshold, key: key) {
                 out.append(Condition(
                     key: key, rule: .gpuHigh, severity: .warning,
-                    title: "GPU seit \(Format.duration(set.gpuHighSustain)) bei \(Format.percent(gpu.utilizationPercent))",
-                    body: "Die Grafikeinheit ist dauerhaft stark ausgelastet. Das kostet Akku und erzeugt Wärme.",
+                    title: L("GPU seit \(Format.duration(set.gpuHighSustain)) bei \(Format.percent(gpu.utilizationPercent))"),
+                    body: L("Die Grafikeinheit ist dauerhaft stark ausgelastet. Das kostet Akku und erzeugt Wärme."),
                     sustain: set.gpuHighSustain))
             }
         }

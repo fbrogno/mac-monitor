@@ -74,7 +74,7 @@ struct ReportPane: View {
 
     private func points(_ value: Double) -> String {
         let text = Format.decimal(abs(value), digits: abs(value) < 10 ? 1 : 0)
-        return (value < -0.05 ? "−" : value > 0.05 ? "+" : "±") + text + " Pkt."
+        return String(localized: "\(value < -0.05 ? "−" : value > 0.05 ? "+" : "±")\(text) Pkt.")
     }
 
     private func signedDuration(_ seconds: TimeInterval) -> String {

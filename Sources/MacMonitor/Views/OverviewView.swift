@@ -19,7 +19,6 @@ struct OverviewView: View {
             .onDisappear { model.isOverviewOpen = false }
         }
         .frame(minWidth: 640, minHeight: 560)
-        .environment(\.locale, Locale(identifier: "de_DE"))
         .confirmationAlert(model: model, host: .overview)
     }
 
@@ -51,7 +50,6 @@ struct OverviewContent: View {
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .environment(\.locale, Locale(identifier: "de_DE"))
     }
 
     // MARK: Header
@@ -63,8 +61,8 @@ struct OverviewContent: View {
             AppIconView(size: 46)
             VStack(alignment: .leading, spacing: 3) {
                 Text("Übersicht").font(.system(size: 22, weight: .bold))
-                Text(count == 0 ? "Alles in Ordnung" : count == 1 ? "1 Auffälligkeit braucht deine Aufmerksamkeit"
-                                                                  : "\(count) Auffälligkeiten brauchen deine Aufmerksamkeit")
+                Text(count == 0 ? String(localized: "Alles in Ordnung")
+                                : String(localized: "\(count) Auffälligkeiten brauchen deine Aufmerksamkeit"))
                     .font(.system(size: 13))
                     .foregroundStyle(worst.map(Palette.severity) ?? Palette.ok)
             }
@@ -85,12 +83,12 @@ struct OverviewContent: View {
             pill("SSD frei", s.disk.map { Format.bytes($0.availableBytes) } ?? "–",
                  (s.disk?.freeFraction ?? 1) < 0.1 ? Palette.critical : Palette.ok)
             if let battery = s.power.batteryPercent {
-                pill("Akku", "\(battery) %", battery <= 15 && s.power.onBattery ? Palette.critical : Palette.ok)
+                pill("Akku", Format.percent(Double(battery)), battery <= 15 && s.power.onBattery ? Palette.critical : Palette.ok)
             }
         }
     }
 
-    private func pill(_ title: String, _ value: String, _ tint: Color) -> some View {
+    private func pill(_ title: LocalizedStringKey, _ value: String, _ tint: Color) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 5) {
                 Circle().fill(tint).frame(width: 6, height: 6)
@@ -122,8 +120,8 @@ struct OverviewContent: View {
             if leftoverSwap {
                 let hint = Condition(
                     key: "hint.swap", rule: .swap, severity: .info,
-                    title: "Swap bei \(Format.bytes(s.swapUsedBytes)) – ein Rest früherer Speicherknappheit",
-                    body: "Gerade ist genug Arbeitsspeicher frei, deshalb keine Warnung. Der Swap belegt aber SSD-Platz.",
+                    title: String(localized: "Swap bei \(Format.bytes(s.swapUsedBytes)) – ein Rest früherer Speicherknappheit"),
+                    body: String(localized: "Gerade ist genug Arbeitsspeicher frei, deshalb keine Warnung. Der Swap belegt aber SSD-Platz."),
                     sustain: 0)
                 IssueCard(model: model, condition: hint, remedy: Remedies.remedy(for: hint, in: s))
             }
@@ -158,7 +156,7 @@ struct OverviewContent: View {
         }
     }
 
-    private func consumerList(_ title: String, _ processes: [ProcessStat], value: @escaping (ProcessStat) -> String) -> some View {
+    private func consumerList(_ title: LocalizedStringKey, _ processes: [ProcessStat], value: @escaping (ProcessStat) -> String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title).font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary).padding(.bottom, 4)
             ForEach(processes) { p in
@@ -181,19 +179,19 @@ struct OverviewContent: View {
                 Text("Nichts hält den Mac wach.").font(.system(size: 12)).foregroundStyle(.secondary)
             } else {
                 Text(s.power.onBattery
-                     ? "Diese Prozesse halten den Mac wach und kosten Akku:"
-                     : "Diese Prozesse halten den Mac wach (am Netzteil unkritisch):")
+                     ? String(localized: "Diese Prozesse halten den Mac wach und kosten Akku:")
+                     : String(localized: "Diese Prozesse halten den Mac wach (am Netzteil unkritisch):"))
                     .font(.system(size: 12)).foregroundStyle(.secondary)
                 ForEach(blockers, id: \.self) { blocker in
                     HStack {
                         VStack(alignment: .leading, spacing: 1) {
                             Text(blocker.name).font(.system(size: 12, weight: .medium))
-                            Text(blocker.parentName.map { "gestartet von \($0) · \(blocker.reason)" } ?? blocker.reason)
+                            Text(blocker.parentName.map { String(localized: "gestartet von \($0) · \(blocker.reason)") } ?? blocker.reason)
                                 .font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
                         }
                         Spacer()
-                        ActionButton(title: "Ignorieren") { model.perform(.ignoreForever(blocker.name)) }
-                        ActionButton(title: "Beenden", tint: Palette.critical) {
+                        ActionButton(title: String(localized: "Ignorieren")) { model.perform(.ignoreForever(blocker.name)) }
+                        ActionButton(title: String(localized: "Beenden"), tint: Palette.critical) {
                             model.perform(.quit(ProcessRef(pid: blocker.pid, name: blocker.name)))
                         }
                     }
@@ -215,7 +213,7 @@ struct OverviewContent: View {
                         .font(.system(size: 11))
                         .foregroundStyle(e.kind == .resolved ? Palette.ok : Palette.severity(e.condition.severity))
                         .frame(width: 16)
-                    Text(e.kind == .resolved ? "Behoben: \(e.condition.title)" : e.condition.title)
+                    Text(e.kind == .resolved ? String(localized: "Behoben: \(e.condition.title)") : e.condition.title)
                         .font(.system(size: 12)).lineLimit(1)
                     Spacer()
                     Text(e.date.formatted(date: .omitted, time: .shortened))
@@ -225,7 +223,7 @@ struct OverviewContent: View {
         }
     }
 
-    private func sectionTitle(_ title: String, symbol: String) -> some View {
+    private func sectionTitle(_ title: LocalizedStringKey, symbol: String) -> some View {
         Label(title, systemImage: symbol)
             .font(.system(size: 15, weight: .semibold))
     }
@@ -320,9 +318,9 @@ struct ProcessActionRow: View {
             Text(value).font(.system(size: 11, design: .monospaced)).foregroundStyle(.secondary)
             if hovering {
                 if model.canPerform(.restartApp(ref)) {
-                    ActionButton(title: "Neu starten", compact: true) { model.perform(.restartApp(ref)) }
+                    ActionButton(title: String(localized: "Neu starten"), compact: true) { model.perform(.restartApp(ref)) }
                 }
-                ActionButton(title: "Beenden", tint: Palette.critical, compact: true) { model.perform(.quit(ref)) }
+                ActionButton(title: String(localized: "Beenden"), tint: Palette.critical, compact: true) { model.perform(.quit(ref)) }
             }
         }
         .padding(.horizontal, 8).padding(.vertical, 4)
@@ -334,6 +332,8 @@ struct ProcessActionRow: View {
 }
 
 struct ActionButton: View {
+    /// Titles are looked up in the catalog once more, so German texts from other places (confirmations,
+    /// `AppModel.title(for:)`) show up translated as long as the same key exists.
     var title: String
     var tint: Color = .primary
     var prominent = false
@@ -343,7 +343,7 @@ struct ActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: compact ? 10 : 12, weight: .medium))
                 .foregroundStyle(prominent ? Color.white : tint)
                 .padding(.horizontal, compact ? 7 : 11)
@@ -371,7 +371,7 @@ private struct CleanupSection: View {
                     ProgressView().controlSize(.small)
                     Text("Messe …").font(.system(size: 11)).foregroundStyle(.secondary)
                 } else {
-                    ActionButton(title: cleanup.sizes.isEmpty ? "Größen messen" : "Neu messen", compact: false) { cleanup.scan() }
+                    ActionButton(title: cleanup.sizes.isEmpty ? String(localized: "Größen messen") : String(localized: "Neu messen"), compact: false) { cleanup.scan() }
                 }
             }
             if let disk {
@@ -393,7 +393,7 @@ private struct CleanupSection: View {
                         if cleanup.busyTarget == target.id {
                             ProgressView().controlSize(.small).frame(width: 84)
                         } else {
-                            ActionButton(title: target.isRevealOnly ? "Öffnen" : "Aufräumen",
+                            ActionButton(title: target.isRevealOnly ? String(localized: "Öffnen") : String(localized: "Aufräumen"),
                                          tint: target.isRevealOnly ? .primary : Palette.accent) {
                                 cleanup.clean(target, ask: model.ask)
                             }
@@ -416,7 +416,7 @@ private struct CleanupSection: View {
                         .font(.system(size: 12)).foregroundStyle(Palette.ok)
                 }
                 Spacer()
-                ActionButton(title: "Speicherverwaltung von macOS") { model.perform(.openStorageSettings) }
+                ActionButton(title: String(localized: "Speicherverwaltung von macOS")) { model.perform(.openStorageSettings) }
             }
         }
         .onAppear {

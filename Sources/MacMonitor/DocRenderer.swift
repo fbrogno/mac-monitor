@@ -4,11 +4,17 @@ import ImageIO
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// `MacMonitor --render-docs <dir>` writes the app icon and README images from the real views
-/// with demo data, so screenshots never drift from the code.
+/// `MacMonitor --render-docs <dir> [--lang de|en]` writes the app icon and README images from the
+/// real views with demo data, so screenshots never drift from the code.
+///
+/// `--lang` starts the same binary again with that language and region, so texts and number
+/// formats come out as they would for a user with that system language. Translations are only
+/// loaded by the xcodebuild bundle (see `scripts/render-docs.sh`); a plain SwiftPM build always
+/// shows German.
 @MainActor
 enum DocRenderer {
     static func render(to dir: String) {
+        if relaunchIfLanguageRequested() { return }
         let url = URL(fileURLWithPath: dir, isDirectory: true)
         try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
 
@@ -31,6 +37,29 @@ enum DocRenderer {
         renderDashboard(to: url)
         WidgetRender.render(to: url)
         print("Bilder geschrieben nach \(url.path)")
+    }
+
+    /// Handles `--lang`: runs this binary again with `-AppleLanguages`/`-AppleLocale` (command-line
+    /// defaults, nothing is stored) and waits for it. Returns true in the parent.
+    private static func relaunchIfLanguageRequested() -> Bool {
+        let args = CommandLine.arguments
+        guard let i = args.firstIndex(of: "--lang"), args.indices.contains(i + 1),
+              ProcessInfo.processInfo.environment["MACMONITOR_RENDER_LANG"] == nil,
+              let executable = Bundle.main.executablePath else { return false }
+        let lang = args[i + 1]
+        let region = lang == "en" ? "en_US" : lang == "de" ? "de_DE" : lang
+        var forwarded = Array(args.dropFirst())
+        forwarded.removeSubrange(i - 1...i)
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: executable)
+        process.arguments = forwarded + ["-AppleLanguages", "(\(lang))", "-AppleLocale", region]
+        process.environment = ProcessInfo.processInfo.environment.merging(["MACMONITOR_RENDER_LANG": lang]) { $1 }
+        do { try process.run() } catch {
+            FileHandle.standardError.write(Data("Konnte \(executable) nicht starten: \(error)\n".utf8))
+            exit(1)
+        }
+        process.waitUntilExit()
+        exit(process.terminationStatus)
     }
 
     /// Dashboard images from the real panes with demo data and a synthetic 30-day history.
@@ -105,7 +134,7 @@ private struct Banner: View {
                     .foregroundStyle(.white.opacity(0.72))
                     .lineSpacing(4)
                 HStack(spacing: 10) {
-                    ForEach(["Swift", "SwiftUI", "macOS 15+", "keine Hilfsprozesse"], id: \.self) { tag in
+                    ForEach(["Swift", "SwiftUI", "macOS 15+", String(localized: "keine Hilfsprozesse")], id: \.self) { tag in
                         Text(tag)
                             .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(Color(red: 0.55, green: 0.95, blue: 0.88))
@@ -134,8 +163,8 @@ private struct OverlayPreview: View {
     var body: some View {
         let event = AlertEvent(date: Date(), kind: .fired, condition: Condition(
             key: "demo", rule: .runawayProcess, severity: .warning,
-            title: "node hängt bei 100 % CPU",
-            body: "Seit über 3 min ununterbrochen hohe Last (PID 4182).",
+            title: String(localized: "\("node") hängt bei \(Format.percent(100)) CPU"),
+            body: String(localized: "Seit über \(Format.duration(180)) ununterbrochen hohe Last (PID \(String(4182)))."),
             sustain: 0, process: ProcessRef(pid: 4182, name: "node")))
         AlertHUDView(event: event)
             .shadow(color: .black.opacity(0.4), radius: 18, y: 8)

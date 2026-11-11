@@ -86,7 +86,7 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
     }
 }
 
-@Suite struct RulesTests {
+@Suite(.germanFormatting) struct RulesTests {
     let settings = MonitorSettings()
 
     @Test func quietSystemHasNoConditions() {
@@ -148,7 +148,7 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
     }
 }
 
-@Suite struct MetricsTests {
+@Suite(.germanFormatting) struct MetricsTests {
     @Test func cpuUsageFromTicks() {
         let a = CPUTicks(user: 100, system: 50, idle: 850, nice: 0)
         let b = CPUTicks(user: 200, system: 100, idle: 1700, nice: 0)
@@ -210,7 +210,7 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
     }
 }
 
-@Suite struct ImprovementTests {
+@Suite(.germanFormatting) struct ImprovementTests {
     private func battery(_ onBattery: Bool) -> PowerState {
         PowerState(onBattery: onBattery, batteryPercent: 60, lowPowerMode: false)
     }
@@ -270,7 +270,7 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
     }
 }
 
-@Suite struct SwapAndRemedyTests {
+@Suite(.germanFormatting) struct SwapAndRemedyTests {
     private func snap(swap: UInt64, pressure: MemoryPressure = .normal, processes: [ProcessStat] = []) -> SystemSnapshot {
         SystemSnapshot(date: .now, cpuPercent: 5, memoryUsedBytes: 8 * gb, memoryTotalBytes: 24 * gb,
                        memoryPressure: pressure, swapUsedBytes: swap, thermal: .nominal,

@@ -99,7 +99,7 @@ struct MiniSegment: View {
 }
 
 struct FooterButton: View {
-    var title: String
+    var title: LocalizedStringKey
     var symbol: String
     var iconOnly = false
     var action: () -> Void
@@ -119,7 +119,7 @@ struct FooterButton: View {
         }
         .buttonStyle(.plain)
         .foregroundStyle(.secondary)
-        .help(iconOnly ? title : "")
+        .help(iconOnly ? title : LocalizedStringKey(String()))
         .onHover { hovering = $0 }
     }
 }
