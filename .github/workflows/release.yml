@@ -1,0 +1,123 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+# Nothing is writable by default. Only the publish job gets `contents: write`; building, signing and
+# notarizing run with read access and without a token that could change the repository.
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 60
+    # The signing and notarization secrets are used here. Protect the environment (tags `v*` only) in the
+    # repository settings: Settings > Environments > release.
+    environment: release
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0 # build number = commit count; also brings origin/main for the check below
+          persist-credentials: false
+
+      # Before any secret is touched: a tag on a commit that never reached main is not released.
+      - name: Check that the tag commit is on main
+        run: |
+          set -euo pipefail
+          git rev-parse --verify --quiet refs/remotes/origin/main > /dev/null \
+            || { echo "::error::origin/main fehlt im Checkout"; exit 1; }
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Der getaggte Commit $GITHUB_SHA liegt nicht auf main. Es wird nichts veröffentlicht."
+            exit 1
+          fi
+
+      - name: Check tag against VERSION
+        run: |
+          if [[ "$GITHUB_REF_NAME" != "v$(tr -d '[:space:]' < VERSION)" ]]; then
+            echo "::error::Tag $GITHUB_REF_NAME passt nicht zu VERSION ($(cat VERSION))"
+            exit 1
+          fi
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          brew install xcodegen
+
+      - name: Import Developer ID certificate into a temporary keychain
+        env:
+          P12_BASE64: ${{ secrets.DEVELOPER_ID_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN_PATH="$RUNNER_TEMP/release.keychain-db"
+          keychain_password=$(openssl rand -base64 24)
+          echo "::add-mask::$keychain_password"
+          echo "$P12_BASE64" | base64 --decode > "$RUNNER_TEMP/identity.p12"
+          security create-keychain -p "$keychain_password" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 3600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$keychain_password" "$KEYCHAIN_PATH"
+          security import "$RUNNER_TEMP/identity.p12" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$keychain_password" "$KEYCHAIN_PATH" > /dev/null
+          security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep -c "Developer ID Application"
+          rm -f "$RUNNER_TEMP/identity.p12"
+
+      # release.sh takes the secrets out of its environment before xcodebuild and package resolution run, writes
+      # the App Store Connect key to disk only for notarytool, and uses the Sparkle key only for the appcast.
+      - name: Build, sign, notarize, appcast
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: scripts/release.sh
+
+      - name: Hand the release files to the publish job
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-files
+          path: |
+            build/MacMonitor-*.dmg
+            build/appcast.xml
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Remove keychain and key files
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/release.keychain-db" || true
+          security list-keychains -d user -s login.keychain-db || true
+          rm -f "$RUNNER_TEMP/identity.p12" "$RUNNER_TEMP/AuthKey.p8"
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # the only job that may create the release
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: release-files
+          path: dist
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          ls -l dist
+          test -f "dist/MacMonitor-$version.dmg"
+          test -f dist/appcast.xml
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/MacMonitor-$version.dmg" dist/appcast.xml \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "MacMonitor $version" --generate-notes --verify-tag

@@ -1,0 +1,2 @@
+// Public EdDSA key for Sparkle update verification. Written by scripts/setup-release-secrets.sh.
+SPARKLE_PUBLIC_ED_KEY = ihHEnImv672xRJULVBJj6J+d8Pd8poRoVLoxUdKEx+0=

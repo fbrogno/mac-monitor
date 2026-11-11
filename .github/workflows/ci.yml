@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    # macOS 26 on Apple silicon ("macos-latest"), Xcode 26.x preinstalled.
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0 # build number = commit count
+          persist-credentials: false
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+          brew install xcodegen
+
+      - name: Texts (string catalogs complete)
+        run: scripts/check-l10n.sh
+
+      - name: Tests
+        run: swift test
+
+      - name: App build (ad-hoc, unsigned)
+        run: SIGN_IDENTITY=- scripts/build-app.sh
+
+      - name: Check bundle
+        run: |
+          codesign --verify --deep --strict build/MacMonitor.app
+          test -d build/MacMonitor.app/Contents/Frameworks/Sparkle.framework

@@ -4,11 +4,17 @@ import ImageIO
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// `MacMonitor --render-docs <dir>` writes the app icon and README images from the real views
-/// with demo data, so screenshots never drift from the code.
+/// `MacMonitor --render-docs <dir> [--lang de|en]` writes the app icon and README images from the
+/// real views with demo data, so screenshots never drift from the code.
+///
+/// `--lang` starts the same binary again with that language and region, so texts and number
+/// formats come out as they would for a user with that system language. Translations are only
+/// loaded by the xcodebuild bundle (see `scripts/render-docs.sh`); a plain SwiftPM build always
+/// shows German.
 @MainActor
 enum DocRenderer {
     static func render(to dir: String) {
+        if relaunchIfLanguageRequested() { return }
         let url = URL(fileURLWithPath: dir, isDirectory: true)
         try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
 
@@ -21,15 +27,123 @@ enum DocRenderer {
         }
         write(Framed(scheme: .dark) { PopoverView(model: .demo(alerts: false)) }, scale: 2,
               to: url.appendingPathComponent("popover-calm.png"))
+        write(Framed(scheme: .dark) { PopoverView(model: .demo(), showApps: true) }, scale: 2,
+              to: url.appendingPathComponent("popover-apps.png"))
         write(OverlayPreview(), scale: 2, to: url.appendingPathComponent("overlay.png"))
         let overview = AppModel.demo()
         overview.cleanup.useDemoSizes()
         write(Framed(scheme: .dark) { OverviewContent(model: overview).frame(width: 760) }, scale: 2,
               to: url.appendingPathComponent("overview.png"))
+        renderDashboard(to: url)
+        renderSettings(to: url)
+        WidgetRender.render(to: url)
         print("Bilder geschrieben nach \(url.path)")
     }
 
-    private static func write(_ view: some View, scale: CGFloat, to file: URL) {
+    /// Handles `--lang`: runs this binary again with `-AppleLanguages`/`-AppleLocale` (command-line
+    /// defaults, nothing is stored) and waits for it. Returns true in the parent.
+    private static func relaunchIfLanguageRequested() -> Bool {
+        let args = CommandLine.arguments
+        guard let i = args.firstIndex(of: "--lang"), args.indices.contains(i + 1),
+              ProcessInfo.processInfo.environment["MACMONITOR_RENDER_LANG"] == nil,
+              let executable = Bundle.main.executablePath else { return false }
+        let lang = args[i + 1]
+        let region = lang == "en" ? "en_US" : lang == "de" ? "de_DE" : lang
+        var forwarded = Array(args.dropFirst())
+        forwarded.removeSubrange(i - 1...i)
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: executable)
+        process.arguments = forwarded + ["-AppleLanguages", "(\(lang))", "-AppleLocale", region]
+        process.environment = ProcessInfo.processInfo.environment.merging(["MACMONITOR_RENDER_LANG": lang]) { $1 }
+        do { try process.run() } catch {
+            FileHandle.standardError.write(Data("Konnte \(executable) nicht starten: \(error)\n".utf8))
+            exit(1)
+        }
+        process.waitUntilExit()
+        exit(process.terminationStatus)
+    }
+
+    /// Dashboard images from the real panes with demo data and a synthetic 30-day history.
+    /// `MACMONITOR_RENDER_ALL=1` also writes the sections not shown in the README.
+    private static func renderDashboard(to url: URL) {
+        let model = AppModel.demo(history: true)
+        let all = ProcessInfo.processInfo.environment["MACMONITOR_RENDER_ALL"] == "1"
+        let shots: [(DashboardSection, DashboardRange, String, Bool)] = [
+            (.overview, .day, "dashboard-overview", true), (.cpu, .day, "dashboard-cpu", true),
+            (.energy, .day, "dashboard-energy", true), (.apps, .week, "dashboard-apps", true),
+            (.report, .day, "dashboard-report", true),
+            (.memory, .day, "dashboard-memory", false), (.sensors, .day, "dashboard-sensors", false),
+            (.network, .day, "dashboard-network", false), (.events, .week, "dashboard-events", false),
+        ]
+        for (section, range, name, readme) in shots where readme || all {
+            model.dashboard.section = section
+            model.dashboard.range = range
+            model.dashboard.reportPeriod = .week
+            model.dashboard.previewHover = section == .cpu ? Date().addingTimeInterval(-5.4 * 3600) : nil
+            model.dashboard.reloadBlocking()
+            let expanded: Set<String> = section == .apps ? ["app:/Applications/Google Chrome.app"] : []
+            write(DashboardShot(model: model, expanded: expanded), scale: 2, to: url.appendingPathComponent("\(name).png"))
+        }
+    }
+
+    // MARK: Settings and welcome
+
+    /// Settings panes and the welcome window. They use the real system controls (toggles, pickers, text
+    /// fields), which `ImageRenderer` cannot draw, so they are put into an off-screen window and captured.
+    private static func renderSettings(to url: URL) {
+        NSApplication.shared.setActivationPolicy(.accessory)
+        let model = AppModel.demo()
+        model.settings.menuBarItems = [.cpu, .memory, .temperature]
+        model.settings.hotKeys.openDashboard = HotKeyBinding(keyCode: 2, modifiers: HotKeyBinding.control | HotKeyBinding.option)
+        model.settings.customRules = [CustomRule.templates[0].instantiated(), CustomRule.templates[2].instantiated()]
+        model.settings.quiet.quietHoursEnabled = true
+
+        var broken = CustomRule.templates[0].instantiated()
+        broken.processName = ""
+
+        let shots: [(String, SettingsTab, CustomRule?, CGFloat)] = [
+            ("settings-rules", .rules, nil, 735), ("settings-custom-rule", .customRules, broken, 800),
+            ("settings-quiet", .quiet, nil, 730), ("settings-menubar", .menuBar, nil, 740),
+        ]
+        for (name, tab, preview, height) in shots {
+            model.settingsTab = tab
+            writeHosted(SettingsShot(model: model, previewRule: preview, height: height), to: url.appendingPathComponent("\(name).png"))
+        }
+        writeHosted(WelcomeShot(model: AppModel.demo(alerts: false)), to: url.appendingPathComponent("welcome.png"))
+    }
+
+    /// Captures a SwiftUI view with real AppKit controls at 2x. Needs a window, which stays hidden.
+    private static func writeHosted(_ view: some View, to file: URL) {
+        let hosting = NSHostingView(rootView: view.environment(\.colorScheme, .dark).toggleStyle(DocSwitchStyle()))
+        hosting.appearance = NSAppearance(named: .darkAqua)
+        let window = NSWindow(contentRect: NSRect(x: -20_000, y: -20_000, width: 400, height: 400), styleMask: [.borderless],
+                              backing: .buffered, defer: false)
+        window.appearance = NSAppearance(named: .darkAqua)
+        window.contentView = hosting
+        // Far off screen, so nobody sees the window.
+        window.makeKeyAndOrderFront(nil)
+        RunLoop.current.run(until: Date().addingTimeInterval(0.3))
+        let fitted = hosting.fittingSize
+        window.setContentSize(fitted)
+        hosting.frame = NSRect(origin: .zero, size: fitted)
+        for _ in 0..<3 {
+            hosting.layoutSubtreeIfNeeded()
+            RunLoop.current.run(until: Date().addingTimeInterval(0.4))
+        }
+        defer { window.orderOut(nil) }
+        let size = hosting.bounds.size
+        guard size.width > 0, let rep = NSBitmapImageRep(
+            bitmapDataPlanes: nil, pixelsWide: Int(size.width * 2), pixelsHigh: Int(size.height * 2), bitsPerSample: 8,
+            samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0) else {
+            FileHandle.standardError.write(Data("Konnte \(file.lastPathComponent) nicht rendern\n".utf8))
+            return
+        }
+        rep.size = size
+        hosting.cacheDisplay(in: hosting.bounds, to: rep)
+        try? rep.representation(using: .png, properties: [:])?.write(to: file)
+    }
+
+    static func write(_ view: some View, scale: CGFloat, to file: URL) {
         let renderer = ImageRenderer(content: view)
         renderer.scale = scale
         guard let image = renderer.cgImage,
@@ -78,7 +192,7 @@ private struct Banner: View {
                     .foregroundStyle(.white.opacity(0.72))
                     .lineSpacing(4)
                 HStack(spacing: 10) {
-                    ForEach(["Swift", "SwiftUI", "macOS 15+", "keine Hilfsprozesse"], id: \.self) { tag in
+                    ForEach(["Swift", "SwiftUI", "macOS 15+", String(localized: "keine Hilfsprozesse")], id: \.self) { tag in
                         Text(tag)
                             .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(Color(red: 0.55, green: 0.95, blue: 0.88))
@@ -107,8 +221,8 @@ private struct OverlayPreview: View {
     var body: some View {
         let event = AlertEvent(date: Date(), kind: .fired, condition: Condition(
             key: "demo", rule: .runawayProcess, severity: .warning,
-            title: "node hängt bei 100 % CPU",
-            body: "Seit über 3 min ununterbrochen hohe Last (PID 4182).",
+            title: String(localized: "\("node") hängt bei \(Format.percent(100)) CPU"),
+            body: String(localized: "Seit über \(Format.duration(180)) ununterbrochen hohe Last (PID \(String(4182)))."),
             sustain: 0, process: ProcessRef(pid: 4182, name: "node")))
         AlertHUDView(event: event)
             .shadow(color: .black.opacity(0.4), radius: 18, y: 8)
@@ -116,5 +230,108 @@ private struct OverlayPreview: View {
             .background(LinearGradient(colors: [Color(red: 0.12, green: 0.2, blue: 0.3), Color(red: 0.05, green: 0.08, blue: 0.14)],
                                        startPoint: .topLeading, endPoint: .bottomTrailing))
             .environment(\.colorScheme, .dark)
+    }
+}
+
+/// The dashboard window as an image: sidebar and detail drawn in SwiftUI (the AppKit-backed split
+/// view does not render offline), the panes are the real ones.
+private struct DashboardShot: View {
+    let model: AppModel
+    var expanded: Set<String> = []
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 0) {
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 7) {
+                    ForEach([Color.red, .yellow, .green], id: \.self) { Circle().fill($0.opacity(0.85)).frame(width: 12, height: 12) }
+                }
+                .padding(.bottom, 18)
+                ForEach(DashboardSection.allCases) { section in
+                    let selected = section == model.dashboard.section
+                    Label { Text(section.title) } icon: { Image(systemName: section.symbol).frame(width: 20) }
+                        .font(.system(size: 13, weight: selected ? .semibold : .regular))
+                        .padding(.horizontal, 10).padding(.vertical, 6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(selected ? Color.primary.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 12).padding(.top, 14).padding(.bottom, 14)
+            .frame(width: 236)
+            .background(Color.primary.opacity(0.04))
+            Divider()
+            DashboardDetail(model: model, expandedApps: expanded)
+                .padding(24)
+                .frame(width: 900, alignment: .topLeading)
+        }
+        .frame(width: 1137)
+        .fixedSize(horizontal: false, vertical: true)
+        .background(Color(red: 0.13, green: 0.13, blue: 0.15), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
+        .padding(28)
+        .background(LinearGradient(colors: [Color(red: 0.07, green: 0.09, blue: 0.16), Color(red: 0.03, green: 0.04, blue: 0.08)],
+                                   startPoint: .topLeading, endPoint: .bottomTrailing))
+        .environment(\.colorScheme, .dark)
+    }
+}
+
+/// A settings pane inside a window-like frame with a title bar.
+private struct SettingsShot: View {
+    let model: AppModel
+    var previewRule: CustomRule?
+    var height: CGFloat
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 7) {
+                ForEach([Color.red, .yellow, .green], id: \.self) { Circle().fill($0.opacity(0.85)).frame(width: 12, height: 12) }
+                Spacer()
+                Text("MacMonitor – Einstellungen").font(.system(size: 13, weight: .semibold)).foregroundStyle(.secondary)
+                Spacer()
+            }
+            .padding(.horizontal, 14).padding(.vertical, 10)
+            .background(Color.primary.opacity(0.05))
+            Divider()
+            SettingsRoot(model: model, previewRule: previewRule)
+                .frame(width: 860, height: height)
+        }
+        .background(Color(red: 0.13, green: 0.13, blue: 0.15), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
+        .padding(28)
+        .background(LinearGradient(colors: [Color(red: 0.07, green: 0.09, blue: 0.16), Color(red: 0.03, green: 0.04, blue: 0.08)],
+                                   startPoint: .topLeading, endPoint: .bottomTrailing))
+    }
+}
+
+private struct WelcomeShot: View {
+    let model: AppModel
+
+    var body: some View {
+        WelcomeView(model: model)
+            .background(Color(red: 0.13, green: 0.13, blue: 0.15), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
+            .padding(28)
+            .background(LinearGradient(colors: [Color(red: 0.07, green: 0.09, blue: 0.16), Color(red: 0.03, green: 0.04, blue: 0.08)],
+                                       startPoint: .topLeading, endPoint: .bottomTrailing))
+    }
+}
+
+/// A switch drawn in SwiftUI in the colours of an active window. The system switch is drawn grey in a
+/// window that is not frontmost, which is how an off-screen capture sees it; on and off would hardly differ.
+private struct DocSwitchStyle: ToggleStyle {
+    @Environment(\.isEnabled) private var enabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.label
+            Spacer(minLength: 8)
+            ZStack(alignment: configuration.isOn ? .trailing : .leading) {
+                Capsule().fill(configuration.isOn ? Color(red: 0.04, green: 0.52, blue: 1.0) : Color.white.opacity(0.18))
+                Circle().fill(Color.white).padding(2).shadow(color: .black.opacity(0.25), radius: 1, y: 1)
+            }
+            .frame(width: 38, height: 22)
+            .opacity(enabled ? 1 : 0.45)
+        }
     }
 }

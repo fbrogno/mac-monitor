@@ -15,9 +15,14 @@ public enum Rules {
         public var mutedProcesses: Set<String>
         /// How much swap grew over the last ten minutes (0 if it shrank or is unknown).
         public var swapGrowthBytes: UInt64
+        /// Mean power per app (`appKey` to milliwatts) over the energy-hog window, if the caller keeps
+        /// a history. Apps missing here are judged by their current power.
+        public var averagedAppEnergyMilliwatts: [String: Double]
 
         public init(settings: MonitorSettings, isActive: @escaping (String) -> Bool = { _ in false },
-                    mutedProcesses: Set<String> = [], swapGrowthBytes: UInt64 = 0) {
+                    mutedProcesses: Set<String> = [], swapGrowthBytes: UInt64 = 0,
+                    averagedAppEnergyMilliwatts: [String: Double] = [:]) {
+            self.averagedAppEnergyMilliwatts = averagedAppEnergyMilliwatts
             self.settings = settings
             self.isActive = isActive
             self.mutedProcesses = mutedProcesses
@@ -44,10 +49,10 @@ public enum Rules {
                 guard p.cpuPercent >= ctx.limit(set.processCPUThreshold, key: key) else { continue }
                 out.append(Condition(
                     key: key, rule: .runawayProcess, severity: .warning,
-                    title: "\(p.name) hängt bei \(Format.percent(p.cpuPercent)) CPU",
-                    body: "Seit über \(Format.duration(set.processCPUSustain)) ununterbrochen hohe Last (PID \(p.pid)).",
+                    title: L("\(p.name) hängt bei \(Format.percent(p.cpuPercent)) CPU"),
+                    body: L("Seit über \(Format.duration(set.processCPUSustain)) ununterbrochen hohe Last (PID \(String(p.pid)))."),
                     sustain: set.processCPUSustain,
-                    process: ProcessRef(pid: p.pid, name: p.name)))
+                    process: ProcessRef(p)))
             }
         }
 
@@ -58,10 +63,10 @@ public enum Rules {
                 guard Double(p.footprintBytes) >= ctx.limit(base, key: key) else { continue }
                 out.append(Condition(
                     key: key, rule: .memoryHog, severity: .warning,
-                    title: "\(p.name) belegt \(Format.bytes(p.footprintBytes)) RAM",
-                    body: "Das sind \(Format.percent(Double(p.footprintBytes) / Double(s.memoryTotalBytes) * 100)) deines Arbeitsspeichers (PID \(p.pid)).",
+                    title: L("\(p.name) belegt \(Format.bytes(p.footprintBytes)) RAM"),
+                    body: L("Das sind \(Format.percent(Double(p.footprintBytes) / Double(s.memoryTotalBytes) * 100)) deines Arbeitsspeichers (PID \(String(p.pid)))."),
                     sustain: set.memoryHogSustain,
-                    process: ProcessRef(pid: p.pid, name: p.name)))
+                    process: ProcessRef(p)))
             }
         }
 
@@ -72,8 +77,8 @@ public enum Rules {
                     .map { "\($0.name) \(Format.percent($0.cpuPercent))" }.joined(separator: ", ")
                 out.append(Condition(
                     key: key, rule: .cpuHigh, severity: .warning,
-                    title: "CPU seit \(Format.duration(set.cpuTotalSustain)) bei \(Format.percent(s.cpuPercent))",
-                    body: top.isEmpty ? "Der Mac ist dauerhaft ausgelastet." : "Größte Verbraucher: \(top)",
+                    title: L("CPU seit \(Format.duration(set.cpuTotalSustain)) bei \(Format.percent(s.cpuPercent))"),
+                    body: top.isEmpty ? L("Der Mac ist dauerhaft ausgelastet.") : L("Größte Verbraucher: \(top)"),
                     sustain: set.cpuTotalSustain))
             }
         }
@@ -83,8 +88,8 @@ public enum Rules {
             out.append(Condition(
                 key: "system.memoryPressure", rule: .memoryPressure,
                 severity: critical ? .critical : .warning,
-                title: critical ? "Speicherdruck kritisch" : "Speicherdruck erhöht",
-                body: "\(Format.bytes(s.memoryUsedBytes)) von \(Format.bytes(s.memoryTotalBytes)) belegt, Swap \(Format.bytes(s.swapUsedBytes)). Schließe große Apps, sonst wird der Mac langsam.",
+                title: critical ? L("Speicherdruck kritisch") : L("Speicherdruck erhöht"),
+                body: L("\(Format.bytes(s.memoryUsedBytes)) von \(Format.bytes(s.memoryTotalBytes)) belegt, Swap \(Format.bytes(s.swapUsedBytes)). Schließe große Apps, sonst wird der Mac langsam."),
                 sustain: critical ? 0 : set.memoryPressureSustain))
         }
 
@@ -96,22 +101,24 @@ public enum Rules {
             let growing = ctx.swapGrowthBytes >= 1_073_741_824
             let tight = s.memoryPressure >= .warning
             if Double(s.swapUsedBytes) >= limit, growing || tight || ctx.isActive(key) {
-                let growth = growing ? " (+\(Format.bytes(ctx.swapGrowthBytes)) in 10 min)" : ""
                 out.append(Condition(
                     key: key, rule: .swap, severity: .warning,
-                    title: "Swap bei \(Format.bytes(s.swapUsedBytes))\(growth)",
-                    body: "Der Arbeitsspeicher reicht nicht, macOS lagert auf die SSD aus.",
+                    title: growing
+                        ? L("Swap bei \(Format.bytes(s.swapUsedBytes)) (+\(Format.bytes(ctx.swapGrowthBytes)) in 10 min)")
+                        : L("Swap bei \(Format.bytes(s.swapUsedBytes))"),
+                    body: L("Der Arbeitsspeicher reicht nicht, macOS lagert auf die SSD aus."),
                     sustain: 0))
             }
         }
 
         if set.isEnabled(.thermal), s.thermal >= .serious {
             let critical = s.thermal == .critical
-            let top = candidates.first.map { " Größter Verbraucher: \($0.name) (\(Format.percent($0.cpuPercent)))." } ?? ""
+            let top = candidates.first
             out.append(Condition(
                 key: "system.thermal", rule: .thermal, severity: critical ? .critical : .warning,
-                title: critical ? "Mac überhitzt" : "Mac wird heiß und drosselt",
-                body: "macOS reduziert die Leistung.\(top)",
+                title: critical ? L("Mac überhitzt") : L("Mac wird heiß und drosselt"),
+                body: top.map { L("macOS reduziert die Leistung. Größter Verbraucher: \($0.name) (\(Format.percent($0.cpuPercent))).") }
+                    ?? L("macOS reduziert die Leistung."),
                 sustain: 0))
         }
 
@@ -124,8 +131,8 @@ public enum Rules {
             if tooLowFraction || tooLowBytes {
                 out.append(Condition(
                     key: key, rule: .disk, severity: disk.availableBytes < 5 * 1_073_741_824 ? .critical : .warning,
-                    title: "Nur noch \(Format.bytes(disk.availableBytes)) frei",
-                    body: "Die SSD ist zu \(Format.percent((1 - disk.freeFraction) * 100)) voll.",
+                    title: L("Nur noch \(Format.bytes(disk.availableBytes)) frei"),
+                    body: L("Die SSD ist zu \(Format.percent((1 - disk.freeFraction) * 100)) voll."),
                     sustain: 0))
             }
         }
@@ -133,8 +140,8 @@ public enum Rules {
         if set.isEnabled(.network), !s.isOnline {
             out.append(Condition(
                 key: "system.network", rule: .network, severity: .warning,
-                title: "Keine Internetverbindung",
-                body: "Seit \(Format.duration(set.networkOfflineSustain)) offline.",
+                title: L("Keine Internetverbindung"),
+                body: L("Seit \(Format.duration(set.networkOfflineSustain)) offline."),
                 sustain: set.networkOfflineSustain))
         }
 
@@ -143,16 +150,18 @@ public enum Rules {
             where !ignored.contains(blocker.name.lowercased()) && !ctx.mutedProcesses.contains(blocker.name) {
                 // Keyed by tool and launcher, not PID: `caffeinate -t 300` chains get a new PID every
                 // few minutes but keep the Mac awake all the same.
-                let launcher = blocker.parentName.map { ", gestartet von \($0)" } ?? ""
+                let duration = Format.duration(set.sleepBlockerSustain)
                 out.append(Condition(
                     key: "sleep.\(blocker.identity)", rule: .sleepBlocker, severity: .warning,
-                    title: "\(blocker.name) verhindert den Ruhezustand",
-                    body: "Seit über \(Format.duration(set.sleepBlockerSustain)) im Akkubetrieb\(launcher): „\(blocker.reason)“.",
+                    title: L("\(blocker.name) verhindert den Ruhezustand"),
+                    body: blocker.parentName.map { L("Seit über \(duration) im Akkubetrieb, gestartet von \($0): „\(blocker.reason)“.") }
+                        ?? L("Seit über \(duration) im Akkubetrieb: „\(blocker.reason)“."),
                     sustain: set.sleepBlockerSustain,
-                    process: ProcessRef(pid: blocker.pid, name: blocker.name)))
+                    process: s.processRef(pid: blocker.pid, name: blocker.name)))
             }
         }
 
+        out += extended(s, ctx, ignored: ignored)
         return out
     }
 }

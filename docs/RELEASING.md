@@ -1,0 +1,86 @@
+# Release
+
+Ein Tag `vX.Y.Z` löst in GitHub Actions den Release aus: bauen, mit Developer ID signieren, bei Apple
+notarisieren, DMG und Sparkle-Appcast ans GitHub-Release hängen. Installierte Apps holen sich das Update
+von `releases/latest/download/appcast.xml`.
+
+## Ablauf
+
+1. Version in der Datei `VERSION` erhöhen (z. B. `1.2.0`), committen, per PR nach `main`.
+2. Auf `main` den Tag setzen und pushen: `git tag v$(cat VERSION) && git push origin v$(cat VERSION)`.
+3. Der Workflow `Release` bricht ab, wenn Tag und `VERSION` nicht übereinstimmen. Sonst entstehen
+   `MacMonitor-<Version>.dmg` und `appcast.xml` am Release, mit automatisch erzeugten Release-Notes.
+
+Die Build-Nummer ist die Anzahl der Commits (`git rev-list --count HEAD`), Sparkle vergleicht sie.
+
+Lokaler Probelauf ohne Apple-Server: `scripts/release.sh --skip-notarize`. Echter lokaler Lauf: zusätzlich
+`NOTARY_PROFILE=<Schlüsselbund-Profil>` und `SPARKLE_USE_KEYCHAIN=1` setzen (Profil einmalig mit
+`xcrun notarytool store-credentials`).
+
+## Einmalige Einrichtung
+
+Voraussetzungen: Developer-ID-Application-Zertifikat im Schlüsselbund, App-Store-Connect-API-Schlüssel
+(`.p8`, Key-ID, Issuer-ID), `gh` angemeldet mit Schreibrecht auf das Repo.
+
+```bash
+./scripts/setup-release-secrets.sh
+```
+
+Das Skript legt das Sparkle-Schlüsselpaar an (privater Schlüssel bleibt im Schlüsselbund), trägt den
+öffentlichen Schlüssel in `Config/Sparkle.xcconfig` ein und setzt diese Secrets im Repo:
+
+| Secret | Inhalt |
+|---|---|
+| `DEVELOPER_ID_P12_BASE64`, `DEVELOPER_ID_P12_PASSWORD` | Zertifikat samt Schlüssel als .p12 (Base64) und dessen Zufallspasswort |
+| `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8_BASE64` | App-Store-Connect-API-Schlüssel für `notarytool` |
+| `SPARKLE_PRIVATE_KEY` | privater EdDSA-Schlüssel, signiert die Updates im Appcast |
+
+Danach `Config/Sparkle.xcconfig` committen. Ohne öffentlichen Schlüssel bricht `release.sh` ab, denn eine
+App ohne Schlüssel könnte keine Updates prüfen.
+
+Der private Sparkle-Schlüssel darf nie verloren gehen: Ohne ihn lassen sich bestehende Installationen nicht
+mehr aktualisieren. Sicherung per `generate_keys -x <Datei>` in einen Passwortmanager.
+
+## Wie signiert wird
+
+`scripts/build-app.sh` baut ohne Xcode-Signatur und signiert danach von innen nach außen, ohne `--deep`:
+Sparkles XPC-Dienste, `Updater.app`, `Autoupdate`, das Framework, zuletzt die App, jeweils mit Hardened
+Runtime und Zeitstempel. `release.sh` prüft das (`codesign --verify --deep --strict`, Developer-ID-Autorität,
+Runtime-Flag, Zeitstempel für jede Komponente), baut die DMG (APFS, lzfse), signiert sie und notarisiert sie.
+
+### Widgets und App-Gruppe
+
+Die Widget-Erweiterung `MacMonitorWidgets.appex` (Sandbox, `Contents/PlugIns`) liest eine JSON-Datei aus der
+App-Gruppe `<TEAM-ID>.com.fbrogno.macmonitor`. Auf macOS braucht eine Gruppe mit Team-ID-Präfix weder Registrierung
+noch Provisioning-Profil (Apple: „Configuring app groups“). Die Team-ID steht nicht im Repo: `build-app.sh` liest sie
+aus dem Zertifikat der Signaturidentität und setzt sie in die Vorlagen `Resources/*.entitlements.template` ein
+(Ausgabe nach `build/entitlements/`). Die Erweiterung wird vor der App signiert, beide mit Hardened Runtime.
+Mit ad-hoc- oder Apple-Development-Signatur (CI) wird die Erweiterung wieder aus dem Bundle entfernt und das gemeldet.
+`release.sh` verlangt die Erweiterung, Sandbox und App-Gruppe in den Entitlements sowie `Metadata.appintents`.
+
+## Zertifikat läuft ab
+
+Das Developer-ID-Application-Zertifikat läuft am **01.02.2027** ab. Danach kann der Release-Workflow nicht mehr
+signieren. Rechtzeitig vorher:
+
+1. Im Apple-Developer-Konto ein neues Developer-ID-Application-Zertifikat anlegen und in den Schlüsselbund laden.
+2. `./scripts/setup-release-secrets.sh` erneut ausführen. Es ersetzt `DEVELOPER_ID_P12_BASE64` und
+   `DEVELOPER_ID_P12_PASSWORD` im Repo.
+3. Einen Probelauf mit `scripts/release.sh --skip-notarize` machen, dann den nächsten Tag setzen.
+
+Bereits veröffentlichte Versionen laufen weiter: Gatekeeper prüft die Notarisierung und den Zeitstempel zum
+Signierzeitpunkt, nicht das heutige Datum des Zertifikats. Auch Sparkle-Updates bleiben gültig, denn sie
+hängen am EdDSA-Schlüssel, nicht am Zertifikat.
+
+## Empfohlene Repo-Einstellungen
+
+Diese Einstellungen liegen in GitHub und nicht im Repo; sie schützen die Release-Secrets:
+
+- **Environment `release`** (Settings → Environments): Der Release-Job verweist darauf (`environment: release`).
+  Dort „Required reviewers“ setzen, damit jeder Release freigegeben werden muss, und unter „Deployment branches
+  and tags“ nur Tags `v*` zulassen. Die Secrets setzt `setup-release-secrets.sh` als Repo-Secrets; wer sie lieber
+  nur im Environment hält, verschiebt sie dorthin.
+- **Tag-Schutz für `v*`** (Settings → Rules → Rulesets, Ziel „Tags“, Muster `v*`): Nur Maintainer dürfen
+  Release-Tags anlegen, ändern oder löschen. Ein Tag löst den signierten Release aus; ohne Schutz könnte
+  ihn jeder mit Schreibrecht auslösen oder einen veröffentlichten Tag umbiegen.
+- Branch-Schutz für `main`: Pull Request und grüner Check `CI` vor dem Merge.

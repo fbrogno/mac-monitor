@@ -11,6 +11,18 @@ enum Entry {
             MainActor.assumeIsolated { DocRenderer.render(to: dir) }
             return
         }
+        if args.contains("--automation-proof") {
+            MainActor.assumeIsolated { AutomationProof.run() }
+            return
+        }
+        if args.contains("--headless-proof") {
+            MainActor.assumeIsolated { HeadlessProof.run() }
+            return
+        }
+        if args.contains("--intent-proof") {
+            MainActor.assumeIsolated { IntentProof.run() }
+            return
+        }
         MacMonitorApp.main()
     }
 }
@@ -38,8 +50,26 @@ struct MacMonitorApp: App {
         .defaultSize(width: 760, height: 820)
         .defaultLaunchBehavior(.suppressed)
 
+        Window("MacMonitor – Dashboard", id: "dashboard") {
+            DashboardView(model: delegate.model)
+        }
+        .defaultSize(width: 1120, height: 780)
+        .defaultLaunchBehavior(.suppressed)
+
         Window("MacMonitor – Einstellungen", id: "settings") {
-            SettingsView(model: delegate.model)
+            SettingsRoot(model: delegate.model)
+        }
+        .windowResizability(.contentMinSize)
+        .defaultLaunchBehavior(.suppressed)
+
+        Window("Willkommen bei MacMonitor", id: "welcome") {
+            WelcomeView(model: delegate.model) { NSApp.windows.first { $0.identifier?.rawValue.hasPrefix("welcome") == true }?.close() }
+        }
+        .windowResizability(.contentSize)
+        .defaultLaunchBehavior(.suppressed)
+
+        Window("Über MacMonitor", id: "about") {
+            AboutView()
         }
         .windowResizability(.contentSize)
         .defaultLaunchBehavior(.suppressed)
@@ -57,17 +87,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.terminate(nil)
             return
         }
+        _ = Welcome.pendingAtLaunch   // before the login item marker below is set
         LoginItem.enableOnFirstInstalledLaunch()
         model.start()
     }
 
-    /// `open macmonitor://test|overview|cleanup` — test notification or overview, from scripts and the terminal.
+    func applicationWillTerminate(_ notification: Notification) {
+        model.prepareForTermination()
+    }
+
+    /// `open macmonitor://test|overview|cleanup|welcome|about|settings[/<Reiter>]|dashboard[/<Bereich>]` — from scripts and the terminal.
     func application(_ application: NSApplication, open urls: [URL]) {
         for url in urls where url.scheme == "macmonitor" {
             switch url.host {
             case "test": model.sendTest()
             case "overview": model.openOverview()
             case "cleanup": model.openOverview(section: .cleanup)
+            case "welcome": model.showWindow("welcome")
+            case "about": model.showWindow("about")
+            case "settings":
+                if let slug = url.pathComponents.dropFirst().first, let tab = SettingsTab(slug: slug) { model.settingsTab = tab }
+                model.showWindow("settings")
+            case "dashboard":
+                let slug = url.pathComponents.dropFirst().first
+                model.openDashboard(section: slug.flatMap(DashboardSection.init(slug:)) ?? model.dashboard.section)
             default: break
             }
         }
@@ -80,7 +123,7 @@ struct MenuBarLabel: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            Image(systemName: model.reported.isEmpty ? "waveform.path.ecg" : "exclamationmark.triangle.fill")
+            Image(systemName: model.menuBarAlert == nil ? "waveform.path.ecg" : "exclamationmark.triangle.fill")
             if !model.menuBarText.isEmpty {
                 Text(model.menuBarText).monospacedDigit()
             }

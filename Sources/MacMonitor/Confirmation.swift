@@ -16,7 +16,7 @@ struct Confirmation: Identifiable {
 }
 
 enum ConfirmationHost {
-    case popover, overview
+    case popover, overview, dashboard, settings
 }
 
 /// Inline confirmation for the popover, so answering it does not close the popover.
@@ -42,7 +42,7 @@ struct ConfirmationStrip: View {
                     }
                 }
                 Spacer()
-                ActionButton(title: "Abbrechen", action: onFinish)
+                ActionButton(title: String(localized: "Abbrechen"), action: onFinish)
             }
         }
         .padding(12)

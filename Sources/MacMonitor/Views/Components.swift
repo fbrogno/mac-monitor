@@ -99,14 +99,16 @@ struct MiniSegment: View {
 }
 
 struct FooterButton: View {
-    var title: String
+    var title: LocalizedStringKey
     var symbol: String
+    var iconOnly = false
     var action: () -> Void
     @State private var hovering = false
 
     var body: some View {
         Button(action: action) {
             Label(title, systemImage: symbol)
+                .labelStyle(FooterLabelStyle(iconOnly: iconOnly))
                 .font(.system(size: 11, weight: .medium))
                 .lineLimit(1)
                 .fixedSize()
@@ -117,6 +119,19 @@ struct FooterButton: View {
         }
         .buttonStyle(.plain)
         .foregroundStyle(.secondary)
+        .help(iconOnly ? title : LocalizedStringKey(String()))
         .onHover { hovering = $0 }
+    }
+}
+
+private struct FooterLabelStyle: LabelStyle {
+    var iconOnly: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        if iconOnly {
+            configuration.icon
+        } else {
+            Label(configuration)
+        }
     }
 }

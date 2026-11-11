@@ -1,0 +1,51 @@
+name: Feature request
+description: An idea for something MacMonitor should do.
+title: "[Idea] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        MacMonitor stays quiet and light on purpose. Ideas that fit best explain a problem, not only a feature. Please check the README ("Known limits") first, some things are not possible without extra permissions.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem do you want to solve?
+      description: Describe the situation, not the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like MacMonitor to do?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What do you do today instead?
+      description: Another tool, a custom rule, a Shortcut, nothing.
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part is it about?
+      options:
+        - Measurements
+        - Rules and alerts
+        - Custom rules and actions
+        - Dashboard and history
+        - Widgets
+        - Shortcuts or Siri
+        - Clean up SSD
+        - Menu bar
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: mac
+    attributes:
+      label: Mac model and macOS version (if it matters)
+    validations:
+      required: false

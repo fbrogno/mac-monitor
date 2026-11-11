@@ -7,14 +7,43 @@ public struct ProcessStat: Sendable, Hashable, Identifiable {
     public let name: String
     public let cpuPercent: Double
     public let footprintBytes: UInt64
+    /// Energy use in milliwatts, from the kernel's per-process energy counter (Apple Silicon only).
+    public var energyMilliwatts: Double = 0
+    public var threads: Int = 0
+    public var diskReadBytesPerSecond: Double = 0
+    public var diskWriteBytesPerSecond: Double = 0
+    /// Identifies the app this process belongs to (see `AppGrouping`); helpers share the key of their app.
+    public var appKey: String = ""
+    public var appName: String = ""
+    /// Kernel start time of the process (`ri_proc_start_abstime`); with the PID it tells a process from a later one
+    /// that got the same PID. 0 when unknown.
+    public var startTime: UInt64 = 0
+    /// Executable path; empty when the system does not tell.
+    public var path: String = ""
+    /// The app bundle the executable itself lives in (outermost `*.app`), unlike `appKey`, which also follows
+    /// the responsible process. Empty for plain tools.
+    public var bundlePath: String = ""
 
     public var id: Int32 { pid }
 
-    public init(pid: Int32, name: String, cpuPercent: Double, footprintBytes: UInt64) {
+    public init(pid: Int32, name: String, cpuPercent: Double, footprintBytes: UInt64,
+                energyMilliwatts: Double = 0, threads: Int = 0,
+                diskReadBytesPerSecond: Double = 0, diskWriteBytesPerSecond: Double = 0,
+                appKey: String = "", appName: String = "",
+                startTime: UInt64 = 0, path: String = "", bundlePath: String = "") {
         self.pid = pid
         self.name = name
         self.cpuPercent = cpuPercent
         self.footprintBytes = footprintBytes
+        self.energyMilliwatts = energyMilliwatts
+        self.threads = threads
+        self.diskReadBytesPerSecond = diskReadBytesPerSecond
+        self.diskWriteBytesPerSecond = diskWriteBytesPerSecond
+        self.appKey = appKey
+        self.appName = appName
+        self.startTime = startTime
+        self.path = path
+        self.bundlePath = bundlePath
     }
 }
 
@@ -106,6 +135,18 @@ public struct SystemSnapshot: Sendable {
     public let sleepBlockers: [SleepBlocker]
     /// Sorted by CPU, highest first.
     public let processes: [ProcessStat]
+    // Extended metrics. Each is nil/empty when the Mac does not expose it.
+    public let cpuCores: CPUCoreLoad?
+    public let gpu: GPUStat?
+    public let thermals: ThermalSensors?
+    public let fans: [FanStat]
+    public let powerDraw: SystemPowerDraw?
+    public let batteryDetail: BatteryDetail?
+    public let networkDetail: NetworkDetail?
+    public let volumes: [VolumeStat]
+    public let diskThroughput: DiskThroughput?
+    public let ssdHealth: SSDHealth?
+    public let runtime: RuntimeStat?
 
     public init(
         date: Date,
@@ -120,7 +161,18 @@ public struct SystemSnapshot: Sendable {
         network: NetworkRate? = nil,
         power: PowerState,
         sleepBlockers: [SleepBlocker] = [],
-        processes: [ProcessStat]
+        processes: [ProcessStat],
+        cpuCores: CPUCoreLoad? = nil,
+        gpu: GPUStat? = nil,
+        thermals: ThermalSensors? = nil,
+        fans: [FanStat] = [],
+        powerDraw: SystemPowerDraw? = nil,
+        batteryDetail: BatteryDetail? = nil,
+        networkDetail: NetworkDetail? = nil,
+        volumes: [VolumeStat] = [],
+        diskThroughput: DiskThroughput? = nil,
+        ssdHealth: SSDHealth? = nil,
+        runtime: RuntimeStat? = nil
     ) {
         self.date = date
         self.cpuPercent = cpuPercent
@@ -135,6 +187,17 @@ public struct SystemSnapshot: Sendable {
         self.power = power
         self.sleepBlockers = sleepBlockers
         self.processes = processes
+        self.cpuCores = cpuCores
+        self.gpu = gpu
+        self.thermals = thermals
+        self.fans = fans
+        self.powerDraw = powerDraw
+        self.batteryDetail = batteryDetail
+        self.networkDetail = networkDetail
+        self.volumes = volumes
+        self.diskThroughput = diskThroughput
+        self.ssdHealth = ssdHealth
+        self.runtime = runtime
     }
 
     /// The same snapshot without a process that was just ended, so the UI updates at once
@@ -145,7 +208,11 @@ public struct SystemSnapshot: Sendable {
                        swapUsedBytes: swapUsedBytes, thermal: thermal, disk: disk, isOnline: isOnline,
                        network: network, power: power,
                        sleepBlockers: sleepBlockers.filter { $0.pid != pid },
-                       processes: processes.filter { $0.pid != pid })
+                       processes: processes.filter { $0.pid != pid },
+                       cpuCores: cpuCores, gpu: gpu, thermals: thermals, fans: fans,
+                       powerDraw: powerDraw, batteryDetail: batteryDetail, networkDetail: networkDetail,
+                       volumes: volumes, diskThroughput: diskThroughput, ssdHealth: ssdHealth,
+                       runtime: runtime)
     }
 
     public var memoryFraction: Double {

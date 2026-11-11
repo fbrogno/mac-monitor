@@ -15,16 +15,16 @@ extension AppModel {
         switch action {
         case .restartApp(let ref):
             let app = Self.owningApp(of: ref.pid)?.localizedName ?? ref.name
-            return "\(app) neu starten"
-        case .quit: return "Beenden"
-        case .forceQuit: return "Sofort beenden"
-        case .mute: return "1 h stumm"
-        case .ignoreForever: return "Nie mehr melden"
-        case .showCleanup: return "SSD aufräumen"
-        case .openStorageSettings: return "Speicherverwaltung"
-        case .openActivityMonitor: return "Aktivitätsanzeige"
-        case .restartWiFi: return "WLAN neu starten"
-        case .openNetworkSettings: return "Netzwerk-Einstellungen"
+            return String(localized: "\(app) neu starten")
+        case .quit: return String(localized: "Beenden")
+        case .forceQuit: return String(localized: "Sofort beenden")
+        case .mute: return String(localized: "1 h stumm")
+        case .ignoreForever: return String(localized: "Nie mehr melden")
+        case .showCleanup: return String(localized: "SSD aufräumen")
+        case .openStorageSettings: return String(localized: "Speicherverwaltung")
+        case .openActivityMonitor: return String(localized: "Aktivitätsanzeige")
+        case .restartWiFi: return String(localized: "WLAN neu starten")
+        case .openNetworkSettings: return String(localized: "Netzwerk-Einstellungen")
         }
     }
 
@@ -35,9 +35,9 @@ extension AppModel {
         case .quit(let ref):
             confirmKill(ref)
         case .forceQuit(let ref):
-            ask(Confirmation(title: "„\(ref.name)“ sofort beenden?",
-                             message: "Der Prozess bekommt keine Gelegenheit zu speichern.",
-                             confirmTitle: "Sofort beenden",
+            ask(Confirmation(title: String(localized: "„\(ref.name)“ sofort beenden?"),
+                             message: String(localized: "Der Prozess bekommt keine Gelegenheit zu speichern."),
+                             confirmTitle: String(localized: "Sofort beenden"),
                              action: { [weak self] in self?.signal(ref, SIGKILL) }))
         case .mute(let name):
             mute(name)
@@ -76,10 +76,15 @@ extension AppModel {
         guard let app = Self.owningApp(of: ref.pid), let url = app.bundleURL else { return }
         let name = app.localizedName ?? ref.name
         ask(Confirmation(
-            title: "\(name) neu starten?",
-            message: "Die App wird beendet und sofort wieder geöffnet. Sie fragt selbst nach, falls etwas ungespeichert ist.",
-            confirmTitle: "Neu starten", isDestructive: false,
+            title: String(localized: "\(name) neu starten?"),
+            message: String(localized: "Die App wird beendet und sofort wieder geöffnet. Sie fragt selbst nach, falls etwas ungespeichert ist."),
+            confirmTitle: String(localized: "Neu starten"), isDestructive: false,
             action: { [weak self] in
+                // The question may have been open for a while: is this still the process that was meant?
+                guard ProcessControl.isRunning(ref) else {
+                    self?.feedback = Feedback(text: String(localized: "„\(ref.name)“ läuft schon nicht mehr."))
+                    return
+                }
                 app.terminate()
                 Task { @MainActor in
                     // Give the app up to 20 s to quit (it may show its own save dialog).
@@ -95,8 +100,8 @@ extension AppModel {
 
     private func restartWiFi() {
         ask(Confirmation(
-            title: "WLAN neu starten?", message: "Das WLAN wird für etwa 3 Sekunden ausgeschaltet.",
-            confirmTitle: "Neu starten", isDestructive: false,
+            title: String(localized: "WLAN neu starten?"), message: String(localized: "Das WLAN wird für etwa 3 Sekunden ausgeschaltet."),
+            confirmTitle: String(localized: "Neu starten"), isDestructive: false,
             action: {
                 Task.detached {
                     let device = Self.wifiDevice() ?? "en0"

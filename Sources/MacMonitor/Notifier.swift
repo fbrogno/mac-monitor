@@ -10,6 +10,8 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
     var onMute: ((String) -> Void)?
     /// Tapping the notification itself opens the overview.
     var onOpen: (() -> Void)?
+    /// Tapping the update notification opens Sparkle's update window.
+    var onOpenUpdate: (() -> Void)?
     private(set) var isAuthorized = false
     /// Last delivered request per condition key, so a follow-up can replace it in the list.
     private var deliveredIDs: [String: String] = [:]
@@ -27,22 +29,37 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
 
     private var center: UNUserNotificationCenter { .current() }
 
-    func requestAuthorization() {
+    /// Delegate and action buttons; no question to the user yet.
+    func configure() {
         center.delegate = self
-        let kill = UNNotificationAction(identifier: Action.kill, title: "Beenden …", options: [.foreground, .destructive])
-        let mute = UNNotificationAction(identifier: Action.mute, title: "1 h stumm", options: [])
-        let activity = UNNotificationAction(identifier: Action.activity, title: "Aktivitätsanzeige", options: [.foreground])
+        let kill = UNNotificationAction(identifier: Action.kill, title: String(localized: "Beenden …"), options: [.foreground, .destructive])
+        let mute = UNNotificationAction(identifier: Action.mute, title: String(localized: "1 h stumm"), options: [])
+        let activity = UNNotificationAction(identifier: Action.activity, title: String(localized: "Aktivitätsanzeige"), options: [.foreground])
         center.setNotificationCategories([
             UNNotificationCategory(identifier: Category.process, actions: [kill, mute, activity], intentIdentifiers: []),
             UNNotificationCategory(identifier: Category.system, actions: [activity], intentIdentifiers: []),
         ])
+        Task { @MainActor in self.isAuthorized = await self.currentStatus() == .authorized }
+    }
+
+    /// What macOS currently allows this app to do.
+    func currentStatus() async -> UNAuthorizationStatus {
+        // A SwiftPM run (docs renderer, headless proof) has no app bundle, and the system center would crash there.
+        guard Bundle.main.bundleIdentifier != nil else { return .notDetermined }
+        return await center.notificationSettings().authorizationStatus
+    }
+
+    /// Asks macOS for permission (shows the system question the first time).
+    func requestAuthorization() {
         center.requestAuthorization(options: [.alert, .sound]) { granted, error in
             if let error { NSLog("MacMonitor: Mitteilungen nicht erlaubt: \(error.localizedDescription)") }
             Task { @MainActor in self.isAuthorized = granted }
         }
     }
 
-    func deliver(_ event: AlertEvent) {
+    /// `decision` comes from `QuietPolicy`: no banner at all, or a banner with or without sound.
+    func deliver(_ event: AlertEvent, decision: QuietDecision) {
+        guard decision.banner else { return }
         let c = event.condition
         let content = UNMutableNotificationContent()
         switch event.kind {
@@ -50,22 +67,25 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
             content.title = c.title
             content.body = c.body
         case .reminder:
-            content.title = "Immer noch: \(c.title)"
+            content.title = String(localized: "Immer noch: \(c.title)")
             content.body = c.body
         case .resolved:
             // Only the end of an outage is news; other recoveries stay silent.
             guard c.rule == .network else { return }
-            content.title = "Wieder online"
-            content.body = "Die Internetverbindung ist zurück."
+            content.title = String(localized: "Wieder online")
+            content.body = String(localized: "Die Internetverbindung ist zurück.")
         }
         content.threadIdentifier = c.rule.rawValue
         if event.kind != .resolved {
-            content.sound = c.severity == .critical ? .defaultCritical : .default
+            if decision.sound { content.sound = c.severity == .critical ? .defaultCritical : .default }
             content.interruptionLevel = c.severity == .critical ? .timeSensitive : .active
         }
         if let process = c.process, event.kind != .resolved {
             content.categoryIdentifier = Category.process
-            content.userInfo = ["pid": Int(process.pid), "name": process.name]
+            var info: [String: Any] = ["pid": Int(process.pid), "name": process.name]
+            // The start time tells a late click from a stranger that got the PID in the meantime.
+            if let start = process.startTime { info["start"] = String(start) }
+            content.userInfo = info
         } else {
             content.categoryIdentifier = Category.system
         }
@@ -80,13 +100,22 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         center.add(UNNotificationRequest(identifier: id, content: content, trigger: nil))
     }
 
+    /// Tells about an update found by a scheduled check (see `UpdateController`).
+    func deliverUpdate(version: String) {
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "Update für MacMonitor")
+        content.body = String(localized: "Version \(version) ist verfügbar.")
+        content.userInfo = ["update": true]
+        center.add(UNNotificationRequest(identifier: "macmonitor.update", content: content, trigger: nil))
+    }
+
     /// A harmless sample alert. The time in the body makes repeated tests distinguishable.
     static func testEvent(now: Date = Date()) -> AlertEvent {
         let time = now.formatted(date: .omitted, time: .standard)
         return AlertEvent(date: now, kind: .fired, condition: Condition(
             key: "test", rule: .cpuHigh, severity: .info,
-            title: "MacMonitor ist bereit",
-            body: "Testmitteilung von \(time). Du wirst nur gestört, wenn etwas wirklich auffällt.",
+            title: String(localized: "MacMonitor ist bereit"),
+            body: String(localized: "Testmitteilung von \(time). Du wirst nur gestört, wenn etwas wirklich auffällt."),
             sustain: 0))
     }
 
@@ -99,10 +128,13 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         let action = response.actionIdentifier
         let pid = (info["pid"] as? Int).map(Int32.init)
         let name = info["name"] as? String
+        // Stored as text: a start time can exceed what a property list number holds. Old notifications have none.
+        let start = (info["start"] as? String).flatMap(UInt64.init)
+        let isUpdate = info["update"] as? Bool ?? false
         await MainActor.run {
             switch action {
             case Action.kill:
-                if let pid, let name { onKill?(ProcessRef(pid: pid, name: name)) }
+                if let pid, let name { onKill?(ProcessRef(pid: pid, name: name, startTime: start)) }
             case Action.mute:
                 if let name { onMute?(name) }
             case Action.activity:
@@ -110,7 +142,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
                     at: URL(fileURLWithPath: "/System/Applications/Utilities/Activity Monitor.app"),
                     configuration: NSWorkspace.OpenConfiguration())
             case UNNotificationDefaultActionIdentifier:
-                onOpen?()
+                if isUpdate { onOpenUpdate?() } else { onOpen?() }
             default:
                 break
             }

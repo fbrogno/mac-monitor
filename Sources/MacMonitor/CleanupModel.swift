@@ -40,9 +40,10 @@ final class CleanupModel {
             NSWorkspace.shared.open(URL(fileURLWithPath: path))
             return
         }
-        let size = sizes[target.id].map { " (\(Format.bytes($0)))" } ?? ""
-        ask(Confirmation(title: "\(target.title) aufräumen\(size)?", message: target.consequence,
-                         confirmTitle: "Aufräumen", action: { [weak self] in self?.run(target) }))
+        let title = sizes[target.id].map { String(localized: "\(target.title) aufräumen (\(Format.bytes($0)))?") }
+            ?? String(localized: "\(target.title) aufräumen?")
+        ask(Confirmation(title: title, message: target.consequence,
+                         confirmTitle: String(localized: "Aufräumen"), action: { [weak self] in self?.run(target) }))
     }
 
     private func run(_ target: CleanupTarget) {

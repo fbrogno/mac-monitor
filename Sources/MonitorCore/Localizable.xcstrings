@@ -1,0 +1,3478 @@
+{
+  "sourceLanguage" : "de",
+  "strings" : {
+    "%@ %%" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ %%"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@%%"
+          }
+        }
+      }
+    },
+    "%@ belegt %@ Arbeitsspeicher und damit mehr als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ belegt %2$@ Arbeitsspeicher und damit mehr als die Schwelle von %3$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is using %2$@ of memory, more than the threshold of %3$@."
+          }
+        }
+      }
+    },
+    "%@ belegt %@ Arbeitsspeicher und damit weniger als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ belegt %2$@ Arbeitsspeicher und damit weniger als die Schwelle von %3$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is using %2$@ of memory, less than the threshold of %3$@."
+          }
+        }
+      }
+    },
+    "%@ belegt %@ CPU und damit mehr als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ belegt %2$@ CPU und damit mehr als die Schwelle von %3$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is using %2$@ CPU, more than the threshold of %3$@."
+          }
+        }
+      }
+    },
+    "%@ belegt %@ CPU und damit weniger als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ belegt %2$@ CPU und damit weniger als die Schwelle von %3$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is using %2$@ CPU, less than the threshold of %3$@."
+          }
+        }
+      }
+    },
+    "%@ belegt %@ RAM" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ belegt %2$@ RAM"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is using %2$@ of RAM"
+          }
+        }
+      }
+    },
+    "%@ hängt bei %@ CPU" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hängt bei %2$@ CPU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is stuck at %2$@ CPU"
+          }
+        }
+      }
+    },
+    "%@ verbraucht %@ W im Akkubetrieb" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ verbraucht %2$@ W im Akkubetrieb"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is using %2$@ W on battery"
+          }
+        }
+      }
+    },
+    "%@ verhindert den Ruhezustand" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ verhindert den Ruhezustand"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is preventing sleep"
+          }
+        }
+      }
+    },
+    "%@ von %@ belegt, Swap %@. Schließe große Apps, sonst wird der Mac langsam." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ von %2$@ belegt, Swap %3$@. Schließe große Apps, sonst wird der Mac langsam."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ of %2$@ in use, swap %3$@. Close large apps or your Mac will slow down."
+          }
+        }
+      }
+    },
+    "%lld Tage" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Tag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Tage"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Akku" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery"
+          }
+        }
+      }
+    },
+    "Akku entlädt sich trotz Netzteil" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku entlädt sich trotz Netzteil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery draining while plugged in"
+          }
+        }
+      }
+    },
+    "Akku entlädt trotz Netzteil" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku entlädt trotz Netzteil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery draining while plugged in"
+          }
+        }
+      }
+    },
+    "Akku hat nur noch %@ %% Kapazität" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku hat nur noch %@ %% Kapazität"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery capacity down to %@%%"
+          }
+        }
+      }
+    },
+    "Akku unter 20 %" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku unter 20 %"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery below 20%"
+          }
+        }
+      }
+    },
+    "Akku-Gesundheit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku-Gesundheit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery health"
+          }
+        }
+      }
+    },
+    "Akkustand" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akkustand"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery level"
+          }
+        }
+      }
+    },
+    "Apps mit viel Speicher neu starten gibt ihn sofort frei." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps mit viel Speicher neu starten gibt ihn sofort frei."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restarting apps that use a lot of memory frees it right away."
+          }
+        }
+      }
+    },
+    "Arbeitet er absichtlich, warte ab oder schalte die Warnung stumm." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitet er absichtlich, warte ab oder schalte die Warnung stumm."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If it is working on purpose, wait it out or mute the alert."
+          }
+        }
+      }
+    },
+    "Arbeitsspeicher" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitsspeicher"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory"
+          }
+        }
+      }
+    },
+    "Arbeitsspeicher belegt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitsspeicher belegt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory used"
+          }
+        }
+      }
+    },
+    "Auf dem Volume ist kaum noch Platz frei. Dateien lassen sich dann nicht mehr speichern, und bei der Systemplatte wird der Mac langsam." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf dem Volume ist kaum noch Platz frei. Dateien lassen sich dann nicht mehr speichern, und bei der Systemplatte wird der Mac langsam."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is hardly any space left on the volume. Files can no longer be saved, and on the startup disk your Mac slows down."
+          }
+        }
+      }
+    },
+    "Auf der Festplatte sind %@ frei, das liegt über der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf der Festplatte sind %1$@ frei, das liegt über der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The disk has %1$@ free, which is above the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Auf der Festplatte sind nur noch %@ frei, das liegt unter der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf der Festplatte sind nur noch %1$@ frei, das liegt unter der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only %1$@ free on the disk, which is below the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Auf „%@“ sind nur noch %@ frei" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf „%1$@“ sind nur noch %2$@ frei"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only %2$@ left on “%1$@”"
+          }
+        }
+      }
+    },
+    "Aus" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "Beende Apps mit hohem Verbrauch, die größten stehen unten." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beende Apps mit hohem Verbrauch, die größten stehen unten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit apps with high usage; the biggest are listed below."
+          }
+        }
+      }
+    },
+    "Beende die App, wenn du sie gerade nicht brauchst." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beende die App, wenn du sie gerade nicht brauchst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit the app if you don't need it right now."
+          }
+        }
+      }
+    },
+    "Beende grafikintensive Apps, Spiele oder Videoexporte, die du nicht brauchst." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beende grafikintensive Apps, Spiele oder Videoexporte, die du nicht brauchst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit graphics-intensive apps, games or video exports you don't need."
+          }
+        }
+      }
+    },
+    "Beende rechenintensive Apps, die größten Verbraucher stehen unten." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beende rechenintensive Apps, die größten Verbraucher stehen unten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit compute-heavy apps; the biggest consumers are listed below."
+          }
+        }
+      }
+    },
+    "Beende, was du gerade nicht brauchst. Die größten Verbraucher stehen unten." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beende, was du gerade nicht brauchst. Die größten Verbraucher stehen unten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit what you don't need right now. The biggest consumers are listed below."
+          }
+        }
+      }
+    },
+    "Beendet mit Code %d." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beendet mit Code %d."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exited with code %d."
+          }
+        }
+      }
+    },
+    "Bei Browsern helfen auch weniger offene Tabs." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei Browsern helfen auch weniger offene Tabs."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In browsers, fewer open tabs help too."
+          }
+        }
+      }
+    },
+    "Bei wenig freiem Platz fehlen macOS die Reserven für Swap, Updates und Caches. Unter etwa 10 % wird der Mac spürbar langsamer." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei wenig freiem Platz fehlen macOS die Reserven für Swap, Updates und Caches. Unter etwa 10 % wird der Mac spürbar langsamer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When free space is low, macOS lacks room for swap, updates and caches. Below about 10%, your Mac gets noticeably slower."
+          }
+        }
+      }
+    },
+    "Bis dahin hilft es, den Mac nicht dauerhaft heiß oder bei 0 % zu betreiben." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis dahin hilft es, den Mac nicht dauerhaft heiß oder bei 0 % zu betreiben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Until then, avoid running your Mac hot for long or down to 0%."
+          }
+        }
+      }
+    },
+    "Brauchst du ihn nicht mehr, beende ihn." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brauchst du ihn nicht mehr, beende ihn."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you don't need it anymore, quit it."
+          }
+        }
+      }
+    },
+    "CPU" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU"
+          }
+        }
+      }
+    },
+    "CPU bei %@ °C" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU bei %@ °C"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU at %@ °C"
+          }
+        }
+      }
+    },
+    "CPU dauerhaft hoch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU dauerhaft hoch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sustained high CPU"
+          }
+        }
+      }
+    },
+    "CPU eines Prozesses" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU eines Prozesses"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU of a process"
+          }
+        }
+      }
+    },
+    "CPU gesamt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU gesamt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total CPU"
+          }
+        }
+      }
+    },
+    "CPU seit %@ bei %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU seit %1$@ bei %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU at %2$@ for %1$@"
+          }
+        }
+      }
+    },
+    "CPU-Temperatur" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU-Temperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU temperature"
+          }
+        }
+      }
+    },
+    "CPU-Temperatur hoch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU-Temperatur hoch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High CPU temperature"
+          }
+        }
+      }
+    },
+    "Chrome frisst RAM" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chrome frisst RAM"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chrome is eating RAM"
+          }
+        }
+      }
+    },
+    "Das Kürzel „%@“ gehört macOS oder dem aktiven Programm. Wähle eine andere Kombination." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Kürzel „%@“ gehört macOS oder dem aktiven Programm. Wähle eine andere Kombination."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The shortcut “%@” is used by macOS or the active app. Choose a different combination."
+          }
+        }
+      }
+    },
+    "Das Netzteil liefert weniger Strom, als der Mac gerade braucht, deshalb leert sich der Akku trotz Kabel." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Netzteil liefert weniger Strom, als der Mac gerade braucht, deshalb leert sich der Akku trotz Kabel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The power adapter delivers less power than your Mac needs right now, so the battery drains even though it is plugged in."
+          }
+        }
+      }
+    },
+    "Das Volume „%@“ (%@) ist zu %@ voll." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Volume „%1$@“ (%2$@) ist zu %3$@ voll."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The volume “%1$@” (%2$@) is %3$@ full."
+          }
+        }
+      }
+    },
+    "Das sind %@ deines Arbeitsspeichers (PID %@)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das sind %1$@ deines Arbeitsspeichers (PID %2$@)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That is %1$@ of your memory (PID %2$@)."
+          }
+        }
+      }
+    },
+    "Dashboard öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dashboard öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Dashboard"
+          }
+        }
+      }
+    },
+    "Der Akku fasst nach %lld Ladezyklen nur noch %@ %% seiner ursprünglichen Kapazität. Die Laufzeit ist entsprechend kürzer." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Akku fasst nach %1$lld Ladezyklen nur noch %2$@ %% seiner ursprünglichen Kapazität. Die Laufzeit ist entsprechend kürzer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After %1$lld charge cycles, the battery holds only %2$@%% of its original capacity. Battery life is shorter accordingly."
+          }
+        }
+      }
+    },
+    "Der Akku fasst nur noch %@ %% seiner ursprünglichen Kapazität, macOS meldet „Service empfohlen“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Akku fasst nur noch %@ %% seiner ursprünglichen Kapazität, macOS meldet „Service empfohlen“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The battery holds only %@%% of its original capacity, and macOS reports “Service Recommended”."
+          }
+        }
+      }
+    },
+    "Der Akku fasst nur noch %@ %% seiner ursprünglichen Kapazität. Die Laufzeit ist entsprechend kürzer." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Akku fasst nur noch %@ %% seiner ursprünglichen Kapazität. Die Laufzeit ist entsprechend kürzer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The battery holds only %@%% of its original capacity. Battery life is shorter accordingly."
+          }
+        }
+      }
+    },
+    "Der Akku hat durch Alterung Kapazität verloren oder macOS empfiehlt einen Service. Das ist normal, wenn der Mac schon viele Ladezyklen hinter sich hat." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Akku hat durch Alterung Kapazität verloren oder macOS empfiehlt einen Service. Das ist normal, wenn der Mac schon viele Ladezyklen hinter sich hat."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The battery has lost capacity with age, or macOS recommends service. That is normal for a Mac with many charge cycles."
+          }
+        }
+      }
+    },
+    "Der Akku steht bei %@ und damit unter der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Akku steht bei %1$@ und damit unter der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The battery is at %1$@, below the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Akku steht bei %@ und damit über der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Akku steht bei %1$@ und damit über der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The battery is at %1$@, above the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Arbeitsspeicher ist zu %@ belegt, das liegt unter der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Arbeitsspeicher ist zu %1$@ belegt, das liegt unter der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory is %1$@ full, which is below the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Arbeitsspeicher ist zu %@ belegt, das liegt über der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Arbeitsspeicher ist zu %1$@ belegt, das liegt über der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory is %1$@ full, which is above the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Arbeitsspeicher reicht nicht, macOS lagert auf die SSD aus." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Arbeitsspeicher reicht nicht, macOS lagert auf die SSD aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is not enough memory, so macOS is swapping to the SSD."
+          }
+        }
+      }
+    },
+    "Der Arbeitsspeicher wird knapp. macOS komprimiert und lagert aus, dadurch wird alles träge." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Arbeitsspeicher wird knapp. macOS komprimiert und lagert aus, dadurch wird alles träge."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory is running low. macOS is compressing and swapping, which makes everything sluggish."
+          }
+        }
+      }
+    },
+    "Der Download läuft mit %@ und damit langsamer als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Download läuft mit %1$@ und damit langsamer als die Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download speed is %1$@, slower than the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Download läuft mit %@ und damit schneller als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Download läuft mit %1$@ und damit schneller als die Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download speed is %1$@, faster than the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Lüfter dreht seit Minuten fast mit voller Drehzahl. Der Mac schafft es nur mit Mühe, die Wärme loszuwerden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Lüfter dreht seit Minuten fast mit voller Drehzahl. Der Mac schafft es nur mit Mühe, die Wärme loszuwerden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The fan has been running at nearly full speed for minutes. Your Mac is struggling to get rid of the heat."
+          }
+        }
+      }
+    },
+    "Der Lüfter dreht seit über %@ mit %@ von höchstens %@ U/min. Der Mac kämpft gegen die Wärme." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Lüfter dreht seit über %1$@ mit %2$@ von höchstens %3$@ U/min. Der Mac kämpft gegen die Wärme."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The fan has been running at %2$@ of up to %3$@ rpm for over %1$@. Your Mac is struggling against the heat."
+          }
+        }
+      }
+    },
+    "Der Lüfter läuft mit %@ seiner Höchstdrehzahl, das liegt unter der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Lüfter läuft mit %1$@ seiner Höchstdrehzahl, das liegt unter der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The fan is running at %1$@ of its maximum speed, below the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Lüfter läuft mit %@ seiner Höchstdrehzahl, das liegt über der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Lüfter läuft mit %1$@ seiner Höchstdrehzahl, das liegt über der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The fan is running at %1$@ of its maximum speed, above the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Mac hat keine Verbindung ins Internet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mac hat keine Verbindung ins Internet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mac has no internet connection."
+          }
+        }
+      }
+    },
+    "Der Mac hängt am Netzteil, der Akku verliert seit über %@ aber Ladung (%@ W). Das Netzteil ist vermutlich zu schwach für die aktuelle Last." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mac hängt am Netzteil, der Akku verliert seit über %1$@ aber Ladung (%2$@ W). Das Netzteil ist vermutlich zu schwach für die aktuelle Last."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mac is plugged in, but the battery has been losing charge for over %1$@ (%2$@ W). The power adapter is probably too weak for the current load."
+          }
+        }
+      }
+    },
+    "Der Mac ist dauerhaft ausgelastet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mac ist dauerhaft ausgelastet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mac is under constant load."
+          }
+        }
+      }
+    },
+    "Der Mac ist insgesamt dauerhaft ausgelastet, Apps reagieren langsamer und der Akku leert sich schneller." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mac ist insgesamt dauerhaft ausgelastet, Apps reagieren langsamer und der Akku leert sich schneller."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mac is under heavy load overall, apps respond more slowly and the battery drains faster."
+          }
+        }
+      }
+    },
+    "Der Mac ist so warm, dass macOS die Leistung drosselt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mac ist so warm, dass macOS die Leistung drosselt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mac is so warm that macOS is throttling performance."
+          }
+        }
+      }
+    },
+    "Der Mac verbraucht %@ und damit mehr als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mac verbraucht %1$@ und damit mehr als die Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mac is using %1$@, more than the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Mac verbraucht %@ und damit weniger als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mac verbraucht %1$@ und damit weniger als die Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Mac is using %1$@, less than the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Name ist zu lang. Er darf höchstens %lld Zeichen haben." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Der Name ist zu lang. Er darf höchstens %lld Zeichen haben."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Der Name ist zu lang. Er darf höchstens %lld Zeichen haben."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The name is too long. It can have at most %lld character."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The name is too long. It can have at most %lld characters."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Der Prozess belegt ungewöhnlich viel Arbeitsspeicher. Wächst das mit der Laufzeit, ist es meist ein Speicherleck." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Prozess belegt ungewöhnlich viel Arbeitsspeicher. Wächst das mit der Laufzeit, ist es meist ein Speicherleck."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The process is using an unusual amount of memory. If it keeps growing over time, it is usually a memory leak."
+          }
+        }
+      }
+    },
+    "Der Prozess hält den Mac wach und leert so im Akkubetrieb den Akku, auch wenn du nicht arbeitest." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Prozess hält den Mac wach und leert so im Akkubetrieb den Akku, auch wenn du nicht arbeitest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The process keeps your Mac awake and drains the battery on battery power, even when you are not working."
+          }
+        }
+      }
+    },
+    "Der Prozess rechnet seit Minuten ununterbrochen. Entweder arbeitet er gerade einen großen Auftrag ab (Build, Export, Indexierung) oder er hängt in einer Schleife." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Prozess rechnet seit Minuten ununterbrochen. Entweder arbeitet er gerade einen großen Auftrag ab (Build, Export, Indexierung) oder er hängt in einer Schleife."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The process has been running flat out for minutes. Either it is working through a big job (build, export, indexing) or it is stuck in a loop."
+          }
+        }
+      }
+    },
+    "Der Swap ist %@ groß und damit unter der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Swap ist %1$@ groß und damit unter der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap is %1$@, below the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Swap ist %@ groß und damit über der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Swap ist %1$@ groß und damit über der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap is %1$@, above the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Upload läuft mit %@ und damit langsamer als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Upload läuft mit %1$@ und damit langsamer als die Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload speed is %1$@, slower than the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Der Upload läuft mit %@ und damit schneller als die Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Upload läuft mit %1$@ und damit schneller als die Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload speed is %1$@, faster than the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Die Abklingzeit darf nicht negativ sein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Abklingzeit darf nicht negativ sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The cooldown can’t be negative."
+          }
+        }
+      }
+    },
+    "Die App verbraucht im Akkubetrieb viel Energie und verkürzt die Laufzeit deutlich." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App verbraucht im Akkubetrieb viel Energie und verkürzt die Laufzeit deutlich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses a lot of energy on battery power and noticeably shortens battery life."
+          }
+        }
+      }
+    },
+    "Die App zieht seit über %@ im Durchschnitt mehr als %@ W aus dem Akku." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App zieht seit über %1$@ im Durchschnitt mehr als %2$@ W aus dem Akku."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app has been drawing more than %2$@ W from the battery on average for over %1$@."
+          }
+        }
+      }
+    },
+    "Die CPU ist %@ warm und damit unter der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die CPU ist %1$@ warm und damit unter der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The CPU is at %1$@, below the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Die CPU ist %@ warm und damit über der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die CPU ist %1$@ warm und damit über der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The CPU is at %1$@, above the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Die CPU ist seit über %@ heißer als %@ °C. Reduziere die Last, bevor macOS drosselt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die CPU ist seit über %1$@ heißer als %2$@ °C. Reduziere die Last, bevor macOS drosselt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The CPU has been hotter than %2$@ °C for over %1$@. Reduce the load before macOS throttles."
+          }
+        }
+      }
+    },
+    "Die CPU ist ungewöhnlich heiß. Bleibt das so, drosselt macOS bald die Leistung, und der Mac wird laut." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die CPU ist ungewöhnlich heiß. Bleibt das so, drosselt macOS bald die Leistung, und der Mac wird laut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The CPU is unusually hot. If it stays that way, macOS will soon throttle performance and your Mac will get loud."
+          }
+        }
+      }
+    },
+    "Die CPU-Auslastung liegt bei %@ und damit unter der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die CPU-Auslastung liegt bei %1$@ und damit unter der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU usage is at %1$@, below the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Die CPU-Auslastung liegt bei %@ und damit über der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die CPU-Auslastung liegt bei %1$@ und damit über der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU usage is at %1$@, above the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Die Datei ist kein gültiges JSON und konnte nicht gelesen werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei ist kein gültiges JSON und konnte nicht gelesen werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file isn’t valid JSON and couldn’t be read."
+          }
+        }
+      }
+    },
+    "Die Datei stammt aus einer neueren Version von MacMonitor. Aktualisiere die App und versuche es erneut." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei stammt aus einer neueren Version von MacMonitor. Aktualisiere die App und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is from a newer version of MacMonitor. Update the app and try again."
+          }
+        }
+      }
+    },
+    "Die Datei stammt nicht von MacMonitor oder enthält keine Einstellungen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei stammt nicht von MacMonitor oder enthält keine Einstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file isn’t from MacMonitor or doesn’t contain any settings."
+          }
+        }
+      }
+    },
+    "Die Dauer darf nicht negativ sein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Dauer darf nicht negativ sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The duration can’t be negative."
+          }
+        }
+      }
+    },
+    "Die GPU ist zu %@ ausgelastet, das liegt unter der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die GPU ist zu %1$@ ausgelastet, das liegt unter der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The GPU is at %1$@ load, below the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Die GPU ist zu %@ ausgelastet, das liegt über der Schwelle von %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die GPU ist zu %1$@ ausgelastet, das liegt über der Schwelle von %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The GPU is at %1$@ load, above the threshold of %2$@."
+          }
+        }
+      }
+    },
+    "Die Grafikeinheit ist dauerhaft stark ausgelastet. Das kostet Akku und erzeugt Wärme." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Grafikeinheit ist dauerhaft stark ausgelastet. Das kostet Akku und erzeugt Wärme."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The GPU has been under heavy load for a long time. That drains the battery and generates heat."
+          }
+        }
+      }
+    },
+    "Die Reserve der SSD ist auf %lld %% gesunken, die Abnutzung liegt bei %lld %%. Sichere wichtige Daten regelmäßig." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Reserve der SSD ist auf %1$lld %% gesunken, die Abnutzung liegt bei %2$lld %%. Sichere wichtige Daten regelmäßig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The SSD's spare capacity has dropped to %1$lld%%, and wear is at %2$lld%%. Back up important data regularly."
+          }
+        }
+      }
+    },
+    "Die SSD hat laut Selbstdiagnose %lld %% ihrer geplanten Lebensdauer verbraucht, die Reserve liegt bei %lld %%. Sichere wichtige Daten regelmäßig." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die SSD hat laut Selbstdiagnose %1$lld %% ihrer geplanten Lebensdauer verbraucht, die Reserve liegt bei %2$lld %%. Sichere wichtige Daten regelmäßig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "According to its self-diagnosis, the SSD has used %1$lld%% of its planned lifespan, and spare capacity is at %2$lld%%. Back up important data regularly."
+          }
+        }
+      }
+    },
+    "Die SSD ist zu %@ voll." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die SSD ist zu %@ voll."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The SSD is %@ full."
+          }
+        }
+      }
+    },
+    "Die SSD meldet, dass ein großer Teil ihrer geplanten Schreibmenge verbraucht ist oder die Reserve schrumpft. Sie läuft meist noch lange, kann aber irgendwann ausfallen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die SSD meldet, dass ein großer Teil ihrer geplanten Schreibmenge verbraucht ist oder die Reserve schrumpft. Sie läuft meist noch lange, kann aber irgendwann ausfallen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The SSD reports that a large part of its planned write volume is used up or its spare capacity is shrinking. It usually keeps working for a long time, but may fail eventually."
+          }
+        }
+      }
+    },
+    "Die Schwelle darf nicht negativ sein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Schwelle darf nicht negativ sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The threshold can’t be negative."
+          }
+        }
+      }
+    },
+    "Die Speicherverwaltung zeigt, was am meisten Platz belegt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Speicherverwaltung zeigt, was am meisten Platz belegt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storage Management shows what takes up the most space."
+          }
+        }
+      }
+    },
+    "Diese Adresse kann nicht geöffnet werden. Sie muss mit https:// oder http:// beginnen oder die Adresse einer App sein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Adresse kann nicht geöffnet werden. Sie muss mit https:// oder http:// beginnen oder die Adresse einer App sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This address can’t be opened. It must start with https:// or http://, or be the address of an app."
+          }
+        }
+      }
+    },
+    "Diese Aktion braucht eine Messgröße, die zu einem Prozess gehört." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Aktion braucht eine Messgröße, die zu einem Prozess gehört."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action needs a metric that belongs to a process."
+          }
+        }
+      }
+    },
+    "Diese Meldung stammt aus einer eigenen Regel, die du selbst eingerichtet hast." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Meldung stammt aus einer eigenen Regel, die du selbst eingerichtet hast."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This alert comes from a custom rule you set up yourself."
+          }
+        }
+      }
+    },
+    "Diese Messgröße geht nur bis 100 Prozent. Wähle eine Schwelle von höchstens 100." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Messgröße geht nur bis 100 Prozent. Wähle eine Schwelle von höchstens 100."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This metric only goes up to 100 percent. Choose a threshold of 100 or less."
+          }
+        }
+      }
+    },
+    "Diese Taste kann nicht als Kürzel verwendet werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Taste kann nicht als Kürzel verwendet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This key can’t be used as a shortcut."
+          }
+        }
+      }
+    },
+    "Eigene Regel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Regel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom rule"
+          }
+        }
+      }
+    },
+    "Ein Neustart der App gibt den Speicher sofort frei." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Neustart der App gibt den Speicher sofort frei."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restarting the app frees the memory right away."
+          }
+        }
+      }
+    },
+    "Ein Neustart des Macs leert den Swap vollständig." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Neustart des Macs leert den Swap vollständig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restarting your Mac clears swap completely."
+          }
+        }
+      }
+    },
+    "Ein Tastenkürzel braucht mindestens eine der Tasten ⌃, ⌥ oder ⌘, sonst würde es beim Tippen auslösen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Tastenkürzel braucht mindestens eine der Tasten ⌃, ⌥ oder ⌘, sonst würde es beim Tippen auslösen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A shortcut needs at least one of the keys ⌃, ⌥ or ⌘, otherwise it would trigger while you type."
+          }
+        }
+      }
+    },
+    "Energie & Akku" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energie & Akku"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energy & Battery"
+          }
+        }
+      }
+    },
+    "Energie sparen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energie sparen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Energy"
+          }
+        }
+      }
+    },
+    "Energiefresser im Akkubetrieb" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energiefresser im Akkubetrieb"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energy hog on battery power"
+          }
+        }
+      }
+    },
+    "Festplatte voll" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festplatte voll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disk full"
+          }
+        }
+      }
+    },
+    "Freier Speicherplatz" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freier Speicherplatz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free storage"
+          }
+        }
+      }
+    },
+    "Füge mindestens eine Aktion hinzu, sonst passiert bei dieser Regel nichts." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füge mindestens eine Aktion hinzu, sonst passiert bei dieser Regel nichts."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add at least one action, otherwise this rule does nothing."
+          }
+        }
+      }
+    },
+    "GPU" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU"
+          }
+        }
+      }
+    },
+    "GPU dauerhaft hoch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU dauerhaft hoch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sustained high GPU"
+          }
+        }
+      }
+    },
+    "GPU seit %@ bei %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU seit %1$@ bei %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU at %2$@ for %1$@"
+          }
+        }
+      }
+    },
+    "GPU-Auslastung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU-Auslastung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPU usage"
+          }
+        }
+      }
+    },
+    "Gib der Regel einen Namen, damit du sie in der Liste wiederfindest." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib der Regel einen Namen, damit du sie in der Liste wiederfindest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give the rule a name so you can find it in the list."
+          }
+        }
+      }
+    },
+    "Gib eine Adresse ein, die mit https:// beginnt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib eine Adresse ein, die mit https:// beginnt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter an address that starts with https://."
+          }
+        }
+      }
+    },
+    "Gib für die Schwelle eine Zahl ein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib für die Schwelle eine Zahl ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a number for the threshold."
+          }
+        }
+      }
+    },
+    "Großer Upload läuft" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Großer Upload läuft"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large upload in progress"
+          }
+        }
+      }
+    },
+    "Größte Verbraucher: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größte Verbraucher: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biggest consumers: %@"
+          }
+        }
+      }
+    },
+    "Hilfe" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilfe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help"
+          }
+        }
+      }
+    },
+    "Hilft das nicht, Router oder Dock-Verbindung prüfen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilft das nicht, Router oder Dock-Verbindung prüfen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If that does not help, check your router or dock connection."
+          }
+        }
+      }
+    },
+    "Hilft das nicht, schalte die Warnung für diese App stumm." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilft das nicht, schalte die Warnung für diese App stumm."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If that does not help, mute the alert for this app."
+          }
+        }
+      }
+    },
+    "Hängender Prozess" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hängender Prozess"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runaway process"
+          }
+        }
+      }
+    },
+    "Immer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always"
+          }
+        }
+      }
+    },
+    "Internet weg" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internet weg"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internet down"
+          }
+        }
+      }
+    },
+    "Keine Internetverbindung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Internetverbindung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No internet connection"
+          }
+        }
+      }
+    },
+    "Kurzbefehl ausführen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurzbefehl ausführen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run shortcut"
+          }
+        }
+      }
+    },
+    "Leertaste" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leertaste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Space"
+          }
+        }
+      }
+    },
+    "Leistung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leistung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power"
+          }
+        }
+      }
+    },
+    "Lösche große, nicht mehr benötigte Dateien oder verschiebe sie auf ein anderes Laufwerk." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösche große, nicht mehr benötigte Dateien oder verschiebe sie auf ein anderes Laufwerk."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete large files you no longer need or move them to another drive."
+          }
+        }
+      }
+    },
+    "Lüfter %lld läuft mit %@ seiner Drehzahl" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter %1$lld läuft mit %2$@ seiner Drehzahl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan %1$lld is running at %2$@ of its maximum speed"
+          }
+        }
+      }
+    },
+    "Lüfter am Anschlag" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfter am Anschlag"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan at maximum"
+          }
+        }
+      }
+    },
+    "Lüfterdrehzahl" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüfterdrehzahl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fan speed"
+          }
+        }
+      }
+    },
+    "Lüftungsschlitze frei halten, nicht auf weicher Unterlage betreiben." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lüftungsschlitze frei halten, nicht auf weicher Unterlage betreiben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep the vents clear and do not use your Mac on a soft surface."
+          }
+        }
+      }
+    },
+    "Mac wird heiß" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac wird heiß"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac running hot"
+          }
+        }
+      }
+    },
+    "Mac wird heiß und drosselt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac wird heiß und drosselt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac is getting hot and throttling"
+          }
+        }
+      }
+    },
+    "Mac überhitzt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac überhitzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac is overheating"
+          }
+        }
+      }
+    },
+    "Menüleisten-Fenster öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menüleisten-Fenster öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Menu Bar Window"
+          }
+        }
+      }
+    },
+    "Mitteilung zeigen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilung zeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show notification"
+          }
+        }
+      }
+    },
+    "Netz ↓ (Download)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz ↓ (Download)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network ↓ (Download)"
+          }
+        }
+      }
+    },
+    "Netzwerk Download" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netzwerk Download"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network download"
+          }
+        }
+      }
+    },
+    "Netzwerk Upload" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netzwerk Upload"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network upload"
+          }
+        }
+      }
+    },
+    "Normal" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        }
+      }
+    },
+    "Nur Symbol" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Symbol"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon only"
+          }
+        }
+      }
+    },
+    "Nur am Netzteil" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur am Netzteil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only on power adapter"
+          }
+        }
+      }
+    },
+    "Nur im Akkubetrieb" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur im Akkubetrieb"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only on battery power"
+          }
+        }
+      }
+    },
+    "Nur noch %@ frei" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur noch %@ frei"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only %@ left"
+          }
+        }
+      }
+    },
+    "Nutze das Original-Netzteil mit ausreichender Leistung und ein passendes Kabel." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutze das Original-Netzteil mit ausreichender Leistung und ein passendes Kabel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the original power adapter with enough wattage and a suitable cable."
+          }
+        }
+      }
+    },
+    "Passe die Regel in den Einstellungen an, wenn sie zu oft oder zu früh meldet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passe die Regel in den Einstellungen an, wenn sie zu oft oder zu früh meldet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adjust the rule in Settings if it alerts too often or too early."
+          }
+        }
+      }
+    },
+    "Plane bei Bedarf einen Akkutausch über Apple oder einen Servicepartner." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plane bei Bedarf einen Akkutausch über Apple oder einen Servicepartner."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If needed, plan a battery replacement through Apple or a service provider."
+          }
+        }
+      }
+    },
+    "Prozess beenden" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prozess beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit process"
+          }
+        }
+      }
+    },
+    "Prozess drosseln" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prozess drosseln"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Throttle process"
+          }
+        }
+      }
+    },
+    "Prozesse" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prozesse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Processes"
+          }
+        }
+      }
+    },
+    "Prüfe große Dateien in Downloads und Filme." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe große Dateien in Downloads und Filme."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check large files in Downloads and Movies."
+          }
+        }
+      }
+    },
+    "Prüfe, ob die Lüftungsschlitze frei sind und die Umgebung nicht zu warm ist." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe, ob die Lüftungsschlitze frei sind und die Umgebung nicht zu warm ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check that the vents are clear and the surroundings are not too warm."
+          }
+        }
+      }
+    },
+    "RAM eines Prozesses" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAM eines Prozesses"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAM of a process"
+          }
+        }
+      }
+    },
+    "Reduziere die Last, die größten Verbraucher stehen unten." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reduziere die Last, die größten Verbraucher stehen unten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reduce the load; the biggest consumers are listed below."
+          }
+        }
+      }
+    },
+    "Ruhezustand blockiert" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruhezustand blockiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep prevented"
+          }
+        }
+      }
+    },
+    "Räume Caches auf, die sich von selbst neu aufbauen (unten unter „SSD aufräumen“)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Räume Caches auf, die sich von selbst neu aufbauen (unten unter „SSD aufräumen“)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear caches that rebuild themselves (see “Clean up SSD” below)."
+          }
+        }
+      }
+    },
+    "SSD zu %lld %% abgenutzt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSD zu %lld %% abgenutzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSD %lld%% worn"
+          }
+        }
+      }
+    },
+    "SSD-Reserve nur noch %lld %%" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSD-Reserve nur noch %lld %%"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSD spare capacity down to %lld%%"
+          }
+        }
+      }
+    },
+    "SSD-Verschleiß" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSD-Verschleiß"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSD wear"
+          }
+        }
+      }
+    },
+    "Schließe große Apps oder Browser-Tabs." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe große Apps oder Browser-Tabs."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close large apps or browser tabs."
+          }
+        }
+      }
+    },
+    "Seit %@ offline." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seit %@ offline."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline for %@."
+          }
+        }
+      }
+    },
+    "Seit über %@ im Akkubetrieb, gestartet von %@: „%@“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seit über %1$@ im Akkubetrieb, gestartet von %2$@: „%3$@“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On battery power for over %1$@, started by %2$@: “%3$@”."
+          }
+        }
+      }
+    },
+    "Seit über %@ im Akkubetrieb: „%@“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seit über %1$@ im Akkubetrieb: „%2$@“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On battery power for over %1$@: “%2$@”."
+          }
+        }
+      }
+    },
+    "Seit über %@ ununterbrochen hohe Last (PID %@)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seit über %1$@ ununterbrochen hohe Last (PID %2$@)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Under heavy load for over %1$@ without a break (PID %2$@)."
+          }
+        }
+      }
+    },
+    "Service empfohlen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service empfohlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service Recommended"
+          }
+        }
+      }
+    },
+    "Sichere wichtige Daten regelmäßig mit Time Machine oder einem anderen Backup." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sichere wichtige Daten regelmäßig mit Time Machine oder einem anderen Backup."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back up important data regularly with Time Machine or another backup."
+          }
+        }
+      }
+    },
+    "Sonst beende ihn. Bei Apps reicht meist ein Neustart der App." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonst beende ihn. Bei Apps reicht meist ein Neustart der App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otherwise quit it. For apps, restarting the app is usually enough."
+          }
+        }
+      }
+    },
+    "Speicherdruck" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherdruck"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory pressure"
+          }
+        }
+      }
+    },
+    "Speicherdruck erhöht" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherdruck erhöht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory pressure elevated"
+          }
+        }
+      }
+    },
+    "Speicherdruck kritisch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherdruck kritisch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory pressure critical"
+          }
+        }
+      }
+    },
+    "Speicherfresser" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherfresser"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory hog"
+          }
+        }
+      }
+    },
+    "Speicherplatz" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherplatz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storage"
+          }
+        }
+      }
+    },
+    "Starte die Apps mit dem meisten Speicher neu." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte die Apps mit dem meisten Speicher neu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart the apps that use the most memory."
+          }
+        }
+      }
+    },
+    "Swap" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap"
+          }
+        }
+      }
+    },
+    "Swap bei %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap bei %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap at %@"
+          }
+        }
+      }
+    },
+    "Swap bei %@ (+%@ in 10 min)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap bei %1$@ (+%2$@ in 10 min)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap at %1$@ (+%2$@ in 10 min)"
+          }
+        }
+      }
+    },
+    "Swap-Nutzung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap-Nutzung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swap usage"
+          }
+        }
+      }
+    },
+    "Symbol + CPU" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol + CPU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon + CPU"
+          }
+        }
+      }
+    },
+    "Symbol + CPU + RAM" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbol + CPU + RAM"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon + CPU + RAM"
+          }
+        }
+      }
+    },
+    "System" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        }
+      }
+    },
+    "Systemleistung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemleistung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System power"
+          }
+        }
+      }
+    },
+    "Temperatur" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperature"
+          }
+        }
+      }
+    },
+    "URL öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open URL"
+          }
+        }
+      }
+    },
+    "Vermeide dauerhaft hohen Swap, indem du Apps mit viel Speicher neu startest." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vermeide dauerhaft hohen Swap, indem du Apps mit viel Speicher neu startest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avoid constantly high swap by restarting apps that use a lot of memory."
+          }
+        }
+      }
+    },
+    "Volume voll" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume voll"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume full"
+          }
+        }
+      }
+    },
+    "WLAN aus- und wieder einschalten löst die meisten Hänger." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WLAN aus- und wieder einschalten löst die meisten Hänger."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turning Wi-Fi off and on again fixes most hiccups."
+          }
+        }
+      }
+    },
+    "Wenn ich an einem anderen Bildschirm bin" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn ich an einem anderen Bildschirm bin"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When I’m on another display"
+          }
+        }
+      }
+    },
+    "Wähle ein Programm aus oder gib den Namen eines Programms ein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle ein Programm aus oder gib den Namen eines Programms ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose an app or enter an app name."
+          }
+        }
+      }
+    },
+    "Wähle einen Kurzbefehl aus oder gib seinen Namen ein." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle einen Kurzbefehl aus oder gib seinen Namen ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a shortcut or enter its name."
+          }
+        }
+      }
+    },
+    "Xcode zu hungrig" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xcode zu hungrig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xcode too hungry"
+          }
+        }
+      }
+    },
+    "liegt unter" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "liegt unter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "is below"
+          }
+        }
+      }
+    },
+    "liegt über" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "liegt über"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "is above"
+          }
+        }
+      }
+    },
+    "macOS empfiehlt einen Akku-Service" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS empfiehlt einen Akku-Service"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS recommends battery service"
+          }
+        }
+      }
+    },
+    "macOS lagert Speicher auf die SSD aus. Der Swap schrumpft erst, wenn die Apps, deren Speicher ausgelagert wurde, beendet werden." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS lagert Speicher auf die SSD aus. Der Swap schrumpft erst, wenn die Apps, deren Speicher ausgelagert wurde, beendet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS is swapping memory to the SSD. Swap only shrinks once the apps whose memory was swapped out quit."
+          }
+        }
+      }
+    },
+    "macOS meldet für den Akku den Zustand „Service empfohlen“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS meldet für den Akku den Zustand „Service empfohlen“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS reports the battery condition as “Service Recommended”."
+          }
+        }
+      }
+    },
+    "macOS reduziert die Leistung." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS reduziert die Leistung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS is reducing performance."
+          }
+        }
+      }
+    },
+    "macOS reduziert die Leistung. Größter Verbraucher: %@ (%@)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS reduziert die Leistung. Größter Verbraucher: %1$@ (%2$@)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS is reducing performance. Biggest consumer: %1$@ (%2$@)."
+          }
+        }
+      }
+    },
+    "Überhitzung" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überhitzung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overheating"
+          }
+        }
+      }
+    },
+    "Übersicht öffnen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersicht öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Overview"
+          }
+        }
+      }
+    },
+    "„%@“ gehört zum System oder zu MacMonitor und wird nie beendet oder gedrosselt. Wähle ein anderes Programm." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ gehört zum System oder zu MacMonitor und wird nie beendet oder gedrosselt. Wähle ein anderes Programm."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” belongs to the system or to MacMonitor and is never quit or throttled. Choose a different app."
+          }
+        }
+      }
+    },
+    "„Prozess beenden“ geht nur mit der Messgröße „CPU eines Prozesses“ oder „RAM eines Prozesses“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Prozess beenden“ geht nur mit der Messgröße „CPU eines Prozesses“ oder „RAM eines Prozesses“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Quit process” only works with the metric “CPU of a process” or “RAM of a process”."
+          }
+        }
+      }
+    },
+    "„Prozess drosseln“ geht nur mit der Messgröße „CPU eines Prozesses“ oder „RAM eines Prozesses“." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Prozess drosseln“ geht nur mit der Messgröße „CPU eines Prozesses“ oder „RAM eines Prozesses“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Throttle process” only works with the metric “CPU of a process” or “RAM of a process”."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
