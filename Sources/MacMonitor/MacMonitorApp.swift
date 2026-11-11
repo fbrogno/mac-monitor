@@ -123,7 +123,7 @@ struct MenuBarLabel: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            Image(systemName: model.reported.isEmpty ? "waveform.path.ecg" : "exclamationmark.triangle.fill")
+            Image(systemName: model.menuBarAlert == nil ? "waveform.path.ecg" : "exclamationmark.triangle.fill")
             if !model.menuBarText.isEmpty {
                 Text(model.menuBarText).monospacedDigit()
             }

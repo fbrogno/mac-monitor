@@ -15,7 +15,17 @@ final class AppModel {
     private(set) var cpuHistory = RingBuffer<Double>(capacity: 90)
     private(set) var memoryHistory = RingBuffer<Double>(capacity: 90)
     private(set) var events: [AlertEvent] = []
-    private(set) var reported: [Condition] = []
+    /// Current conditions, titles and texts with live values: they differ on nearly every sample, so only views
+    /// that show the details (popover, overview, dashboard) may read this. The menu bar reads `menuBarAlert`.
+    private(set) var reported: [Condition] = [] {
+        didSet {
+            // Assigned only on change, so observers of `menuBarAlert` are not woken by changing numbers.
+            let worst = AppModel.worstSeverity(of: reported)
+            if worst != menuBarAlert { menuBarAlert = worst }
+        }
+    }
+    /// Highest severity among the reported conditions, nil when there are none. All the menu bar symbol depends on.
+    private(set) var menuBarAlert: Severity?
     var pendingConfirmation: Confirmation?
     var feedback: Feedback? {
         didSet {
@@ -103,6 +113,8 @@ final class AppModel {
     @ObservationIgnored private var swapHistory: [(date: Date, bytes: UInt64)] = []
     @ObservationIgnored let overlay = AlertOverlay()
     @ObservationIgnored private var engine: AlertEngine
+    /// What `AlertStateStore` holds, to write only when the engine's table changed.
+    @ObservationIgnored private var savedLastReported: [String: Date] = [:]
     @ObservationIgnored private var muted: [String: Date] = [:]
     /// Processes muted for now with the time the mute ends, soonest first.
     var mutedProcesses: [(name: String, until: Date)] {
@@ -121,7 +133,10 @@ final class AppModel {
 
     init(settings: MonitorSettings = SettingsStore.load()) {
         self.settings = settings
-        engine = AlertEngine(reminderInterval: settings.reminderInterval)
+        var engine = AlertEngine(reminderInterval: settings.reminderInterval)
+        engine.restore(lastReported: AlertStateStore.load(), now: Date())
+        self.engine = engine
+        savedLastReported = engine.lastReported
     }
 
     // MARK: - Lifecycle
@@ -257,10 +272,9 @@ final class AppModel {
 
         let now = snapshot.date
         if let history {
-            // A gap (sleep) must not count as hours of CPU time: fall back to the nominal interval.
-            let nominal = max(currentInterval, 1)
-            let elapsed = lastIngest.map { now.timeIntervalSince($0) } ?? nominal
-            history.record(snapshot, interval: elapsed >= 1 && elapsed <= 3 * nominal ? elapsed : nominal)
+            // The real time since the last sample; a gap (sleep) counts as at most three regular intervals.
+            history.record(snapshot, interval: SamplingPolicy.recordedSeconds(
+                elapsed: lastIngest.map { now.timeIntervalSince($0) }, nominal: currentInterval))
             lastIngest = now
         }
         muted = muted.filter { $0.value > now }
@@ -277,6 +291,10 @@ final class AppModel {
         let custom = CustomRuleEvaluator.conditions(for: settings.customRules, in: snapshot, isActive: { [engine] in engine.isActive($0) })
         let conditions = Rules.evaluate(snapshot, context) + custom
         let allEvents = engine.process(conditions, now: now)
+        if engine.lastReported != savedLastReported {
+            savedLastReported = engine.lastReported
+            AlertStateStore.save(savedLastReported)
+        }
         // Custom rules show up only through their actions, never as ordinary alerts.
         let newEvents = allEvents.filter { $0.condition.rule != .custom }
         let customEvents = allEvents.filter { $0.condition.rule == .custom }
@@ -308,6 +326,10 @@ final class AppModel {
         }
         AppIntegration.didIngest(self)
         reschedule()
+    }
+
+    nonisolated static func worstSeverity(of conditions: [Condition]) -> Severity? {
+        conditions.map(\.severity).max()
     }
 
     /// Redraws the menu bar only when the shown text would change noticeably (see `MenuBarDisplay`).

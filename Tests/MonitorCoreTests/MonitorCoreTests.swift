@@ -55,6 +55,56 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
         #expect(engine.process([condition("a", sustain: 0)], now: t0 + 600).map(\.kind) == [.reminder])
     }
 
+    private func weekly(_ key: String = "battery.health") -> Condition {
+        Condition(key: key, rule: .batteryHealth, severity: .info, title: key, body: "", sustain: 0, reminderInterval: 7 * 86_400)
+    }
+
+    @Test func longReminderSurvivesARestart() {
+        var first = AlertEngine()
+        #expect(first.process([weekly()], now: t0).map(\.kind) == [.fired])
+        #expect(first.lastReported == ["battery.health": t0])
+
+        // The app is started again: a fresh engine, the saved table handed back.
+        var second = AlertEngine()
+        second.restore(lastReported: first.lastReported, now: t0 + 3600)
+        #expect(second.process([weekly()], now: t0 + 3600).isEmpty)            // no second notice
+        #expect(second.reported.map(\.key) == ["battery.health"])             // but still listed as ongoing
+        #expect(second.process([weekly()], now: t0 + 3 * 86_400).isEmpty)
+        #expect(second.process([weekly()], now: t0 + 7 * 86_400).map(\.kind) == [.reminder])
+        #expect(second.lastReported["battery.health"] == t0 + 7 * 86_400)
+
+        // Without the saved table the note would come again right away.
+        var forgetful = AlertEngine()
+        #expect(forgetful.process([weekly()], now: t0 + 3600).map(\.kind) == [.fired])
+    }
+
+    @Test func restoredStateIsNotUsedWhenDueAndOnlyForOwnIntervals() {
+        var engine = AlertEngine()
+        engine.restore(lastReported: ["battery.health": t0, "a": t0], now: t0 + 8 * 86_400)
+        // Reported more than 7 days ago: it is due again.
+        #expect(engine.process([weekly()], now: t0 + 8 * 86_400).map(\.kind) == [.fired])
+        // Conditions without their own interval are never held back by the table.
+        let events = engine.process([condition("a", sustain: 0)], now: t0 + 8 * 86_400)
+        #expect(events.filter { $0.condition.key == "a" }.map(\.kind) == [.fired])
+    }
+
+    @Test func resolvedConditionIsNewsAgainAndTheTableStaysSmall() {
+        var engine = AlertEngine()
+        _ = engine.process([weekly()], now: t0)
+        #expect(engine.process([], now: t0 + 60).map(\.kind) == [.resolved])
+        #expect(engine.lastReported.isEmpty)
+        #expect(engine.process([weekly()], now: t0 + 120).map(\.kind) == [.fired])
+
+        // Old, future and surplus entries are dropped on load.
+        var saved: [String: Date] = ["old": t0 - 40 * 86_400, "future": t0 + 1000]
+        for i in 0..<80 { saved["k\(i)"] = t0 - Double(i) * 60 }
+        var loaded = AlertEngine()
+        loaded.restore(lastReported: saved, now: t0)
+        #expect(loaded.lastReported.count == AlertEngine.lastReportedLimit)
+        #expect(loaded.lastReported["old"] == nil && loaded.lastReported["future"] == nil)
+        #expect(loaded.lastReported["k0"] == t0)
+    }
+
     @Test func escalationFiresAgain() {
         var engine = AlertEngine()
         _ = engine.process([condition("p", sustain: 0)], now: t0)
@@ -195,6 +245,28 @@ private func condition(_ key: String, sustain: TimeInterval = 60, severity: Seve
         #expect(system.memoryUsedBytes() <= system.memoryTotalBytes)
         let processes = ProcessSampler().sample()
         #expect(processes.contains { $0.pid == getpid() })
+    }
+}
+
+@Suite struct RecordedSecondsTests {
+    @Test func usesTheRealIntervalAndOnlyCapsUpward() {
+        // Regular tick, extra sample 0.4 s after the previous one, a sleep gap, first sample, clock going backwards.
+        #expect(SamplingPolicy.recordedSeconds(elapsed: 10.2, nominal: 10) == 10.2)
+        #expect(SamplingPolicy.recordedSeconds(elapsed: 0.4, nominal: 10) == 0.4)
+        #expect(SamplingPolicy.recordedSeconds(elapsed: 3 * 3600, nominal: 10) == 30)
+        #expect(SamplingPolicy.recordedSeconds(elapsed: nil, nominal: 20) == 20)
+        #expect(SamplingPolicy.recordedSeconds(elapsed: -5, nominal: 20) == 20)
+        // Before the first schedule the nominal value is 0: treated as one second.
+        #expect(SamplingPolicy.recordedSeconds(elapsed: nil, nominal: 0) == 1)
+    }
+
+    @Test func extraSamplesDoNotInflateCPUTime() {
+        // 10 s regular interval plus an extra sample 0.5 s after each regular one: the summed seconds stay real time.
+        let gaps: [TimeInterval] = [10, 0.5, 9.5, 0.5, 9.5]
+        let counted = gaps.reduce(0) { $0 + SamplingPolicy.recordedSeconds(elapsed: $1, nominal: 10) }
+        #expect(counted == 30)
+        let old = gaps.reduce(0) { $0 + ($1 >= 1 && $1 <= 30 ? $1 : 10) }   // the former rule
+        #expect(old > counted)
     }
 }
 
