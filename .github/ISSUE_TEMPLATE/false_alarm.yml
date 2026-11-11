@@ -1,0 +1,72 @@
+name: False alarm
+description: MacMonitor warned about something that was not a problem, or missed something it should have caught.
+title: "[False alarm] "
+labels: ["false-alarm"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A false alarm is a useful bug report. The more exactly you describe the moment, the better the rule or its default can be fixed.
+  - type: input
+    id: rule
+    attributes:
+      label: Which rule?
+      description: The name of the rule as shown in Settings, Rules (for example "Runaway process" or "Memory pressure"), or the name of your custom rule.
+    validations:
+      required: true
+  - type: textarea
+    id: said
+    attributes:
+      label: What did MacMonitor say?
+      description: The title and text of the alert, as exactly as you can. The Dashboard, Events shows the log.
+      placeholder: |
+        Title: ...
+        Text: ...
+    validations:
+      required: true
+  - type: textarea
+    id: doing
+    attributes:
+      label: What was your Mac doing at the time?
+      description: For example "compiling in Xcode", "video export", "just woke from sleep", "connected to a projector".
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What was wrong?
+      options:
+        - The alert was not justified
+        - The alert came too early (the value was only briefly high)
+        - The alert came again and again
+        - The suggested fix did not fit
+        - It should have warned, but did not
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: MacMonitor version
+      description: Settings, Updates & Info.
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+    validations:
+      required: true
+  - type: input
+    id: mac
+    attributes:
+      label: Mac model
+      description: Apple menu, About This Mac. For example "MacBook Air, M2, 2022".
+    validations:
+      required: true
+  - type: textarea
+    id: settings
+    attributes:
+      label: Changed settings
+      description: Thresholds or durations you changed for this rule, if any.
+    validations:
+      required: false
