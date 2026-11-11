@@ -95,7 +95,7 @@ Short spikes do not count. A rule reports only after the condition has held with
     <td width="33%" valign="top">
       <img src="docs/images/en/settings-rules.png" alt="Rules in Settings" width="270">
       <br><b>17 built-in rules</b><br>
-      Thresholds and durations are yours to change, per group, with "Reset to default". Processes can be ignored for good or muted for an hour.
+      Thresholds and durations are yours to change, per group, with "Reset to Defaults". Processes can be ignored for good or muted for an hour.
     </td>
     <td width="33%" valign="top">
       <img src="docs/images/en/settings-custom-rule.png" alt="Editor for a custom rule" width="270">
@@ -109,7 +109,7 @@ Short spikes do not count. A rule reports only after the condition has held with
         <img src="docs/images/en/widget-status-medium-alert.png" alt="Status widget" width="270">
       </picture>
       <br><b>Five widgets</b><br>
-      Status, load, battery, storage and top apps for the desktop and Notification Center.
+      Status, usage, battery, storage and top consumers for the desktop and Notification Center.
     </td>
   </tr>
   <tr>
@@ -124,8 +124,8 @@ Short spikes do not count. A rule reports only after the condition has held with
       Measures caches that rebuild themselves and empties them after you confirm. Downloads are only opened, never deleted.
     </td>
     <td width="33%" valign="top">
-      <img src="docs/images/en/overlay.png" alt="Alert panel" width="270">
-      <br><b>Alert panel on your screen</b><br>
+      <img src="docs/images/en/overlay.png" alt="Notice window" width="270">
+      <br><b>Notice window on your screen</b><br>
       macOS shows banners only on the main display. MacMonitor adds a panel on the screen where your pointer is.
     </td>
   </tr>
@@ -144,24 +144,24 @@ The long parts are folded. Open what you need.
 
 &nbsp;
 
-Every threshold and duration can be changed in **Settings, Rules**. The rules are grouped as shown. 16 are on by default; "High GPU load" is off.
+Every threshold and duration can be changed in **Settings, Rules**. The rules are grouped as shown. 16 are on by default; "Sustained high GPU" is off.
 
 | Group | Rule | Reports when (default) | Notes |
 |---|---|---|---|
 | Processes | Runaway process | one process uses 90 % CPU or more for 3 min | "100 %" is one fully busy core, as in Activity Monitor |
 | Processes | Memory hog | one process holds 25 % of the RAM or more for 1 min | |
-| System | High CPU load | whole-Mac CPU at 90 % or more for 2 min | lists the biggest consumers |
+| System | Sustained high CPU | whole-Mac CPU at 90 % or more for 2 min | lists the biggest consumers |
 | System | Memory pressure | macOS reports "warning" for 1 min, "critical" at once | critical alerts break through quiet times |
-| System | Swap use | swap at 8 GB or more, while it grows by 1 GB or more in 10 min or memory is tight | a high but shrinking swap is a leftover and stays quiet |
+| System | Swap usage | swap at 8 GB or more, while it grows by 1 GB or more in 10 min or memory is tight | a high but shrinking swap is a leftover and stays quiet |
 | System | Overheating | thermal state "serious" or "critical", at once | macOS is already throttling |
 | System | High CPU temperature | hottest CPU sensor at 95 °C or more for 2 min | steps aside while the overheating rule is speaking |
-| System | Fan at its limit | a fan at 90 % of its top speed or more for 5 min | only on Macs with fans |
-| System | High GPU load | GPU at 90 % or more for 5 min | **off by default** |
-| System | No internet | offline for 30 s | an entry "resolved" when the connection is back |
-| Energy and battery | Battery health | capacity below 80 % of new, or macOS says "Service recommended" | at most once a week, severity "info" |
-| Energy and battery | Draining while plugged in | on the adapter, not charging, battery losing 1 W or more for 10 min | adapter probably too weak |
-| Energy and battery | Energy hog on battery | one app averages 8 W or more over 5 min on battery | per app, helpers included |
-| Energy and battery | Sleep blocked | a process keeps the Mac awake for more than 30 min on battery | named with the program that started it |
+| System | Fan at maximum | a fan at 90 % of its top speed or more for 5 min | only on Macs with fans |
+| System | Sustained high GPU | GPU at 90 % or more for 5 min | **off by default** |
+| System | Internet down | offline for 30 s | an entry "Resolved" when the connection is back |
+| Energy & Battery | Battery health | capacity below 80 % of new, or macOS says "Service recommended" | at most once a week, severity "info" |
+| Energy & Battery | Battery draining while plugged in | on the adapter, not charging, battery losing 1 W or more for 10 min | adapter probably too weak |
+| Energy & Battery | Energy hog on battery power | one app averages 8 W or more over 5 min on battery | per app, helpers included |
+| Energy & Battery | Sleep prevented | a process keeps the Mac awake for more than 30 min on battery | named with the program that started it |
 | Storage | Disk full | less than 10 % or less than 15 GB free on the startup volume | "critical" below 5 GB |
 | Storage | Volume full | another volume of 1 GB or more (for example an external drive) under the same limits | the startup volume belongs to "Disk full" |
 | Storage | SSD wear | wear at 80 % or more, or spare below 20 % | at most once a week; "warning" at 90 % wear or spare below 10 %, otherwise "info" |
@@ -208,7 +208,7 @@ Open it from the popover, with a [keyboard shortcut](#settings-tab-by-tab) or wi
 
 | Area | Shows |
 |---|---|
-| Overview | all key values as tiles with a small chart, current alerts with "Fix" buttons, uptime, load and process count |
+| At a Glance | all key values as tiles with a small chart, current alerts with "Fix" buttons, uptime, load and process count |
 | CPU & GPU | CPU over time with efficiency and performance cores, per-core bars, GPU load and GPU memory, system load |
 | Memory | usage, pressure and swap over time |
 | Energy & Battery | system power split into CPU, GPU, Neural Engine and RAM, charge level, battery condition |
@@ -220,7 +220,7 @@ Open it from the popover, with a [keyboard shortcut](#settings-tab-by-tab) or wi
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/en/dashboard-overview.png" alt="Dashboard: Overview"><br><sub>Overview</sub></td>
+    <td width="50%"><img src="docs/images/en/dashboard-overview.png" alt="Dashboard: At a Glance"><br><sub>At a Glance</sub></td>
     <td width="50%"><img src="docs/images/en/dashboard-cpu.png" alt="Dashboard: CPU and GPU"><br><sub>CPU &amp; GPU</sub></td>
   </tr>
   <tr>
@@ -243,14 +243,14 @@ Open it from the popover, with a [keyboard shortcut](#settings-tab-by-tab) or wi
 
 &nbsp;
 
-**Settings, Custom rules** lets you define what MacMonitor should watch.
+**Settings, Custom Rules** lets you define what MacMonitor should watch.
 
 - **Measurement** (13): total CPU, memory used, swap, GPU load, CPU temperature, fan speed, system power, battery level, free disk space, network download, network upload, CPU of one program, RAM of one program.
 - **Condition:** above or below a threshold, for a minimum duration (default 1 min), only on battery or only on the adapter if you like.
 - **Importance:** info, warning or critical, and a cool-down (default 30 min) before the actions can run again.
 - **Actions:** show a notification, run a Shortcut from your list, open a URL, quit a program (optionally after asking you), throttle a program. Quit and throttle exist only for the two program measurements.
 
-Five templates help you start, for example "Chrome eats RAM" (quit after asking, above 4 GB for 2 min) or "Battery below 20 %". Incomplete rules cannot be saved, and the editor says at the field what is missing. Every action that ran, and every failure, is in the event log. A rule that cannot be read is skipped when settings load; the others stay.
+Five templates help you start, for example "Chrome is eating RAM" (quit after asking, above 4 GB for 2 min) or "Battery below 20%". Incomplete rules cannot be saved, and the editor says at the field what is missing. Every action that ran, and every failure, is in the event log. A rule that cannot be read is skipped when settings load; the others stay.
 
 <img src="docs/images/en/settings-custom-rule.png" alt="Editor for a custom rule, with a hint at the field that is still empty" width="640">
 
@@ -274,14 +274,14 @@ Five templates help you start, for example "Chrome eats RAM" (quit after asking,
 
 | Tab | Contents |
 |---|---|
-| General | start at login, alert panel (off, only when you are on another screen (default), always), reminder interval |
+| General | start at login, notice window (off, only when you are on another screen (default), always), reminder interval |
 | Menu bar | up to three values next to the icon: CPU, RAM, GPU, temperature, power, network download, battery. Default: icon only. Three optional keyboard shortcuts |
-| Rules | the 17 rules with switches, thresholds, durations, "Reset to default" per group |
-| Custom rules | your own rules, templates, editor |
+| Rules | the 17 rules with switches, thresholds, durations, "Reset to Defaults" per group |
+| Custom Rules | your own rules, templates, editor |
 | Quiet | what is silenced and when |
 | Ignored | programs that never trigger process alerts (default: `kernel_task`, `mds_stores`, `mdworker_shared`, `photoanalysisd`), and programs muted for now |
 | Data | history size and retention, export, delete, export and import of your settings as JSON |
-| Updates & Info | automatic update check, check now, version, privacy note |
+| Updates & About | automatic update check, check now, version, privacy note |
 
 <table>
   <tr>
@@ -290,7 +290,7 @@ Five templates help you start, for example "Chrome eats RAM" (quit after asking,
   </tr>
 </table>
 
-**Quiet.** No alert panel and no sound while the screen is locked or a display is mirrored (a projector in mirror mode). Optional quiet hours (off by default, 22:00 to 07:00 when switched on, also across midnight). During quiet times info alerts are dropped. Warnings still arrive in Notification Center, without panel and sound. Critical alerts break through if you leave that switch on (default). Sound plays only for new and escalated warnings and critical alerts, never for reminders or "resolved". The "Respect Focus" switch is greyed out, see [Known limits](#known-limits).
+**Quiet.** No notice window and no sound while the screen is locked or a display is mirrored (a projector in mirror mode). Optional quiet hours (off by default, 22:00 to 07:00 when switched on, also across midnight). During quiet times info alerts are dropped. Warnings still arrive in Notification Center, without notice window and sound. Critical alerts break through if you leave that switch on (default). Sound plays only for new and escalated warnings and critical alerts, never for reminders or "Resolved" alerts. The "Respect Focus" switch is greyed out, see [Known limits](#known-limits).
 
 **Keyboard shortcuts.** Open the popover, the dashboard, the overview. None is set by default. Pick one in Settings, Menu bar, for example <kbd>⌃</kbd> <kbd>⌥</kbd> <kbd>D</kbd> for the dashboard. They work in every app and need no Accessibility permission.
 
@@ -320,7 +320,7 @@ flowchart LR
     R --> E["Alert engine<br/>duration, reminder, escalation"]
     E --> Q["Quiet policy"]
     Q --> B["Notification"]
-    Q --> O["Alert panel<br/>on the active screen"]
+    Q --> O["Notice window<br/>on the active screen"]
     E --> A["Actions of custom rules<br/>Shortcut, URL, quit, throttle"]
     N --> H[("History<br/>SQLite")]
     E --> H
@@ -359,15 +359,15 @@ Time spent asleep does not count: after waking up, all alerts that are still bei
 
 ## Widgets
 
-Five widgets for the desktop and Notification Center. They show data the app writes to a shared container, so they work while MacMonitor runs. If the data is older than 5 minutes, a widget says "MacMonitor is not running" and when it last saw the app.
+Five widgets for the desktop and Notification Center. They show data the app writes to a shared container, so they work while MacMonitor runs. If the data is older than 5 minutes, a widget says "MacMonitor isn't running" and when it last saw the app.
 
 | Widget | Sizes | Shows |
 |---|---|---|
 | Status | small, medium | traffic light, number of alerts, CPU and RAM |
-| Load | medium | CPU, RAM and GPU with the last hour; extra values (temperature and power, only one of them, or none) are a setting of the widget |
+| Usage | medium | CPU, RAM and GPU with the last hour; extra values (temperature and power, only one of them, or none) are a setting of the widget |
 | Battery and Energy | small, medium | charge, time remaining, power, battery health, cycles |
 | Storage | small, medium | free space of the startup volume |
-| Top apps | medium, large | the apps with the highest load |
+| Top Consumers | medium, large | the apps with the highest load |
 
 A click on a widget opens the overview or the matching dashboard area.
 
@@ -394,8 +394,8 @@ A click on a widget opens the overview or the matching dashboard area.
       <picture>
         <source media="(prefers-color-scheme: dark)" srcset="docs/images/en/widget-load-medium.png">
         <source media="(prefers-color-scheme: light)" srcset="docs/images/en/widget-load-medium-light.png">
-        <img src="docs/images/en/widget-load-medium.png" alt="Load widget">
-      </picture><br><sub>Load, medium</sub>
+        <img src="docs/images/en/widget-load-medium.png" alt="Usage widget">
+      </picture><br><sub>Usage, medium</sub>
     </td>
     <td valign="top">
       <img src="docs/images/en/widget-battery-small.png" alt="Battery widget, small" width="200"><br><sub>Battery, small</sub>
@@ -407,15 +407,15 @@ A click on a widget opens the overview or the matching dashboard area.
   </tr>
   <tr>
     <td valign="top"><img src="docs/images/en/widget-storage-medium.png" alt="Storage widget, medium"><br><sub>Storage, medium</sub></td>
-    <td valign="top"><img src="docs/images/en/widget-topapps-medium.png" alt="Top apps widget, medium"><br><sub>Top apps, medium</sub></td>
+    <td valign="top"><img src="docs/images/en/widget-topapps-medium.png" alt="Top Consumers widget, medium"><br><sub>Top Consumers, medium</sub></td>
   </tr>
   <tr>
     <td valign="top">
       <picture>
         <source media="(prefers-color-scheme: dark)" srcset="docs/images/en/widget-topapps-large.png">
         <source media="(prefers-color-scheme: light)" srcset="docs/images/en/widget-topapps-large-light.png">
-        <img src="docs/images/en/widget-topapps-large.png" alt="Top apps widget, large" width="380">
-      </picture><br><sub>Top apps, large</sub>
+        <img src="docs/images/en/widget-topapps-large.png" alt="Top Consumers widget, large" width="380">
+      </picture><br><sub>Top Consumers, large</sub>
     </td>
     <td valign="top">
       <img src="docs/images/en/widget-stale-medium.png" alt="Widget when MacMonitor is not running"><br><sub>When the app is not running (data older than 5 min)</sub><br><br>
@@ -441,7 +441,7 @@ MacMonitor adds seven actions to the Shortcuts app. They also work from Spotligh
 |---|---|
 | Get System Status | returns CPU, RAM, GPU, temperature, power, battery, free space, the number of alerts and a one-line summary |
 | Get Top Consumers | returns the apps with the highest load, sorted by CPU, memory or energy (1 to 20, default 5) |
-| Get Anomalies | returns the current alerts with title, severity and description |
+| Get Issues | returns the current alerts with title, severity and description |
 | Open Dashboard | opens the dashboard in an area you choose |
 | Open Overview | opens the overview with the current alerts |
 | Mute Alerts | silences MacMonitor for a time you choose (default 1 hour) |
@@ -450,7 +450,7 @@ MacMonitor adds seven actions to the Shortcuts app. They also work from Spotligh
 These are ideas built from those actions. You assemble them yourself in the Shortcuts app:
 
 - **Morning check.** Get System Status, then Show Result or Speak Text. You get the one-line summary.
-- **Only when something is wrong.** Get Anomalies, then "If has any value", then send yourself a message with the titles.
+- **Only when something is wrong.** Get Issues, then "If has any value", then send yourself a message with the titles.
 - **Presentation.** At a time or when an app opens: Mute Alerts for 2 hours.
 - **Heavy job finished.** Run it, then Unmute Alerts.
 - **What slows my Mac?** Get Top Consumers, sorted by memory, then Show Result.
@@ -490,15 +490,15 @@ German names such as `energie`, `netzwerk` or `eigene-regeln` are accepted as we
 
 1. Download `MacMonitor-<version>.dmg` from the [latest release](https://github.com/fbrogno/mac-monitor/releases/latest).
 2. Open the DMG and drag MacMonitor into **Applications**.
-3. Start it. macOS asks whether MacMonitor may send notifications. Say yes: without it you only see the alert panel. On the first start from Applications the app also registers as a login item. You can switch that off in Settings, General.
+3. Start it. macOS asks whether MacMonitor may send notifications. Say yes: without it you only see the notice window. On the first start from Applications the app also registers as a login item. You can switch that off in Settings, General.
 
-The app is signed with a Developer ID and notarized by Apple. It updates itself through [Sparkle](https://sparkle-project.org), in the background (can be switched off) or with "Check for Updates" in Settings, Updates & Info. A found update is announced quietly with one notification and a button in the popover. No window opens unasked.
+The app is signed with a Developer ID and notarized by Apple. It updates itself through [Sparkle](https://sparkle-project.org), in the background (can be switched off) or with "Check for Updates…" in Settings, Updates & Info. A found update is announced quietly with one notification and a button in the popover. No window opens unasked.
 
 **Requirements:** macOS 15 or newer, Apple Silicon or Intel Mac. Some measurements depend on the model, see [Known limits](#known-limits).
 
 ### Uninstall
 
-1. Switch off "Start at login" in Settings, General, and quit MacMonitor.
+1. Switch off "Open at login" in Settings, General, and quit MacMonitor.
 2. Move MacMonitor from Applications to the Trash.
 3. Optionally remove what the app created:
 
@@ -530,7 +530,7 @@ MacMonitor does not start helper processes to measure (no `top`, `ps` or scripts
 ## Known limits
 
 - **No network use per process.** MacMonitor shows throughput for the Mac and per interface. macOS offers no public way to attribute it to programs.
-- **Focus mode is not detected.** macOS tells only apps with a special Apple entitlement whether Focus is on. The switch exists but is greyed out. macOS itself holds back notifications during Focus. For the alert panel and sound, use quiet hours.
+- **Focus mode is not detected.** macOS tells only apps with a special Apple entitlement whether Focus is on. The switch exists but is greyed out. macOS itself holds back notifications during Focus. For the notice window and sound, use quiet hours.
 - **Presentation detection works only with a mirrored display.** Screen sharing in Zoom or Teams and slides in full screen are not detected.
 - **Processes of root or other users are not visible without root.** The kernel refuses their per-process figures. They are included in total CPU and memory, but missing from process lists.
 - **Sensors depend on the Mac model.** Fans, temperatures, power split and SSD data are not reported by every model. On a Mac without fans or battery the tiles are not there. Per-process energy and the split of power into CPU, GPU, Neural Engine and RAM are Apple Silicon only, and the efficiency/performance split needs Apple Silicon too. Temperature and power use interfaces that Apple does not document and may change.
