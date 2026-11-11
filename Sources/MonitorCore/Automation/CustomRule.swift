@@ -226,7 +226,9 @@ public struct CustomRule: Codable, Equatable, Identifiable, Sendable {
         powerCondition = (try? c.decodeIfPresent(PowerCondition.self, forKey: .powerCondition)) ?? .always
         severity = (try? c.decodeIfPresent(Severity.self, forKey: .severity)) ?? .warning
         cooldown = (try? c.decodeIfPresent(Double.self, forKey: .cooldown)) ?? 1800
-        actions = (try? c.decodeIfPresent([RuleAction].self, forKey: .actions)) ?? [.showNotification]
+        // A missing list means the default; a list that cannot be read (e.g. an action from a newer
+        // version) rejects the rule, so it is skipped instead of silently doing something else.
+        actions = c.contains(.actions) ? try c.decode([RuleAction].self, forKey: .actions) : [.showNotification]
     }
 
     /// Key of the conditions this rule produces.
@@ -276,12 +278,8 @@ public struct CustomRule: Codable, Equatable, Identifiable, Sendable {
 
     public var isValid: Bool { validate().isEmpty }
 
-    static func isWebURL(_ text: String) -> Bool {
-        guard let url = URL(string: text.trimmingCharacters(in: .whitespaces)),
-              let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https",
-              let host = url.host, !host.isEmpty else { return false }
-        return true
-    }
+    /// Kept for the validation of `openURL`; the rule is in `ActionURLPolicy`.
+    static func isWebURL(_ text: String) -> Bool { ActionURLPolicy.isAllowed(text) }
 }
 
 extension CustomRule {

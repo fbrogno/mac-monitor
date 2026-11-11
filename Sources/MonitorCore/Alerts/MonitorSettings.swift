@@ -48,6 +48,22 @@ extension RuleID {
 public enum MenuBarStyle: String, CaseIterable, Codable, Sendable {
     case icon, iconAndCPU, iconCPUAndMemory
 
+    /// The items this style stands for.
+    public var items: [MenuBarItem] {
+        switch self {
+        case .icon: []
+        case .iconAndCPU: [.cpu]
+        case .iconCPUAndMemory: [.cpu, .memory]
+        }
+    }
+
+    /// The nearest old style for a free choice.
+    public init(items: [MenuBarItem]) {
+        if items.isEmpty { self = .icon }
+        else if items.starts(with: [.cpu, .memory]) { self = .iconCPUAndMemory }
+        else { self = .iconAndCPU }
+    }
+
     public var title: String {
         switch self {
         case .icon: "Nur Symbol"
@@ -121,9 +137,17 @@ public struct MonitorSettings: Codable, Equatable, Sendable {
     public var quiet: QuietSettings = QuietSettings()
     public var overlayMode: OverlayMode = .otherScreens
     public var ignoredProcesses: [String] = ["kernel_task", "mds_stores", "mdworker_shared", "photoanalysisd"]
+    /// Values shown next to the menu bar icon, at most `MenuBarDisplay.maxItems`; empty means icon only.
     /// Icon only by default: every text change makes macOS redraw the status item on each
     /// display (~40 ms), which would dominate the app's energy use.
-    public var menuBarStyle: MenuBarStyle = .icon
+    public var menuBarItems: [MenuBarItem] = []
+    /// The three fixed styles of version 1.x, mapped to and from `menuBarItems`. Still written so an
+    /// older version reads something sensible.
+    public var menuBarStyle: MenuBarStyle {
+        get { MenuBarStyle(items: menuBarItems) }
+        set { menuBarItems = newValue.items }
+    }
+    public var hotKeys: HotKeySettings = HotKeySettings()
 
     public init() {}
 
@@ -131,7 +155,7 @@ public struct MonitorSettings: Codable, Equatable, Sendable {
         case enabledRules, knownRules, processCPUThreshold, processCPUSustain, memoryHogFraction, memoryHogSustain
         case cpuTotalThreshold, cpuTotalSustain, memoryPressureSustain, swapThresholdGB, diskMinFreePercent
         case diskMinFreeGB, networkOfflineSustain, sleepBlockerSustain, reminderInterval, overlayMode
-        case ignoredProcesses, menuBarStyle
+        case ignoredProcesses, menuBarStyle, menuBarItems, hotKeys
         case longReminderInterval, cpuTempThreshold, cpuTempSustain, fanMaxPercent, fanMaxSustain
         case batteryHealthMinPercent, batteryDrainSustain, energyHogWatts, energyHogSustain
         case ssdWearPercent, ssdSpareMinPercent, gpuHighThreshold, gpuHighSustain, customRules, quiet
@@ -157,6 +181,8 @@ public struct MonitorSettings: Codable, Equatable, Sendable {
         try c.encode(overlayMode, forKey: .overlayMode)
         try c.encode(ignoredProcesses, forKey: .ignoredProcesses)
         try c.encode(menuBarStyle, forKey: .menuBarStyle)
+        try c.encode(menuBarItems, forKey: .menuBarItems)
+        try c.encode(hotKeys, forKey: .hotKeys)
         try c.encode(longReminderInterval, forKey: .longReminderInterval)
         try c.encode(cpuTempThreshold, forKey: .cpuTempThreshold)
         try c.encode(cpuTempSustain, forKey: .cpuTempSustain)
@@ -198,7 +224,13 @@ public struct MonitorSettings: Codable, Equatable, Sendable {
         reminderInterval = (try? c.decodeIfPresent(Double.self, forKey: .reminderInterval)) ?? d.reminderInterval
         overlayMode = (try? c.decodeIfPresent(OverlayMode.self, forKey: .overlayMode)) ?? d.overlayMode
         ignoredProcesses = (try? c.decodeIfPresent([String].self, forKey: .ignoredProcesses)) ?? d.ignoredProcesses
-        menuBarStyle = (try? c.decodeIfPresent(MenuBarStyle.self, forKey: .menuBarStyle)) ?? d.menuBarStyle
+        if let names = try? c.decodeIfPresent([String].self, forKey: .menuBarItems) {
+            menuBarItems = MenuBarItem.normalized(names.compactMap(MenuBarItem.init(rawValue:)))
+        } else {
+            // Settings from before the free choice: derive the items from the old style.
+            menuBarItems = ((try? c.decodeIfPresent(MenuBarStyle.self, forKey: .menuBarStyle)) ?? .icon).items
+        }
+        hotKeys = (try? c.decodeIfPresent(HotKeySettings.self, forKey: .hotKeys)) ?? d.hotKeys
         longReminderInterval = (try? c.decodeIfPresent(Double.self, forKey: .longReminderInterval)) ?? d.longReminderInterval
         cpuTempThreshold = (try? c.decodeIfPresent(Double.self, forKey: .cpuTempThreshold)) ?? d.cpuTempThreshold
         cpuTempSustain = (try? c.decodeIfPresent(Double.self, forKey: .cpuTempSustain)) ?? d.cpuTempSustain
@@ -212,7 +244,14 @@ public struct MonitorSettings: Codable, Equatable, Sendable {
         ssdSpareMinPercent = (try? c.decodeIfPresent(Double.self, forKey: .ssdSpareMinPercent)) ?? d.ssdSpareMinPercent
         gpuHighThreshold = (try? c.decodeIfPresent(Double.self, forKey: .gpuHighThreshold)) ?? d.gpuHighThreshold
         gpuHighSustain = (try? c.decodeIfPresent(Double.self, forKey: .gpuHighSustain)) ?? d.gpuHighSustain
-        customRules = (try? c.decodeIfPresent([CustomRule].self, forKey: .customRules)) ?? d.customRules
+        // One unreadable rule must not take the others with it.
+        customRules = ((try? c.decodeIfPresent([LossyRule].self, forKey: .customRules)) ?? []).compactMap(\.rule)
         quiet = (try? c.decodeIfPresent(QuietSettings.self, forKey: .quiet)) ?? d.quiet
     }
+}
+
+/// Decodes a custom rule or, if it is broken or unknown, nothing.
+private struct LossyRule: Decodable {
+    let rule: CustomRule?
+    init(from decoder: Decoder) throws { rule = try? CustomRule(from: decoder) }
 }
