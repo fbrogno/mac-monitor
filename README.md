@@ -67,9 +67,69 @@ Der Verlauf liegt lokal in `~/Library/Application Support/MacMonitor/history.sql
 | Festplatte voll | < 10 % oder < 15 GB frei | |
 | Internet weg | 30 s offline, Meldung auch bei Wiederkehr | |
 | Ruhezustand blockiert | ein Prozess verhindert im Akkubetrieb > 30 min den Schlaf | Beenden …, 1 h stumm |
+| CPU-Temperatur hoch | heißester CPU-Sensor ≥ 95 °C über 2 min, noch bevor macOS drosselt | |
+| Lüfter am Anschlag | ein Lüfter ≥ 90 % seiner Höchstdrehzahl über 5 min | |
+| Akku-Gesundheit | Kapazität < 80 % des Neuzustands oder „Service empfohlen“, höchstens einmal pro Woche | |
+| Akku entlädt trotz Netzteil | am Netzteil, aber der Akku verliert über 10 min Ladung | |
+| Energiefresser im Akkubetrieb | ein Programm zieht im Schnitt der letzten 5 min ≥ 8 W aus dem Akku | Beenden …, 1 h stumm |
+| SSD-Verschleiß | Abnutzung ≥ 80 % oder Reserve < 20 %, höchstens einmal pro Woche | |
+| Volume voll | ein weiteres Volume (z. B. externe Platte) < 10 % oder < 15 GB frei | |
+| GPU dauerhaft hoch | GPU ≥ 90 % über 5 min (standardmäßig aus) | |
 
-Alle Schwellen, Dauern und Regeln lassen sich in den Einstellungen ändern. Prozesse kannst du dauerhaft
+Alle Schwellen, Dauern und Regeln lassen sich in den Einstellungen ändern, gruppiert nach Prozesse, System,
+Energie & Akku und Speicherplatz, mit „Auf Standard zurücksetzen“ je Gruppe. Prozesse kannst du dauerhaft
 ignorieren oder direkt aus der Mitteilung für eine Stunde stummschalten.
+
+<p align="center">
+  <img src="docs/images/settings-rules.png" alt="Einstellungen: Regeln" width="760">
+</p>
+
+### Eigene Regeln
+
+Unter **Einstellungen → Eigene Regeln** legst du selbst fest, worauf MacMonitor achten soll: eine Messgröße
+(CPU, RAM, GPU, Temperatur, Leistung, Akku, freier Platz, Netz, oder CPU und RAM eines bestimmten
+Programms), ein Vergleich mit einer Schwelle, eine Mindestdauer, auf Wunsch nur im Akkubetrieb oder nur am
+Netzteil, ein Schweregrad und eine Abklingzeit. Dann führt die Regel ihre **Aktionen** aus:
+
+- **Mitteilung zeigen**, **Kurzbefehl ausführen** (aus deiner Liste der Kurzbefehle), **URL öffnen**
+  (Web-Adressen und Adressen von Apps, nie lokale Dateien),
+- **Prozess beenden** (auf Wunsch erst nach Rückfrage) und **Prozess drosseln** (niedrigere Priorität). Beide
+  gibt es nur für Messgrößen eines Programms. Programme des Systems und MacMonitor selbst werden nie
+  angefasst; vor dem Signal prüft MacMonitor noch einmal, ob die Prozessnummer noch zum selben Programm gehört.
+  Eine Drosselung wird nicht von selbst zurückgenommen, im Ereignisprotokoll steht, wann die Bedingung endet.
+
+Vorlagen helfen beim Start. Unvollständige Regeln lassen sich nicht speichern, der Editor sagt am Feld, was
+fehlt. Jede ausgeführte Aktion und jeder Fehler steht im Ereignisprotokoll. Eine Regel, die sich nicht lesen
+lässt, wird beim Laden übersprungen; die übrigen bleiben erhalten.
+
+<p align="center">
+  <img src="docs/images/settings-custom-rule.png" alt="Editor für eine eigene Regel mit Hinweis am Feld" width="760">
+</p>
+
+### Ruhe, Menüleiste und Kürzel
+
+- **Ruhe:** bei gesperrtem Bildschirm und bei gespiegeltem Bildschirm (Beamer) gibt es kein Hinweisfenster und
+  keinen Ton, dazu frei wählbare Ruhezeiten. Kritische Meldungen kommen auf Wunsch immer durch. Der Fokus
+  von macOS lässt sich für eine App ohne besondere Apple-Berechtigung nicht auslesen, der Schalter ist
+  deshalb ausgegraut. Bildschirmfreigabe in Zoom oder Teams und Folien im Vollbild erkennt MacMonitor nicht.
+- **Menüleiste:** Symbol allein oder mit bis zu drei Werten (CPU, RAM, GPU, Temperatur, Leistung, Netz ↓,
+  Akku). Der Text ändert sich nur bei spürbaren Änderungen und höchstens alle 10 s, weil jede Änderung
+  macOS die Menüleiste neu zeichnen lässt.
+- **Tastenkürzel** (standardmäßig keines belegt) für Menüleisten-Fenster, Dashboard und Übersicht, ohne
+  Bedienungshilfen-Berechtigung.
+- **Erster Start:** ein Willkommensfenster (erneut mit `open macmonitor://welcome`), Einstellungen mit
+  `open macmonitor://settings[/regeln|eigene-regeln|ruhe|menueleiste|ignoriert|daten|info]`.
+
+<p align="center">
+  <img src="docs/images/settings-quiet.png" alt="Einstellungen: Ruhe" width="380">
+  &nbsp;
+  <img src="docs/images/settings-menubar.png" alt="Einstellungen: Menüleiste und Tastenkürzel" width="380">
+</p>
+<p align="center">
+  <img src="docs/images/welcome.png" alt="Willkommensfenster beim ersten Start" width="400">
+</p>
+
+Einstellungen lassen sich unter **Daten** als JSON exportieren und wieder importieren.
 
 ### Hinweis auf dem Bildschirm, an dem du arbeitest
 
@@ -111,8 +171,9 @@ geschlossen: **0,12 s CPU-Zeit in 162 s (≈ 0,07 % CPU)** bei konstant ~79 MB S
 - **Ereignisse statt Abfragen:** Speicherdruck, Temperatur, Netzwechsel, Stromquelle und Aufwachen
   lösen sofort eine Messung aus, ohne dass dafür häufiger gemessen werden muss.
 - **Ruhige Menüleiste:** Jede Textänderung in der Menüleiste lässt macOS das Symbol auf jedem Bildschirm
-  neu rendern (~40 ms). Standard ist deshalb „Nur Symbol“, das nur bei Warnungen wechselt. Wer CPU/RAM
-  als Zahl sehen will, bekommt sie gedrosselt: neu gezeichnet wird erst ab 5 Punkten Änderung.
+  neu rendern (~40 ms). Standard ist deshalb „Nur Symbol“, das nur bei Warnungen wechselt. Wer Zahlen
+  sehen will, bekommt sie gedrosselt: neu gezeichnet wird erst, wenn sich der angezeigte Text spürbar
+  ändert (5 Punkte bei Prozent, 2 °C, 1 W unter 20 W sonst 5 W, grobe Stufen beim Netz), höchstens alle 10 s.
 - **Caches:** Prozessnamen werden je PID nur einmal aufgelöst, SSD-Platz und Akkuzustand nur alle
   5 min gelesen, Schlaf-Blockierer jede Minute.
 
@@ -163,7 +224,7 @@ flowchart LR
     subgraph App["MacMonitor (App)"]
         Model["AppModel<br/>Zeitplan · Event-Quellen"]
         Notifier["Notifier<br/>UNUserNotificationCenter"]
-        UI["PopoverView · SettingsView<br/>MenuBarLabel"]
+        UI["PopoverView · Einstellungen<br/>MenuBarLabel"]
     end
     subgraph Core["MonitorCore (Library, getestet)"]
         Samplers["SystemSampler · ProcessSampler<br/>DiskSampler · PowerSampler"]
